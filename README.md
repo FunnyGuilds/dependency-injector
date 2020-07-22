@@ -1,4 +1,4 @@
-# Dependency Injection
+# Dependency Injection [![Build Status](https://travis-ci.com/dzikoysk/di.svg?branch=master)](https://travis-ci.com/dzikoysk/di)
 Blazingly fast and lightweight dependency injection framework for Java. Supported operations:
 * Creating a new instance of the specified type using Injector _(constructors)_
 * Invoking methods using Injector _(methods)_
