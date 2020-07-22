@@ -19,18 +19,17 @@ package org.panda_lang.utilities.inject;
 import org.panda_lang.utilities.commons.function.TriFunction;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Parameter;
 
 final class HandledInjectorResourceBindValue<A extends Annotation> implements InjectorResourceBindValue<A> {
 
-    private final TriFunction<Parameter, A, Object[], ?> handler;
+    private final TriFunction<InjectorProperty, A, Object[], ?> handler;
 
-    HandledInjectorResourceBindValue(TriFunction<Parameter, A, Object[], ?> handler) {
+    HandledInjectorResourceBindValue(TriFunction<InjectorProperty, A, Object[], ?> handler) {
         this.handler = handler;
     }
 
     @Override
-    public Object getValue(Parameter required, A annotation, Object... injectorArgs) {
+    public Object getValue(InjectorProperty required, A annotation, Object... injectorArgs) {
         return handler.apply(required, annotation, injectorArgs);
     }
 

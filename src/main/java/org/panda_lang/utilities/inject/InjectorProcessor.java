@@ -17,7 +17,6 @@
 package org.panda_lang.utilities.inject;
 
 import org.jetbrains.annotations.Nullable;
-import org.panda_lang.utilities.commons.ArrayUtils;
 import org.panda_lang.utilities.commons.ObjectUtils;
 import org.panda_lang.utilities.commons.function.Option;
 import org.panda_lang.utilities.commons.text.ContentJoiner;
@@ -43,24 +42,24 @@ final class InjectorProcessor {
         this.injector = injector;
     }
 
-    protected Object[] fetchValues(InjectorCache cache, Executable executable, Object... injectorArgs) throws Exception {
-        Parameter[] parameters = executable.getParameters();
+    protected Object[] fetchValues(InjectorCache cache, Object... injectorArgs) throws Exception {
+        InjectorProperty[] properties = cache.getProperties();
         Object[] values = new Object[cache.getInjectable().length];
 
         for (int index = 0; index < values.length; index++) {
-            values[index] = fetchValue(cache, parameters[index], index, injectorArgs);
+            values[index] = fetchValue(cache, properties[index], index, injectorArgs);
         }
 
         return values;
     }
 
-    protected Object tryFetchValue(InjectorProcessor processor, Parameter parameter, Object... injectorArgs) throws Exception {
-        InjectorCache cache = InjectorCache.of(processor, parameter.getDeclaringExecutable());
-        return fetchValue(cache, parameter, ArrayUtils.indexOf(parameter.getDeclaringExecutable().getParameters(), parameter), injectorArgs);
+    protected Object tryFetchValue(InjectorProcessor processor, InjectorProperty property, Object... injectorArgs) throws Exception {
+        InjectorCache cache = InjectorCache.of(processor, property);
+        return fetchValue(cache, property, 0, injectorArgs);
     }
 
-    private @Nullable Object fetchValue(InjectorCache cache, Parameter required, int index, Object... injectorArgs) throws Exception {
-        Object value = cache.getBinds()[index].getValue(required, cache.getInjectable()[index], injectorArgs);
+    private @Nullable Object fetchValue(InjectorCache cache, InjectorProperty property, int index, Object... injectorArgs) throws Exception {
+        Object value = cache.getBinds()[index].getValue(property, cache.getInjectable()[index], injectorArgs);
 
         for (InjectorResourceHandler<Annotation, Object, ?> handler : cache.getHandlers()[index]) {
             Annotation annotation = null;
@@ -69,10 +68,20 @@ final class InjectorProcessor {
                 annotation = cache.getAnnotations()[index].get(handler.getAnnotation().get());
             }
 
-            value = handler.process(required, annotation, ObjectUtils.cast(value), injectorArgs);
+            value = handler.process(property, annotation, ObjectUtils.cast(value), injectorArgs);
         }
 
         return value;
+    }
+
+    protected InjectorProperty[] fetchInjectorProperties(Parameter[] parameters) {
+        InjectorProperty[] properties = new InjectorProperty[parameters.length];
+
+        for (int index = 0; index < parameters.length; index++) {
+            properties[index] = new InjectorPropertyParameter(parameters[index]);
+        }
+
+        return properties;
     }
 
     protected Annotation[] fetchAnnotations(Executable executable) {
@@ -146,6 +155,13 @@ final class InjectorProcessor {
         return binds;
     }
 
+    protected InjectorResourceBind<Annotation> fetchBind(@Nullable Annotation annotation, InjectorProperty property) {
+        Class<?> requiredType = annotation != null ? annotation.annotationType() : property.getType();
+        return injector.getResources().getBind(requiredType).orThrow(() -> {
+            throw new DependencyInjectionException("Cannot find proper bind for " + property + " property");
+        });
+    }
+
     protected Collection<InjectorResourceHandler<Annotation, Object, ?>>[] fetchHandlers(Executable executable) {
         Collection<InjectorResourceHandler<Annotation, Object, ?>>[] handlers = ObjectUtils.cast(new Collection[executable.getParameterCount()]);
         Parameter[] parameters = executable.getParameters();
@@ -155,10 +171,6 @@ final class InjectorProcessor {
         }
 
         return handlers;
-    }
-
-    Injector getInjector() {
-        return injector;
     }
 
 }

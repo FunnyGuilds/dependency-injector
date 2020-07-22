@@ -64,7 +64,7 @@ public interface InjectorResources {
      * @param <R> return type
      * @param <E> type of thrown exception
      */
-    <V, R, E extends Exception> void processType(Class<V> associatedType, ThrowingTriFunction<Parameter, V, Object[], R, E> processor);
+    <V, R, E extends Exception> void processType(Class<V> associatedType, ThrowingTriFunction<InjectorProperty, V, Object[], R, E> processor);
 
     /**
      * Process injected object annotated with the given annotation
@@ -76,7 +76,7 @@ public interface InjectorResources {
      * @param <R> return type
      * @param <E> type of thrown exception
      */
-    <A extends Annotation, V, R, E extends Exception> void processAnnotated(Class<A> annotationType, ThrowingQuadFunction<A, Parameter, V, Object[], R, E> processor);
+    <A extends Annotation, V, R, E extends Exception> void processAnnotated(Class<A> annotationType, ThrowingQuadFunction<A, InjectorProperty, V, Object[], R, E> processor);
 
     /**
      * Process injected of the given type and annotated with the given annotation
@@ -89,7 +89,7 @@ public interface InjectorResources {
      * @param <R> return type
      * @param <E> type of thrown exception
      */
-    <A extends Annotation, V, R, E extends Exception> void processAnnotatedType(Class<A> annotationType, Class<V> type, ThrowingQuadFunction<A, Parameter, V, Object[], R, E> processor);
+    <A extends Annotation, V, R, E extends Exception> void processAnnotatedType(Class<A> annotationType, Class<V> type, ThrowingQuadFunction<A, InjectorProperty, V, Object[], R, E> processor);
 
     /**
      * Fetch annotations assigned to the given parameter

@@ -43,6 +43,15 @@ public interface Injector {
     <T> ConstructorInjector<T> forConstructor(Class<T> type);
 
     /**
+     * Create injector for fields (and constructor)
+     *
+     * @param type the type to process
+     * @param <T> type of class
+     * @return fields injector
+     */
+    <T> FieldsInjector<T> forFields(Class<T> type);
+
+    /**
      * Invoke the method using Injector
      *
      * @param method the method to invoke

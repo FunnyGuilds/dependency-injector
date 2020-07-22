@@ -48,7 +48,7 @@ public final class GeneratedMethodInjector {
 
     @SuppressWarnings("unchecked")
     public <T> T invoke(Object instance, Object... injectorArgs) throws Throwable {
-        return (T) function.apply(instance, empty ? InjectorProcessor.EMPTY : processor.fetchValues(cache, method, injectorArgs));
+        return (T) function.apply(instance, empty ? InjectorProcessor.EMPTY : processor.fetchValues(cache, injectorArgs));
     }
 
     private static BiFunction<Object, Object[], Object> generate(Method method) throws Exception {

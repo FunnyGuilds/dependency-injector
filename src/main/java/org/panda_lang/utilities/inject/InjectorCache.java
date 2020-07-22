@@ -16,24 +16,31 @@
 
 package org.panda_lang.utilities.inject;
 
+import org.panda_lang.utilities.commons.ArrayUtils;
+import org.panda_lang.utilities.inject.annotations.Injectable;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Executable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 final class InjectorCache {
 
+    private final InjectorProperty[] properties;
     private final Annotation[] injectable;
     private final Map<Class<? extends Annotation>, Annotation>[] annotations;
     private final InjectorResourceBind<Annotation>[] binds;
     private final Collection<InjectorResourceHandler<Annotation, Object, ?>>[] handlers;
 
     private InjectorCache(
+        InjectorProperty[] properties,
         Annotation[] injectable,
         Map<Class<? extends Annotation>, Annotation>[] annotations,
         InjectorResourceBind<Annotation>[] binds,
         Collection<InjectorResourceHandler<Annotation, Object, ?>>[] handlers
     ) {
+        this.properties = properties;
         this.injectable = injectable;
         this.annotations = annotations;
         this.binds = binds;
@@ -56,14 +63,31 @@ final class InjectorCache {
         return handlers;
     }
 
+    InjectorProperty[] getProperties() {
+        return properties;
+    }
+
     public static InjectorCache of(InjectorProcessor processor, Executable executable) {
         Annotation[] injectable = processor.fetchAnnotations(executable);
 
         return new InjectorCache(
+                processor.fetchInjectorProperties(executable.getParameters()),
                 injectable,
                 processor.fetchAnnotationsMap(executable),
                 processor.fetchBinds(injectable, executable),
                 processor.fetchHandlers(executable)
+        );
+    }
+
+    public static InjectorCache of(InjectorProcessor processor, InjectorProperty property) {
+        Annotation annotation = ArrayUtils.findIn(property.getAnnotations(), a -> a.annotationType().isAnnotationPresent(Injectable.class)).getOrNull();
+
+        return new InjectorCache(
+                ArrayUtils.of(property),
+                ArrayUtils.of(annotation),
+                ArrayUtils.of(Collections.emptyMap()),
+                ArrayUtils.of(processor.fetchBind(annotation, property)),
+                ArrayUtils.of(Collections.emptyList())
         );
     }
 

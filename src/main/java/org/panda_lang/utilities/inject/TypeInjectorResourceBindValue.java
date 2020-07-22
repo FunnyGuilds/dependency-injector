@@ -17,7 +17,6 @@
 package org.panda_lang.utilities.inject;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Parameter;
 
 final class TypeInjectorResourceBindValue<A extends Annotation> implements InjectorResourceBindValue<A> {
 
@@ -28,7 +27,7 @@ final class TypeInjectorResourceBindValue<A extends Annotation> implements Injec
     }
 
     @Override
-    public Object getValue(Parameter required, A annotation, Object... injectorArgs) throws Exception {
+    public Object getValue(InjectorProperty required, A annotation, Object... injectorArgs) throws Exception {
         return type.newInstance();
     }
 

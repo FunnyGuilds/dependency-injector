@@ -38,7 +38,7 @@ public final class ConstructorInjector<T> {
 
     @SuppressWarnings("unchecked")
     public T newInstance(Object... injectorArgs) throws Throwable {
-        return (T) constructor.newInstance(processor.fetchValues(cache, constructor, injectorArgs));
+        return (T) constructor.newInstance(processor.fetchValues(cache, injectorArgs));
     }
 
     public Constructor<?> getConstructor() {

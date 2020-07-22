@@ -22,7 +22,7 @@ import org.panda_lang.utilities.commons.function.Option;
 
 interface InjectorResourceHandler<A extends Annotation, V, R> {
 
-    R process(Parameter required, A annotation, V value, Object... injectorArgs) throws Exception;
+    R process(InjectorProperty required, A annotation, V value, Object... injectorArgs) throws Exception;
 
     Option<Class<A>> getAnnotation();
 

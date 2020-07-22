@@ -19,11 +19,10 @@ package org.panda_lang.utilities.inject;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Parameter;
 
 @FunctionalInterface
 interface InjectorResourceBindValue<A extends Annotation> {
 
-    Object getValue(Parameter required, @Nullable A annotation, Object... injectedArgs) throws Exception;
+    Object getValue(InjectorProperty required, @Nullable A annotation, Object... injectedArgs) throws Exception;
 
 }

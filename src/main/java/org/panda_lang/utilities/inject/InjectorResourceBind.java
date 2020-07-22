@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 import org.panda_lang.utilities.commons.function.TriFunction;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Parameter;
 import java.util.function.Supplier;
 
 public interface InjectorResourceBind<A extends Annotation> extends Comparable<InjectorResourceBind<A>> {
@@ -51,7 +50,7 @@ public interface InjectorResourceBind<A extends Annotation> extends Comparable<I
      *
      * @param handler the handler which accepts type of parameter and bind type as arguments
      */
-    void assignHandler(TriFunction<Parameter, A, Object[], ?> handler);
+    void assignHandler(TriFunction<InjectorProperty, A, Object[], ?> handler);
 
     /**
      * Get value of bind for the required (parameter) type and instance of bind type
@@ -62,7 +61,7 @@ public interface InjectorResourceBind<A extends Annotation> extends Comparable<I
      * @return the result value
      * @throws Exception if anything wrong will happen, whole process should be stopped
      */
-    Object getValue(Parameter required, A annotation, Object... injectorArgs) throws Exception;
+    Object getValue(InjectorProperty required, A annotation, Object... injectorArgs) throws Exception;
 
     /**
      * Get associated type with the bind

@@ -20,7 +20,6 @@ import org.panda_lang.utilities.commons.ObjectUtils;
 import org.panda_lang.utilities.commons.function.TriFunction;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Parameter;
 import java.util.function.Supplier;
 
 class DefaultInjectorResourceBind<A extends Annotation> implements InjectorResourceBind<A> {
@@ -62,12 +61,12 @@ class DefaultInjectorResourceBind<A extends Annotation> implements InjectorResou
     }
 
     @Override
-    public void assignHandler(TriFunction<Parameter, A, Object[], ?> handler) {
+    public void assignHandler(TriFunction<InjectorProperty, A, Object[], ?> handler) {
         with(new HandledInjectorResourceBindValue<>(handler));
     }
 
     @Override
-    public Object getValue(Parameter required, A annotation, Object... injectedArgs) throws Exception {
+    public Object getValue(InjectorProperty required, A annotation, Object... injectedArgs) throws Exception {
         return value.getValue(required, annotation, injectedArgs);
     }
 

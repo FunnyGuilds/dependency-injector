@@ -42,7 +42,7 @@ public final class MethodInjector {
      */
     @SuppressWarnings("unchecked")
     public <T> T invoke(Object instance, Object... injectorArgs) throws Throwable {
-        return (T) method.invoke(instance, processor.fetchValues(cache, method, injectorArgs));
+        return (T) method.invoke(instance, processor.fetchValues(cache, injectorArgs));
     }
 
     public Method getMethod() {
