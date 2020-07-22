@@ -3,7 +3,25 @@ Blazingly fast and lightweight dependency injection framework for Java. Supporte
 * Creating a new instance of the specified type using Injector _(constructors)_
 * Invoking methods using Injector _(methods)_
 
-Full example can be found as a test class: [DependencyInjectionTest.java](https://github.com/panda-lang/panda/blob/master/panda-utilities/src/test/java/org/panda_lang/utilities/inject/DependencyInjectionTest.java)
+### Install
+Library is available in `panda-repository` Maven repository:
+
+```xml
+<repository>
+    <id>panda-repository</id>
+    <url>https://repo.panda-lang.org/releases</url>
+</repository>
+```
+
+To use `annotations`, declare the dependency in your `pom.xml`
+
+```xml
+<dependency>
+    <groupId>org.panda-lang.utilities</groupId>
+    <artifactId>di</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
 
 ### Usage
 Firstly, you have to create `Injector` which keeps all the registered bindings (injected values)
