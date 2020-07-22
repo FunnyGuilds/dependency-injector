@@ -78,6 +78,26 @@ Service service = injector.forConstructor(Service.class).newInstance();
 
 Full example: [DependencyInjectionInstancesTest.java](https://github.com/dzikoysk/di/blob/master/src/test/java/org/panda_lang/panda/utilities/inject/DependencyInjectionInstancesTest.java)
 
+#### Fields
+```java
+class Service {
+    @Inject
+    private String fieldOne;
+    @Inject
+    private Integer fieldTwo;
+}
+
+Injector injector = DependencyInjection.createInjector(resources -> {
+    resources.on(String.class).assignInstance("Hello Field");
+    resources.on(Integer.class).assignInstance(7);
+});
+
+Service service = injector.newInstanceWithFields(Service.class);
+```
+
+Full example: [DependencyInjectionFieldsTest.java](https://github.com/dzikoysk/di/blob/master/src/test/java/org/panda_lang/panda/utilities/inject/DependencyInjectionFieldsTest.java)
+
+
 #### Custom logic
 
 Let's build a random example based on these methods using a custom annotation:
