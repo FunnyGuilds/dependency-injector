@@ -43,6 +43,16 @@ public interface Injector {
     <T> ConstructorInjector<T> forConstructor(Class<T> type);
 
     /**
+     * Create a new instance of the specified type using Injector with support for field injection
+     *
+     * @param type the class to instantiate
+     * @param <T> the type
+     * @return a new instance
+     * @throws java.lang.Throwable if anything happen in constructor
+     */
+    <T> T newInstanceWithFields(Class<T> type, Object... injectorArgs) throws Throwable;
+
+    /**
      * Create injector for fields (and constructor)
      *
      * @param type the type to process

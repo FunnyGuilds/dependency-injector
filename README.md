@@ -1,4 +1,5 @@
-# Dependency Injection [![Build Status](https://travis-ci.com/dzikoysk/di.svg?branch=master)](https://travis-ci.com/dzikoysk/di)
+# Dependency Injection [![Build Status](https://travis-ci.com/dzikoysk/di.svg?branch=master)](https://travis-ci.com/dzikoysk/di) [![codecov](https://codecov.io/gh/dzikoysk/di/branch/master/graph/badge.svg)](https://codecov.io/gh/dzikoysk/di)
+
 Blazingly fast and lightweight dependency injection framework for Java. Supported operations:
 * Creating a new instance of the specified type using Injector _(constructors)_
 * Invoking methods using Injector _(methods)_
@@ -19,7 +20,7 @@ To use `annotations`, declare the dependency in your `pom.xml`
 <dependency>
     <groupId>org.panda-lang.utilities</groupId>
     <artifactId>di</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
 </dependency>
 ```
 

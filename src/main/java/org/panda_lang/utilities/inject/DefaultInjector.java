@@ -34,11 +34,6 @@ final class DefaultInjector implements Injector {
     }
 
     @Override
-    public <T> T newInstance(Class<T> type, Object... injectorArgs) throws Throwable {
-        return forConstructor(type).newInstance(injectorArgs);
-    }
-
-    @Override
     public <T> ConstructorInjector<T> forConstructor(Class<T> type) {
         if (type.getDeclaredConstructors().length != 1) {
             throw new InvalidParameterException("Class has to contain one and only constructor");
@@ -48,12 +43,22 @@ final class DefaultInjector implements Injector {
     }
 
     @Override
+    public <T> T newInstance(Class<T> type, Object... injectorArgs) throws Throwable {
+        return forConstructor(type).newInstance(injectorArgs);
+    }
+
+    @Override
     public <T> FieldsInjector<T> forFields(Class<T> type) {
         if (type.getDeclaredConstructors().length != 1) {
             throw new InvalidParameterException("Class has to contain one and only constructor");
         }
 
         return new FieldsInjector<T>(processor, ObjectUtils.cast(type.getDeclaredConstructors()[0]));
+    }
+
+    @Override
+    public <T> T newInstanceWithFields(Class<T> type, Object... injectorArgs) throws Throwable {
+        return forFields(type).newInstance(injectorArgs);
     }
 
     @Override
