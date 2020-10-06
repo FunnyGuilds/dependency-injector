@@ -3,6 +3,7 @@
 Blazingly fast and lightweight dependency injection framework for Java. Supported operations:
 * Creating a new instance of the specified type using Injector _(constructors)_
 * Invoking methods using Injector _(methods)_
+* Reflection based field injection during instance creation _(fields)_
 
 ### Install
 Library is available in `panda-repository` Maven repository:
