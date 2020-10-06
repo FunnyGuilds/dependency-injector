@@ -1,4 +1,4 @@
-# Dependency Injection [![Build Status](https://travis-ci.com/dzikoysk/di.svg?branch=master)](https://travis-ci.com/dzikoysk/di) [![codecov](https://codecov.io/gh/dzikoysk/di/branch/master/graph/badge.svg)](https://codecov.io/gh/dzikoysk/di)
+# Dependency Injection [![Build Status](https://travis-ci.com/dzikoysk/dependency-injector.svg?branch=master)](https://travis-ci.com/dzikoysk/dependency-injector) [![codecov](https://codecov.io/gh/dzikoysk/dependency-injector/branch/master/graph/badge.svg)](https://codecov.io/gh/dzikoysk/dependency-injector)
 
 Blazingly fast and lightweight dependency injection framework for Java. Supported operations:
 * Creating a new instance of the specified type using Injector _(constructors)_
@@ -95,7 +95,7 @@ Injector injector = DependencyInjection.createInjector(resources -> {
 Service service = injector.newInstanceWithFields(Service.class);
 ```
 
-Full example: [DependencyInjectionFieldsTest.java](https://github.com/dzikoysk/di/blob/master/src/test/java/org/panda_lang/panda/utilities/inject/DependencyInjectionFieldsTest.java)
+Full example: [DependencyInjectionFieldsTest.java](https://github.com/dzikoysk/dependency-injector/blob/master/src/test/java/org/panda_lang/panda/utilities/inject/DependencyInjectionFieldsTest.java)
 
 
 #### Custom logic
@@ -157,4 +157,4 @@ e23442b2-f695-41fa-9290-0f1192118a1a
 Process finished with exit code 0
 ```
 
-Full example is available here -> [DependencyInjectionWikiTest.java](https://github.com/dzikoysk/di/blob/master/src/test/java/org/panda_lang/panda/utilities/inject/DependencyInjectionWikiTest.java)
+Full example is available here -> [DependencyInjectionWikiTest.java](https://github.com/dzikoysk/dependency-injector/blob/master/src/test/java/org/panda_lang/panda/utilities/inject/DependencyInjectionWikiTest.java)
