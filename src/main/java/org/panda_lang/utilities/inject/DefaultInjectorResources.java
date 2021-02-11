@@ -174,6 +174,10 @@ final class DefaultInjectorResources implements InjectorResources {
         private Class<? extends Annotation> annotation;
 
         private HandlerRecord(@Nullable Class<?> type, @Nullable Class<? extends Annotation> annotation) {
+            if (type == null && annotation == null) {
+                throw new IllegalArgumentException("You have to provide at least type or annotation");
+            }
+
             this.type = type;
             this.annotation = annotation;
         }
