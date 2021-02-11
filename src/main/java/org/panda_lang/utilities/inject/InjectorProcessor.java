@@ -19,7 +19,7 @@ package org.panda_lang.utilities.inject;
 import org.jetbrains.annotations.Nullable;
 import org.panda_lang.utilities.commons.ObjectUtils;
 import org.panda_lang.utilities.commons.function.Option;
-import org.panda_lang.utilities.commons.text.ContentJoiner;
+import org.panda_lang.utilities.commons.text.Joiner;
 import org.panda_lang.utilities.inject.annotations.Injectable;
 
 import java.lang.annotation.Annotation;
@@ -136,7 +136,7 @@ final class InjectorProcessor {
             Option<InjectorResourceBind<Annotation>> bindValue = resources.getBind(requiredType);
 
             binds[index] = bindValue.orThrow(() -> {
-                String simplifiedParameters = ContentJoiner.on(", ").join(Arrays.stream(executable.getParameters())
+                String simplifiedParameters = Joiner.on(", ").join(Arrays.stream(executable.getParameters())
                         .map(p -> p.getType().getSimpleName() + " " + p.getName())
                         .collect(Collectors.toList()))
                         .toString();
