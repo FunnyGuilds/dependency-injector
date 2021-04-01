@@ -28,42 +28,63 @@ import org.openjdk.jmh.annotations.Warmup;
 import org.panda_lang.utilities.commons.ReflectionUtils;
 import org.panda_lang.utilities.inject.DependencyInjection;
 import org.panda_lang.utilities.inject.GeneratedMethodInjector;
-import org.panda_lang.utilities.inject.annotations.Inject;
+import org.panda_lang.utilities.inject.MethodInjector;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
+/* JDK14
+    Benchmark                                        Mode  Cnt      Score      Error   Units
+    DependencyInjectionBenchmark.direct             thrpt   10  65887,724 ± 7180,279  ops/ms
+    DependencyInjectionBenchmark.generatedInjected  thrpt   10  63508,263 ± 6460,304  ops/ms
+    DependencyInjectionBenchmark.injected           thrpt   10  30296,259 ± 2018,541  ops/ms
+    DependencyInjectionBenchmark.reflection         thrpt   10  45549,553 ± 1892,456  ops/ms
+ */
 @Fork(value = 1)
-@Warmup(iterations = 1)
-@Measurement(iterations = 2)
+@Warmup(iterations = 10, time = 2)
+@Measurement(iterations = 10, time = 2)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class DependencyInjectionBenchmark {
 
     public static class Entity {
         private int points;
-        @Inject
         public Integer bump() { return ++points; }
     }
 
     @Benchmark
-    public Integer raw(DIState state) {
+    public Integer direct(DIState state) {
         return state.entity.bump();
     }
 
     @Benchmark
-    public final Integer di(DIState state) throws Throwable {
-        return state.bump.invoke(state.entity);
+    public Object reflection(DIState state) throws Throwable {
+        return state.method.invoke(state.entity);
+    }
+
+    @Benchmark
+    public Integer injected(DIState state) throws Throwable {
+        return state.injectedMethod.invoke(state.entity);
+    }
+
+    @Benchmark
+    public Integer generatedInjected(DIState state) throws Throwable {
+        return state.generatedInjectedMethod.invoke(state.entity);
     }
 
     @State(Scope.Thread)
     public static class DIState {
 
         private Entity entity;
-        private GeneratedMethodInjector bump;
+        private Method method ;
+        private MethodInjector injectedMethod;
+        private GeneratedMethodInjector generatedInjectedMethod;
 
         @Setup(Level.Trial)
         public void setup() throws Exception {
             this.entity = new Entity();
-            this.bump = DependencyInjection.createInjector().forGeneratedMethod(ReflectionUtils.getMethod(Entity.class, "bump").get());
+            this.method = ReflectionUtils.getMethod(Entity.class, "bump").get();
+            this.injectedMethod = DependencyInjection.createInjector().forMethod(method);
+            this.generatedInjectedMethod = DependencyInjection.createInjector().forGeneratedMethod(method);
         }
 
     }

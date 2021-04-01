@@ -17,12 +17,14 @@
 package org.panda_lang.utilities.inject;
 
 import org.panda_lang.utilities.commons.ArrayUtils;
+import org.panda_lang.utilities.commons.ClassUtils;
 import org.panda_lang.utilities.commons.ObjectUtils;
 import org.panda_lang.utilities.commons.StringUtils;
 import org.panda_lang.utilities.commons.collection.Pair;
-import org.panda_lang.utilities.commons.javassist.implementer.FunctionalInterfaceImplementer;
+import org.panda_lang.utilities.commons.text.Joiner;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.LinkedHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
@@ -30,7 +32,6 @@ import java.util.function.BiFunction;
 public final class GeneratedMethodInjector {
 
     private static final AtomicInteger ID = new AtomicInteger();
-    private static final FunctionalInterfaceImplementer FUNCTIONAL_INTERFACE_IMPLEMENTER =  new FunctionalInterfaceImplementer();
 
     private final InjectorProcessor processor;
     private final Method method;
@@ -48,23 +49,27 @@ public final class GeneratedMethodInjector {
 
     @SuppressWarnings("unchecked")
     public <T> T invoke(Object instance, Object... injectorArgs) throws Throwable {
-        return (T) function.apply(instance, empty ? InjectorProcessor.EMPTY : processor.fetchValues(cache, injectorArgs));
+        return (T) function.apply(instance, empty
+                ? InjectorProcessor.EMPTY
+                : processor.fetchValues(cache, injectorArgs));
     }
 
     private static BiFunction<Object, Object[], Object> generate(Method method) throws Exception {
-        Class<?>[] parameterTypes = method.getParameterTypes();
-        Class<?> declaringClass = method.getDeclaringClass();
-        boolean isVoid = method.getReturnType() == void.class;
-
-        StringBuilder body = new StringBuilder("");
-        body.append(declaringClass.getName()).append(" instance = (").append(declaringClass.getName()).append(") $1;").append(System.lineSeparator());
-        body.append(Object.class.getName()).append("[] array = (").append(Object.class.getName()).append("[]) $2;");
-
-        if (!isVoid) {
-            body.append("return ");
+        if (!Modifier.isPublic(method.getModifiers())) {
+            throw new IllegalStateException(method + " has to be public");
         }
 
-        body.append("instance.").append(method.getName()).append("(");
+        Class<?> declaringClass = method.getDeclaringClass();
+
+        if (!Modifier.isPublic(declaringClass.getModifiers())) {
+            throw new IllegalStateException(declaringClass + " has to be public");
+        }
+
+        StringBuilder body = new StringBuilder();
+        body.append(declaringClass.getName()).append(" instance = (").append(declaringClass.getName()).append(") $1;\n");
+        body.append(Object.class.getName()).append("[] array = (").append(Object.class.getName()).append("[]) $2;\n");
+
+        Class<?>[] parameterTypes = method.getParameterTypes();
 
         for (int index = 0; index < parameterTypes.length; index++) {
             Class<?> parameterType = parameterTypes[index];
@@ -75,21 +80,45 @@ public final class GeneratedMethodInjector {
                 type = baseClass.getKey().getName() + StringUtils.repeated(baseClass.getValue(), "[]");
             }
 
-            body.append("(").append(type).append(") array[").append(index).append("], ").append(System.lineSeparator());
+            body.append(type).append(" arg").append(index).append(" = ((");
+
+            // Auto-boxing impl
+            if (parameterType.isPrimitive()) {
+                Class<?> objectType = ClassUtils.getNonPrimitiveClass(parameterType);
+                body.append(objectType.getName()).append(") array[").append(index).append("]).").append(type).append("Value();\n");
+            }
+            else {
+                body.append(type).append(") array[").append(index).append("]);\n");
+            }
         }
 
-        if (parameterTypes.length > 0) {
-            body.setLength(body.length() - (", " + System.lineSeparator()).length());
+        Class<?> returnType = method.getReturnType();
+        boolean isVoid = method.getReturnType() == void.class;
+        Class<?> objectType = ClassUtils.getNonPrimitiveClass(returnType);
+
+        if (!isVoid) {
+            body.append("return ");
+
+            // Auto-boxing impl
+            if (returnType.isPrimitive()) {
+                body.append("new ").append(objectType.getName()).append("(");
+            }
         }
 
-        body.append(");");
+        body.append("instance.").append(method.getName())
+                .append("(")
+                .append(Joiner.on(", ").join(parameterTypes, (index, value) -> "arg" + index))
+                .append(")");
 
-        if (isVoid) {
-            body.append("return null;");
+        // Auto-boxing impl
+        if (!isVoid && returnType.isPrimitive()) {
+            body.append(")");
         }
 
-        String name = "PandaDI$" + ID.incrementAndGet() + "$" + method.getDeclaringClass().getSimpleName() + method.getName();
-        Class<?> type = FUNCTIONAL_INTERFACE_IMPLEMENTER.generate(name, BiFunction.class, new LinkedHashMap<>(), body);
+        body.append(";");
+
+        String name = Injector.class.getPackage().getName() + ".PandaDI" + ID.incrementAndGet() + method.getDeclaringClass().getSimpleName() + method.getName();
+        Class<?> type = new FunctionalInterfaceImplementationGenerator(name, BiFunction.class, new LinkedHashMap<>(), body.toString()).generate(Injector.class);
 
         return ObjectUtils.cast(type.newInstance());
     }

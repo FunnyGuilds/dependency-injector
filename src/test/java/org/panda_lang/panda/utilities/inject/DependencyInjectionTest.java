@@ -20,8 +20,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.panda_lang.utilities.commons.ReflectionUtils;
 import org.panda_lang.utilities.inject.DependencyInjection;
+import org.panda_lang.utilities.inject.GeneratedMethodInjector;
 import org.panda_lang.utilities.inject.Injector;
-import org.panda_lang.utilities.inject.annotations.Inject;
 import org.panda_lang.utilities.inject.annotations.Injectable;
 
 import java.lang.annotation.Retention;
@@ -76,32 +76,31 @@ final class DependencyInjectionTest {
 
             Method testForkedInjector = ReflectionUtils.getMethod(TestClass.class, "testForkedInjector", String.class, int.class).get();
             Assertions.assertEquals(DYNAMIC, (Integer) injector.fork(resources -> resources.on(int.class).assignInstance(DYNAMIC)).invokeMethod(testForkedInjector, instance));
+
+            GeneratedMethodInjector generatedMethodInjector = injector.fork(resources -> resources.on(int.class).assignInstance(DYNAMIC)).forGeneratedMethod(testForkedInjector);
+            Assertions.assertEquals(DYNAMIC, (Integer) generatedMethodInjector.invoke(instance));
         });
 
         Assertions.assertTrue(limiterCalled.get());
     }
 
-    private static final class TestClass {
+    public static final class TestClass {
 
-        @Inject
         TestClass(String value) {
             Assertions.assertEquals(HELLO, value);
         }
 
-        @Inject
         public String testTypeInvoke(String value) {
             Assertions.assertEquals(HELLO, value);
             return value;
         }
 
-        @Inject
         private String testAnnotationInvoke(@CustomAnnotation("hello-autowired") String value) {
             Assertions.assertEquals(HELLO_AUTOWIRED, value);
             return value;
         }
 
-        @Inject
-        int testForkedInjector(String value, int injectedOnInvoke) {
+        public int testForkedInjector(String value, int injectedOnInvoke) {
             Assertions.assertEquals(DYNAMIC, injectedOnInvoke);
             return injectedOnInvoke;
         }
