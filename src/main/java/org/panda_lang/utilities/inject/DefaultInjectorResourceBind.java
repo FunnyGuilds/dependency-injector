@@ -46,11 +46,6 @@ class DefaultInjectorResourceBind<A extends Annotation> implements InjectorResou
     }
 
     @Override
-    public void assign(Class<?> type) {
-        with(new TypeInjectorResourceBindValue<>(type));
-    }
-
-    @Override
     public void assignInstance(Object value) {
         with(new StaticInjectorResourceBindValue<>(value));
     }

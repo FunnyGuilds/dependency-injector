@@ -36,7 +36,7 @@ public final class DependencyInjection {
      * @return injector instance
      */
     public static Injector createInjector() {
-        return INJECTOR_FACTORY.createInjector(new DefaultInjectorController());
+        return INJECTOR_FACTORY.createInjector(resources -> {});
     }
 
 }

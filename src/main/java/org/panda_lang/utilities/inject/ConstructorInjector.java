@@ -32,11 +32,6 @@ public final class ConstructorInjector<T> {
     }
 
     @SuppressWarnings("unchecked")
-    ConstructorInjector(InjectorProcessor processor, Class<T> type) {
-        this(processor, (Constructor<T>) type.getDeclaredConstructors()[0]);
-    }
-
-    @SuppressWarnings("unchecked")
     public T newInstance(Object... injectorArgs) throws Throwable {
         return (T) constructor.newInstance(processor.fetchValues(cache, injectorArgs));
     }

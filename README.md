@@ -6,7 +6,7 @@ Blazingly fast and lightweight dependency injection framework for Java. Supporte
 * Reflection based field injection during instance creation _(fields)_
 
 ### Install
-Library is available in `panda-repository` Maven repository:
+Library is available in `panda-repository`:
 
 ```xml
 <repository>

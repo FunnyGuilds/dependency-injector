@@ -19,6 +19,7 @@ package org.panda_lang.utilities.inject;
 import org.jetbrains.annotations.Nullable;
 import org.panda_lang.utilities.commons.ObjectUtils;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.security.InvalidParameterException;
@@ -34,12 +35,22 @@ final class DefaultInjector implements Injector {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T> ConstructorInjector<T> forConstructor(Class<T> type) {
         if (type.getDeclaredConstructors().length != 1) {
             throw new InvalidParameterException("Class has to contain one and only constructor");
         }
 
-        return new ConstructorInjector<T>(processor, type);
+        return new ConstructorInjector<T>(processor, (Constructor<T>) type.getDeclaredConstructors()[0]);
+    }
+
+    @Override
+    public <T> ConstructorInjector<T> forConstructor(Constructor<T> constructor) {
+        if (!constructor.isAccessible()) {
+            constructor.setAccessible(true);
+        }
+
+        return new ConstructorInjector<>(processor, constructor);
     }
 
     @Override
