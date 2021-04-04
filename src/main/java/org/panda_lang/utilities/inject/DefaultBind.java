@@ -22,17 +22,17 @@ import org.panda_lang.utilities.commons.function.TriFunction;
 import java.lang.annotation.Annotation;
 import java.util.function.Supplier;
 
-class DefaultInjectorResourceBind<A extends Annotation> implements InjectorResourceBind<A> {
+class DefaultBind<A extends Annotation> implements Bind<A> {
 
     private final Class<?> associatedType;
     private final Class<?> dataType;
-    private InjectorResourceBindValue<A> value;
+    private BindValue<A> value;
 
-    DefaultInjectorResourceBind(Class<?> associatedType) {
+    DefaultBind(Class<?> associatedType) {
         this(associatedType, associatedType);
     }
 
-    DefaultInjectorResourceBind(Class<?> associatedType, Class<?> dataType) {
+    DefaultBind(Class<?> associatedType, Class<?> dataType) {
         if (ObjectUtils.areNull(associatedType, dataType)) {
             throw new IllegalArgumentException("Associated type cannot be null at the same time");
         }
@@ -41,27 +41,27 @@ class DefaultInjectorResourceBind<A extends Annotation> implements InjectorResou
         this.dataType = dataType;
     }
 
-    private void with(InjectorResourceBindValue<A> value) {
+    private void with(BindValue<A> value) {
         this.value = value;
     }
 
     @Override
     public void assignInstance(Object value) {
-        with(new StaticInjectorResourceBindValue<>(value));
+        with(new StaticBindValue<>(value));
     }
 
     @Override
     public void assignInstance(Supplier<?> valueSupplier) {
-        with(new StaticInjectorResourceBindValue<>(valueSupplier));
+        with(new StaticBindValue<>(valueSupplier));
     }
 
     @Override
-    public void assignHandler(TriFunction<InjectorProperty, A, Object[], ?> handler) {
-        with(new HandledInjectorResourceBindValue<>(handler));
+    public void assignHandler(TriFunction<Property, A, Object[], ?> handler) {
+        with(new HandledBindValue<>(handler));
     }
 
     @Override
-    public Object getValue(InjectorProperty required, A annotation, Object... injectedArgs) throws Exception {
+    public Object getValue(Property required, A annotation, Object... injectedArgs) throws Exception {
         return value.getValue(required, annotation, injectedArgs);
     }
 

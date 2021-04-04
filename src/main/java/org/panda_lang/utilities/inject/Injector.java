@@ -130,6 +130,6 @@ public interface Injector {
      *
      * @return the resources
      */
-    InjectorResources getResources();
+    Resources getResources();
 
 }

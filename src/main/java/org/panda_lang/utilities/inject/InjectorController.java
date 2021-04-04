@@ -24,6 +24,6 @@ public interface InjectorController {
      *
      * @param resources the resources to initialize
      */
-    void initialize(InjectorResources resources);
+    void initialize(Resources resources);
 
 }

@@ -29,14 +29,14 @@ import java.lang.reflect.Modifier;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-final class FunctionalInterfaceImplementationGenerator {
+final class FunctionGenerator {
 
     private final String name;
     private final Class<?> anInterface;
     private final LinkedHashMap<String, CtClass> parameters;
     private final String body;
 
-    public FunctionalInterfaceImplementationGenerator(String name, Class<?> anInterface, LinkedHashMap<String, CtClass> parameters, String body) {
+    public FunctionGenerator(String name, Class<?> anInterface, LinkedHashMap<String, CtClass> parameters, String body) {
         this.name = name;
         this.anInterface = anInterface;
         this.parameters = parameters;
@@ -44,7 +44,7 @@ final class FunctionalInterfaceImplementationGenerator {
     }
 
     public Class<?> generate() throws NotFoundException, CannotCompileException {
-        return generate(FunctionalInterfaceImplementationGenerator.class);
+        return generate(FunctionGenerator.class);
     }
 
     public Class<?> generate(Class<?> domainClass) throws NotFoundException, CannotCompileException {

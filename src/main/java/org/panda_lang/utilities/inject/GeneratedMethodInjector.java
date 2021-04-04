@@ -118,7 +118,7 @@ public final class GeneratedMethodInjector {
         body.append(";");
 
         String name = Injector.class.getPackage().getName() + ".PandaDI" + ID.incrementAndGet() + method.getDeclaringClass().getSimpleName() + method.getName();
-        Class<?> type = new FunctionalInterfaceImplementationGenerator(name, BiFunction.class, new LinkedHashMap<>(), body.toString()).generate(Injector.class);
+        Class<?> type = new FunctionGenerator(name, BiFunction.class, new LinkedHashMap<>(), body.toString()).generate(Injector.class);
 
         return ObjectUtils.cast(type.newInstance());
     }

@@ -16,13 +16,14 @@
 
 package org.panda_lang.utilities.inject;
 
-import org.jetbrains.annotations.Nullable;
+import org.panda_lang.utilities.commons.function.Option;
 
 import java.lang.annotation.Annotation;
 
-@FunctionalInterface
-interface InjectorResourceBindValue<A extends Annotation> {
+interface BindHandler<A extends Annotation, V, R> {
 
-    Object getValue(InjectorProperty required, @Nullable A annotation, Object... injectedArgs) throws Exception;
+    R process(Property required, A annotation, V value, Object... injectorArgs) throws Exception;
+
+    Option<Class<A>> getAnnotation();
 
 }

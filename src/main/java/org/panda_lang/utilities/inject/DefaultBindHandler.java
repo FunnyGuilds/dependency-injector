@@ -23,23 +23,23 @@ import org.panda_lang.utilities.commons.function.ThrowingTriFunction;
 
 import java.lang.annotation.Annotation;
 
-final class DefaultInjectorResourceHandler<A extends Annotation, V, R, E extends Exception> implements InjectorResourceHandler<A, V, R> {
+final class DefaultBindHandler<A extends Annotation, V, R, E extends Exception> implements BindHandler<A, V, R> {
 
-    private final ThrowingQuadFunction<A, InjectorProperty, V, Object[], R, E> processor;
+    private final ThrowingQuadFunction<A, Property, V, Object[], R, E> processor;
     @SuppressWarnings("OptionUsedAsFieldOrParameterType")
     private final Option<Class<A>> annotationType;
 
-    public DefaultInjectorResourceHandler(@Nullable Class<A> annotation, ThrowingQuadFunction<A, InjectorProperty, V, Object[], R, E> processor) {
+    DefaultBindHandler(@Nullable Class<A> annotation, ThrowingQuadFunction<A, Property, V, Object[], R, E> processor) {
         this.processor = processor;
         this.annotationType = Option.of(annotation);
     }
 
-    public DefaultInjectorResourceHandler(@Nullable Class<A> annotation, ThrowingTriFunction<InjectorProperty, V, Object[], R, E> processor) {
+    DefaultBindHandler(@Nullable Class<A> annotation, ThrowingTriFunction<Property, V, Object[], R, E> processor) {
         this(annotation, (_annotation, parameter, value, injectorArgs) -> processor.apply(parameter, value, injectorArgs));
     }
 
     @Override
-    public R process(InjectorProperty required, A annotation, V value, Object... injectorArgs) throws Exception {
+    public R process(Property required, A annotation, V value, Object... injectorArgs) throws Exception {
         return processor.apply(annotation, required, value, injectorArgs);
     }
 

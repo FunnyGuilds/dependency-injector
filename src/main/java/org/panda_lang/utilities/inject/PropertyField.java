@@ -4,12 +4,13 @@ import org.panda_lang.utilities.commons.function.Option;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 
-final class InjectorPropertyField implements InjectorProperty {
+final class PropertyField implements Property {
 
     private final Field field;
 
-    InjectorPropertyField(Field field) {
+    PropertyField(Field field) {
         this.field = field;
     }
 
@@ -26,6 +27,11 @@ final class InjectorPropertyField implements InjectorProperty {
     @Override
     public Annotation[] getAnnotations() {
         return field.getAnnotations();
+    }
+
+    @Override
+    public Type getParametrizedType() {
+        return field.getGenericType();
     }
 
     @Override

@@ -43,7 +43,7 @@ final class InjectorProcessor {
     }
 
     protected Object[] fetchValues(InjectorCache cache, Object... injectorArgs) throws Exception {
-        InjectorProperty[] properties = cache.getProperties();
+        Property[] properties = cache.getProperties();
         Object[] values = new Object[cache.getInjectable().length];
 
         for (int index = 0; index < values.length; index++) {
@@ -53,15 +53,15 @@ final class InjectorProcessor {
         return values;
     }
 
-    protected Object tryFetchValue(InjectorProcessor processor, InjectorProperty property, Object... injectorArgs) throws Exception {
+    protected Object tryFetchValue(InjectorProcessor processor, Property property, Object... injectorArgs) throws Exception {
         InjectorCache cache = InjectorCache.of(processor, property);
         return fetchValue(cache, property, 0, injectorArgs);
     }
 
-    private @Nullable Object fetchValue(InjectorCache cache, InjectorProperty property, int index, Object... injectorArgs) throws Exception {
+    private @Nullable Object fetchValue(InjectorCache cache, Property property, int index, Object... injectorArgs) throws Exception {
         Object value = cache.getBinds()[index].getValue(property, cache.getInjectable()[index], injectorArgs);
 
-        for (InjectorResourceHandler<Annotation, Object, ?> handler : cache.getHandlers()[index]) {
+        for (BindHandler<Annotation, Object, ?> handler : cache.getHandlers()[index]) {
             Annotation annotation = null;
 
             if (handler.getAnnotation().isPresent()) {
@@ -74,11 +74,11 @@ final class InjectorProcessor {
         return value;
     }
 
-    protected InjectorProperty[] fetchInjectorProperties(Parameter[] parameters) {
-        InjectorProperty[] properties = new InjectorProperty[parameters.length];
+    protected Property[] fetchInjectorProperties(Parameter[] parameters) {
+        Property[] properties = new Property[parameters.length];
 
         for (int index = 0; index < parameters.length; index++) {
-            properties[index] = new InjectorPropertyParameter(parameters[index]);
+            properties[index] = new PropertyParameter(parameters[index]);
         }
 
         return properties;
@@ -123,17 +123,17 @@ final class InjectorProcessor {
         return mappedAnnotations;
     }
 
-    protected InjectorResourceBind<Annotation>[] fetchBinds(Annotation[] annotations, Executable executable) {
-        InjectorResources resources = injector.getResources();
+    protected Bind<Annotation>[] fetchBinds(Annotation[] annotations, Executable executable) {
+        Resources resources = injector.getResources();
         Parameter[] parameters = executable.getParameters();
-        InjectorResourceBind<Annotation>[] binds = ObjectUtils.cast(new InjectorResourceBind[parameters.length]);
+        Bind<Annotation>[] binds = ObjectUtils.cast(new Bind[parameters.length]);
 
         for (int index = 0; index < annotations.length; index++) {
             Annotation annotation = annotations[index];
             Parameter parameter = parameters[index];
 
             Class<?> requiredType = annotation != null ? annotation.annotationType() : parameter.getType();
-            Option<InjectorResourceBind<Annotation>> bindValue = resources.getBind(requiredType);
+            Option<Bind<Annotation>> bindValue = resources.getBind(requiredType);
 
             binds[index] = bindValue.orThrow(() -> {
                 String simplifiedParameters = Joiner.on(", ").join(Arrays.stream(executable.getParameters())
@@ -155,15 +155,15 @@ final class InjectorProcessor {
         return binds;
     }
 
-    protected InjectorResourceBind<Annotation> fetchBind(@Nullable Annotation annotation, InjectorProperty property) {
+    protected Bind<Annotation> fetchBind(@Nullable Annotation annotation, Property property) {
         Class<?> requiredType = annotation != null ? annotation.annotationType() : property.getType();
         return injector.getResources().getBind(requiredType).orThrow(() -> {
             throw new DependencyInjectionException("Cannot find proper bind for " + property + " property");
         });
     }
 
-    protected Collection<InjectorResourceHandler<Annotation, Object, ?>>[] fetchHandlers(Executable executable) {
-        Collection<InjectorResourceHandler<Annotation, Object, ?>>[] handlers = ObjectUtils.cast(new Collection[executable.getParameterCount()]);
+    protected Collection<BindHandler<Annotation, Object, ?>>[] fetchHandlers(Executable executable) {
+        Collection<BindHandler<Annotation, Object, ?>>[] handlers = ObjectUtils.cast(new Collection[executable.getParameterCount()]);
         Parameter[] parameters = executable.getParameters();
 
         for (int index = 0; index < parameters.length; index++) {

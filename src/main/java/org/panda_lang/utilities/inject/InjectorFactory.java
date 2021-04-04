@@ -19,10 +19,10 @@ package org.panda_lang.utilities.inject;
 final class InjectorFactory {
 
     protected Injector createInjector(InjectorController controller) {
-        return createInjector(controller, new DefaultInjectorResources());
+        return createInjector(controller, new DefaultResources());
     }
 
-    protected Injector createInjector(InjectorController controller, InjectorResources resources) {
+    protected Injector createInjector(InjectorController controller, Resources resources) {
         controller.initialize(resources);
         return new DefaultInjector(resources);
     }

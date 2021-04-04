@@ -16,14 +16,21 @@
 
 package org.panda_lang.utilities.inject;
 
+import org.panda_lang.utilities.commons.function.TriFunction;
+
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Parameter;
-import org.panda_lang.utilities.commons.function.Option;
 
-interface InjectorResourceHandler<A extends Annotation, V, R> {
+final class HandledBindValue<A extends Annotation> implements BindValue<A> {
 
-    R process(InjectorProperty required, A annotation, V value, Object... injectorArgs) throws Exception;
+    private final TriFunction<Property, A, Object[], ?> handler;
 
-    Option<Class<A>> getAnnotation();
+    HandledBindValue(TriFunction<Property, A, Object[], ?> handler) {
+        this.handler = handler;
+    }
+
+    @Override
+    public Object getValue(Property required, A annotation, Object... injectorArgs) {
+        return handler.apply(required, annotation, injectorArgs);
+    }
 
 }

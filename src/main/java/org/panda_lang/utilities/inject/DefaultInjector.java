@@ -26,10 +26,10 @@ import java.security.InvalidParameterException;
 
 final class DefaultInjector implements Injector {
 
-    private final InjectorResources resources;
+    private final Resources resources;
     private final InjectorProcessor processor;
 
-    public DefaultInjector(InjectorResources resources) {
+    public DefaultInjector(Resources resources) {
         this.resources = resources;
         this.processor = new InjectorProcessor(this);
     }
@@ -64,7 +64,7 @@ final class DefaultInjector implements Injector {
             throw new InvalidParameterException("Class has to contain one and only constructor");
         }
 
-        return new FieldsInjector<T>(processor, ObjectUtils.cast(type.getDeclaredConstructors()[0]));
+        return new FieldsInjector<T>(processor, forConstructor(type));
     }
 
     @Override
@@ -89,7 +89,7 @@ final class DefaultInjector implements Injector {
 
     @Override
     public <T> @Nullable T invokeParameter(Parameter parameter, Object... injectorArgs) throws Exception {
-        return ObjectUtils.cast(processor.tryFetchValue(processor, new InjectorPropertyParameter(parameter), injectorArgs));
+        return ObjectUtils.cast(processor.tryFetchValue(processor, new PropertyParameter(parameter), injectorArgs));
     }
 
     @Override
@@ -102,7 +102,7 @@ final class DefaultInjector implements Injector {
         return DependencyInjection.INJECTOR_FACTORY.createInjector(controller, resources.duplicate());
     }
 
-    public InjectorResources getResources() {
+    public Resources getResources() {
         return resources;
     }
 

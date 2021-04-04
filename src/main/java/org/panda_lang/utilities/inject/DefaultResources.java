@@ -35,18 +35,18 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-final class DefaultInjectorResources implements InjectorResources {
+final class DefaultResources implements Resources {
 
     @SuppressWarnings("OptionUsedAsFieldOrParameterType")
-    private final Option<InjectorResources> parent;
-    private final Map<Class<?>, InjectorResourceBind<Annotation>> binds;
-    private final Map<HandlerRecord, InjectorResourceHandler<Annotation, Object, ?>> handlers;
+    private final Option<Resources> parent;
+    private final Map<Class<?>, Bind<Annotation>> binds;
+    private final Map<HandlerRecord, BindHandler<Annotation, Object, ?>> handlers;
     private final Map<Executable, Annotation[][]> cachedAnnotations;
 
-    DefaultInjectorResources(
-        @Nullable InjectorResources parent,
-        Map<Class<?>, InjectorResourceBind<Annotation>> resources,
-        Map<HandlerRecord, InjectorResourceHandler<Annotation, Object, ?>> handlers,
+    DefaultResources(
+        @Nullable Resources parent,
+        Map<Class<?>, Bind<Annotation>> resources,
+        Map<HandlerRecord, BindHandler<Annotation, Object, ?>> handlers,
         Map<Executable, Annotation[][]> cachedAnnotations
     ) {
         this.parent = Option.of(parent);
@@ -55,41 +55,41 @@ final class DefaultInjectorResources implements InjectorResources {
         this.cachedAnnotations = new HashMap<>(cachedAnnotations);
     }
 
-    DefaultInjectorResources() {
+    DefaultResources() {
         this(null, new HashMap<>(), new HashMap<>(), new HashMap<>());
     }
 
-    private <A extends Annotation> InjectorResourceBind<A> with(InjectorResourceBind<A> bind) {
+    private <A extends Annotation> Bind<A> with(Bind<A> bind) {
         binds.put(bind.getAssociatedType(), ObjectUtils.cast(bind));
         return bind;
     }
 
     @Override
-    public InjectorResourceBind<Annotation> on(Class<?> type) {
-        return with(new DefaultInjectorResourceBind<>(type));
+    public Bind<Annotation> on(Class<?> type) {
+        return with(new DefaultBind<>(type));
     }
 
     @Override
-    public <A extends Annotation> InjectorResourceBind<A> annotatedWith(Class<A> annotation) {
-        return with(new DefaultInjectorResourceBind<>(annotation));
+    public <A extends Annotation> Bind<A> annotatedWith(Class<A> annotation) {
+        return with(new DefaultBind<>(annotation));
     }
 
     @Override
-    public <V, R, E extends Exception> void processType(Class<V> associatedType, ThrowingTriFunction<InjectorProperty, V, Object[], R, E> processor) {
-        with(new HandlerRecord(associatedType, null), new DefaultInjectorResourceHandler<>(null, processor));
+    public <V, R, E extends Exception> void processType(Class<V> associatedType, ThrowingTriFunction<Property, V, Object[], R, E> processor) {
+        with(new HandlerRecord(associatedType, null), new DefaultBindHandler<>(null, processor));
     }
 
     @Override
-    public <A extends Annotation, V, R, E extends Exception> void processAnnotated(Class<A> annotationType, ThrowingQuadFunction<A, InjectorProperty, V, Object[], R, E> processor) {
-        with(new HandlerRecord(null, annotationType), new DefaultInjectorResourceHandler<>(annotationType, processor));
+    public <A extends Annotation, V, R, E extends Exception> void processAnnotated(Class<A> annotationType, ThrowingQuadFunction<A, Property, V, Object[], R, E> processor) {
+        with(new HandlerRecord(null, annotationType), new DefaultBindHandler<>(annotationType, processor));
     }
 
     @Override
-    public <A extends Annotation, V, R, E extends Exception> void processAnnotatedType(Class<A> annotationType, Class<V> type, ThrowingQuadFunction<A, InjectorProperty, V, Object[], R, E> processor) {
-        with(new HandlerRecord(type, annotationType), new DefaultInjectorResourceHandler<>(annotationType, processor));
+    public <A extends Annotation, V, R, E extends Exception> void processAnnotatedType(Class<A> annotationType, Class<V> type, ThrowingQuadFunction<A, Property, V, Object[], R, E> processor) {
+        with(new HandlerRecord(type, annotationType), new DefaultBindHandler<>(annotationType, processor));
     }
 
-    private <A extends Annotation, V, R, E extends Exception> void with(HandlerRecord record, DefaultInjectorResourceHandler<A, V, R, E> handler) {
+    private <A extends Annotation, V, R, E extends Exception> void with(HandlerRecord record, DefaultBindHandler<A, V, R, E> handler) {
         handlers.put(record, ObjectUtils.cast(handler));
     }
 
@@ -113,11 +113,11 @@ final class DefaultInjectorResources implements InjectorResources {
     }
 
     @Override
-    public Collection<InjectorResourceHandler<Annotation, Object, ?>> getHandler(Parameter parameter) {
+    public Collection<BindHandler<Annotation, Object, ?>> getHandler(Parameter parameter) {
         Executable executable = parameter.getDeclaringExecutable();
         Annotation[] annotations = fetchAnnotations(parameter);
 
-        Collection<InjectorResourceHandler<Annotation, Object, ?>> matched = new ArrayList<>(executable.getParameterCount());
+        Collection<BindHandler<Annotation, Object, ?>> matched = new ArrayList<>(executable.getParameterCount());
         add(matched, new HandlerRecord(parameter.getType(), null));
 
         for (Annotation annotation : annotations) {
@@ -129,8 +129,8 @@ final class DefaultInjectorResources implements InjectorResources {
         return matched;
     }
 
-    private void add(Collection<InjectorResourceHandler<Annotation, Object, ?>> matched, HandlerRecord record) {
-        InjectorResourceHandler<Annotation, Object, ?> handler = handlers.get(record);
+    private void add(Collection<BindHandler<Annotation, Object, ?>> matched, HandlerRecord record) {
+        BindHandler<Annotation, Object, ?> handler = handlers.get(record);
 
         if (handler != null) {
             matched.add(handler);
@@ -139,14 +139,14 @@ final class DefaultInjectorResources implements InjectorResources {
 
     @Override
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    public Option<InjectorResourceBind<Annotation>> getBind(Class<?> requestedType) {
-        Option<InjectorResourceBind<Annotation>> mostRelated = ClassUtils.selectMostRelated(binds.keySet(), requestedType).map(binds::get);
+    public Option<Bind<Annotation>> getBind(Class<?> requestedType) {
+        Option<Bind<Annotation>> mostRelated = ClassUtils.selectMostRelated(binds.keySet(), requestedType).map(binds::get);
 
         if (mostRelated.isPresent()) {
             return mostRelated;
         }
 
-        List<InjectorResourceBind> associated = binds.keySet().stream()
+        List<Bind> associated = binds.keySet().stream()
                 .filter(requestedType::isAssignableFrom)
                 .map(binds::get)
                 .collect(Collectors.toList());
@@ -159,13 +159,13 @@ final class DefaultInjectorResources implements InjectorResources {
     }
 
     @Override
-    public InjectorResources fork() {
-        return new DefaultInjectorResources(this, new HashMap<>(), new HashMap<>(), new HashMap<>());
+    public Resources fork() {
+        return new DefaultResources(this, new HashMap<>(), new HashMap<>(), new HashMap<>());
     }
 
     @Override
-    public InjectorResources duplicate() {
-        return new DefaultInjectorResources(null, binds, handlers, cachedAnnotations);
+    public Resources duplicate() {
+        return new DefaultResources(null, binds, handlers, cachedAnnotations);
     }
 
     private static final class HandlerRecord {

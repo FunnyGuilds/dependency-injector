@@ -22,7 +22,7 @@ import org.panda_lang.utilities.commons.function.TriFunction;
 import java.lang.annotation.Annotation;
 import java.util.function.Supplier;
 
-public interface InjectorResourceBind<A extends Annotation> extends Comparable<InjectorResourceBind<A>> {
+public interface Bind<A extends Annotation> extends Comparable<Bind<A>> {
 
     /**
      * Assign object to the bind
@@ -43,7 +43,7 @@ public interface InjectorResourceBind<A extends Annotation> extends Comparable<I
      *
      * @param handler the handler which accepts type of parameter and bind type as arguments
      */
-    void assignHandler(TriFunction<InjectorProperty, A, Object[], ?> handler);
+    void assignHandler(TriFunction<Property, A, Object[], ?> handler);
 
     /**
      * Get value of bind for the required (parameter) type and instance of bind type
@@ -54,7 +54,7 @@ public interface InjectorResourceBind<A extends Annotation> extends Comparable<I
      * @return the result value
      * @throws Exception if anything wrong will happen, whole process should be stopped
      */
-    Object getValue(InjectorProperty required, A annotation, Object... injectorArgs) throws Exception;
+    Object getValue(Property required, A annotation, Object... injectorArgs) throws Exception;
 
     /**
      * Get associated type with the bind
@@ -71,7 +71,7 @@ public interface InjectorResourceBind<A extends Annotation> extends Comparable<I
     Class<?> getDataType();
 
     @Override
-    default int compareTo(@NotNull InjectorResourceBind bind) {
+    default int compareTo(@NotNull Bind bind) {
         return Integer.compare(InjectorResourceBindType.of(getAssociatedType()).getPriority(), InjectorResourceBindType.of(bind.getAssociatedType()).getPriority());
     }
 

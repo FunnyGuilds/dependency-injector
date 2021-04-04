@@ -19,20 +19,20 @@ package org.panda_lang.utilities.inject;
 import java.lang.annotation.Annotation;
 import java.util.function.Supplier;
 
-final class StaticInjectorResourceBindValue<A extends Annotation> implements InjectorResourceBindValue<A> {
+final class StaticBindValue<A extends Annotation> implements BindValue<A> {
 
     private final Supplier<?> valueSupplier;
 
-    StaticInjectorResourceBindValue(Object value) {
+    StaticBindValue(Object value) {
         this(() -> value);
     }
 
-    StaticInjectorResourceBindValue(Supplier<?> valueSupplier) {
+    StaticBindValue(Supplier<?> valueSupplier) {
         this.valueSupplier = valueSupplier;
     }
 
     @Override
-    public Object getValue(InjectorProperty required, A annotation, Object... injectorArgs) {
+    public Object getValue(Property required, A annotation, Object... injectorArgs) {
         return valueSupplier.get();
     }
 

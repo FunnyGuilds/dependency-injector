@@ -25,7 +25,10 @@ import java.lang.reflect.Executable;
 import java.lang.reflect.Parameter;
 import java.util.Collection;
 
-public interface InjectorResources {
+/**
+ * Represents collection of registered binds
+ */
+public interface Resources {
 
     /**
      * Create bind for the specified type
@@ -33,7 +36,7 @@ public interface InjectorResources {
      * @param associatedType type to bind
      * @return the bind based on associated type
      */
-    InjectorResourceBind<?> on(Class<?> associatedType);
+    Bind<?> on(Class<?> associatedType);
 
     /**
      * Create bind for parameters annotated with the specified annotation
@@ -42,7 +45,7 @@ public interface InjectorResources {
      * @param <A> type of annotation
      * @return the bind based on associated annotation
      */
-    <A extends Annotation> InjectorResourceBind<A> annotatedWith(Class<A> annotation);
+    <A extends Annotation> Bind<A> annotatedWith(Class<A> annotation);
 
     /**
      * Create bind for parameters annotated with the specified annotation tested by the {@link org.panda_lang.utilities.inject.DependencyInjectionUtils#testAnnotation(Class)} method
@@ -51,7 +54,7 @@ public interface InjectorResources {
      * @param <A> type of annotation
      * @return the bind based on associated annotation
      */
-    default <A extends Annotation> InjectorResourceBind<A> annotatedWithTested(Class<A> annotation) {
+    default <A extends Annotation> Bind<A> annotatedWithTested(Class<A> annotation) {
         return annotatedWith(DependencyInjectionUtils.testAnnotation(annotation));
     }
 
@@ -64,7 +67,7 @@ public interface InjectorResources {
      * @param <R> return type
      * @param <E> type of thrown exception
      */
-    <V, R, E extends Exception> void processType(Class<V> associatedType, ThrowingTriFunction<InjectorProperty, V, Object[], R, E> processor);
+    <V, R, E extends Exception> void processType(Class<V> associatedType, ThrowingTriFunction<Property, V, Object[], R, E> processor);
 
     /**
      * Process injected object annotated with the given annotation
@@ -76,7 +79,7 @@ public interface InjectorResources {
      * @param <R> return type
      * @param <E> type of thrown exception
      */
-    <A extends Annotation, V, R, E extends Exception> void processAnnotated(Class<A> annotationType, ThrowingQuadFunction<A, InjectorProperty, V, Object[], R, E> processor);
+    <A extends Annotation, V, R, E extends Exception> void processAnnotated(Class<A> annotationType, ThrowingQuadFunction<A, Property, V, Object[], R, E> processor);
 
     /**
      * Process injected of the given type and annotated with the given annotation
@@ -89,7 +92,7 @@ public interface InjectorResources {
      * @param <R> return type
      * @param <E> type of thrown exception
      */
-    <A extends Annotation, V, R, E extends Exception> void processAnnotatedType(Class<A> annotationType, Class<V> type, ThrowingQuadFunction<A, InjectorProperty, V, Object[], R, E> processor);
+    <A extends Annotation, V, R, E extends Exception> void processAnnotatedType(Class<A> annotationType, Class<V> type, ThrowingQuadFunction<A, Property, V, Object[], R, E> processor);
 
     /**
      * Fetch annotations assigned to the given parameter
@@ -113,7 +116,7 @@ public interface InjectorResources {
      * @param parameter the parameter to get bind for
      * @return the associated bind
      */
-    Collection<InjectorResourceHandler<Annotation, Object, ?>> getHandler(Parameter parameter);
+    Collection<BindHandler<Annotation, Object, ?>> getHandler(Parameter parameter);
 
     /**
      * Get bind for the specified type or annotation
@@ -121,20 +124,20 @@ public interface InjectorResources {
      * @param requestedType the associated class with bind to search for
      * @return the wrapped bind
      */
-    Option<InjectorResourceBind<Annotation>> getBind(Class<?> requestedType);
+    Option<Bind<Annotation>> getBind(Class<?> requestedType);
 
     /**
      * Create a fork of resources. The current resources will be used as a parent of a new instance.
      *
      * @return a forked instance of resources
      */
-    InjectorResources fork();
+    Resources fork();
 
     /**
      * Duplicate (clone) resources
      *
      * @return a duplicated instance of resources
      */
-    InjectorResources duplicate();
+    Resources duplicate();
 
 }

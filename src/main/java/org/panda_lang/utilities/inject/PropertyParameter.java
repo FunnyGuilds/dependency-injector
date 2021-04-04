@@ -4,12 +4,13 @@ import org.panda_lang.utilities.commons.function.Option;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.Type;
 
-final class InjectorPropertyParameter implements InjectorProperty {
+final class PropertyParameter implements Property {
 
     private final Parameter parameter;
 
-    InjectorPropertyParameter(Parameter parameter) {
+    PropertyParameter(Parameter parameter) {
         this.parameter = parameter;
     }
 
@@ -26,6 +27,11 @@ final class InjectorPropertyParameter implements InjectorProperty {
     @Override
     public Annotation[] getAnnotations() {
         return parameter.getAnnotations();
+    }
+
+    @Override
+    public Type getParametrizedType() {
+        return parameter.getParameterizedType();
     }
 
     @Override

@@ -27,18 +27,18 @@ import java.util.Map;
 
 final class InjectorCache {
 
-    private final InjectorProperty[] properties;
+    private final Property[] properties;
     private final Annotation[] injectable;
     private final Map<Class<? extends Annotation>, Annotation>[] annotations;
-    private final InjectorResourceBind<Annotation>[] binds;
-    private final Collection<InjectorResourceHandler<Annotation, Object, ?>>[] handlers;
+    private final Bind<Annotation>[] binds;
+    private final Collection<BindHandler<Annotation, Object, ?>>[] handlers;
 
     private InjectorCache(
-        InjectorProperty[] properties,
+        Property[] properties,
         Annotation[] injectable,
         Map<Class<? extends Annotation>, Annotation>[] annotations,
-        InjectorResourceBind<Annotation>[] binds,
-        Collection<InjectorResourceHandler<Annotation, Object, ?>>[] handlers
+        Bind<Annotation>[] binds,
+        Collection<BindHandler<Annotation, Object, ?>>[] handlers
     ) {
         this.properties = properties;
         this.injectable = injectable;
@@ -55,15 +55,15 @@ final class InjectorCache {
         return annotations;
     }
 
-    InjectorResourceBind<Annotation>[] getBinds() {
+    Bind<Annotation>[] getBinds() {
         return binds;
     }
 
-    Collection<InjectorResourceHandler<Annotation, Object, ?>>[] getHandlers() {
+    Collection<BindHandler<Annotation, Object, ?>>[] getHandlers() {
         return handlers;
     }
 
-    InjectorProperty[] getProperties() {
+    Property[] getProperties() {
         return properties;
     }
 
@@ -79,7 +79,7 @@ final class InjectorCache {
         );
     }
 
-    public static InjectorCache of(InjectorProcessor processor, InjectorProperty property) {
+    public static InjectorCache of(InjectorProcessor processor, Property property) {
         Annotation annotation = ArrayUtils.findIn(property.getAnnotations(), a -> a.annotationType().isAnnotationPresent(Injectable.class)).getOrNull();
 
         return new InjectorCache(
