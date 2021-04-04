@@ -1,4 +1,4 @@
-# Dependency Injection [![Build Status](https://travis-ci.com/dzikoysk/dependency-injector.svg?branch=master)](https://travis-ci.com/dzikoysk/dependency-injector) [![codecov](https://codecov.io/gh/dzikoysk/dependency-injector/branch/master/graph/badge.svg)](https://codecov.io/gh/dzikoysk/dependency-injector)
+# Dependency Injection [![CI](https://github.com/dzikoysk/dependency-injector/actions/workflows/maven.yml/badge.svg)](https://github.com/dzikoysk/dependency-injector/actions/workflows/maven.yml) [![Build Status](https://travis-ci.com/dzikoysk/dependency-injector.svg?branch=master)](https://travis-ci.com/dzikoysk/dependency-injector) [![codecov](https://codecov.io/gh/dzikoysk/dependency-injector/branch/master/graph/badge.svg)](https://codecov.io/gh/dzikoysk/dependency-injector)
 
 Blazingly fast and lightweight dependency injection framework for Java. Supported operations:
 * Creating a new instance of the specified type using Injector _(constructors)_
