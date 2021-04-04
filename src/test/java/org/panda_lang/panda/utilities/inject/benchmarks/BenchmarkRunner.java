@@ -14,21 +14,22 @@
  * limitations under the License.
  */
 
-package org.panda_lang.utilities.inject;
+package org.panda_lang.panda.utilities.inject.benchmarks;
 
-import java.lang.annotation.Annotation;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-final class TypeInjectorResourceBindValue<A extends Annotation> implements InjectorResourceBindValue<A> {
+public final class BenchmarkRunner {
 
-    private final Class<?> type;
+    public static void run(Class<?> clazz) throws RunnerException {
+        Options options = new OptionsBuilder()
+                .include(clazz.getName())
+                .build();
 
-    TypeInjectorResourceBindValue(Class<?> type) {
-        this.type = type;
-    }
-
-    @Override
-    public Object getValue(InjectorProperty required, A annotation, Object... injectorArgs) throws Exception {
-        return type.newInstance();
+        Runner runner = new Runner(options);
+        runner.run();
     }
 
 }

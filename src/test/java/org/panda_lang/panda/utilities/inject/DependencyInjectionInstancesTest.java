@@ -14,8 +14,8 @@ final class DependencyInjectionInstancesTest {
 
         // some logic, a few hours later...
 
-        injector.getResources().on(Bean.class).assign(Bean.class);
-        injector.getResources().on(Custom.class).assignInstance(new CustomImpl());
+        injector.getResources().on(Custom.class).assignInstance(new CustomImpl()); // singleton
+        injector.getResources().on(Bean.class).assignInstance(Bean::new); // new instance per call
 
         Service service = injector.forConstructor(Service.class).newInstance();
         assertNotNull(service);

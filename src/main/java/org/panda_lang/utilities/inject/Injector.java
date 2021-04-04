@@ -18,6 +18,7 @@ package org.panda_lang.utilities.inject;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 
@@ -41,6 +42,15 @@ public interface Injector {
      * @return constructor injector
      */
     <T> ConstructorInjector<T> forConstructor(Class<T> type);
+
+    /**
+     * Create injector for the given constructor
+     *
+     * @param constructor the constructor to process
+     * @param <T> type of class
+     * @return constructor injector
+     */
+    <T> ConstructorInjector<T> forConstructor(Constructor<T> constructor);
 
     /**
      * Create a new instance of the specified type using Injector with support for field injection

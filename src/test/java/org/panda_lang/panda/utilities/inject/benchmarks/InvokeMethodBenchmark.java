@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.panda_lang.panda.utilities.inject;
+package org.panda_lang.panda.utilities.inject.benchmarks;
 
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Fork;
@@ -35,16 +35,16 @@ import java.util.concurrent.TimeUnit;
 
 /* JDK14
     Benchmark                                        Mode  Cnt      Score      Error   Units
-    DependencyInjectionBenchmark.direct             thrpt   10  65887,724 ± 7180,279  ops/ms
-    DependencyInjectionBenchmark.generatedInjected  thrpt   10  63508,263 ± 6460,304  ops/ms
-    DependencyInjectionBenchmark.injected           thrpt   10  30296,259 ± 2018,541  ops/ms
-    DependencyInjectionBenchmark.reflection         thrpt   10  45549,553 ± 1892,456  ops/ms
+    InvokeMethodBenchmark.direct             thrpt   10  65887,724 ± 7180,279  ops/ms
+    InvokeMethodBenchmark.generatedInjected  thrpt   10  63508,263 ± 6460,304  ops/ms
+    InvokeMethodBenchmark.injected           thrpt   10  30296,259 ± 2018,541  ops/ms
+    InvokeMethodBenchmark.reflection         thrpt   10  45549,553 ± 1892,456  ops/ms
  */
 @Fork(value = 1)
 @Warmup(iterations = 10, time = 2)
 @Measurement(iterations = 10, time = 2)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-public class DependencyInjectionBenchmark {
+public class InvokeMethodBenchmark {
 
     public static class Entity {
         private int points;
@@ -90,7 +90,7 @@ public class DependencyInjectionBenchmark {
     }
 
     public static void main(String[] args) throws Exception {
-        BenchmarkRunner.run(DependencyInjectionBenchmark.class);
+        BenchmarkRunner.run(InvokeMethodBenchmark.class);
     }
 
 }

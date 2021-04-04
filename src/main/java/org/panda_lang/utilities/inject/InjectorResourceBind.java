@@ -25,13 +25,6 @@ import java.util.function.Supplier;
 public interface InjectorResourceBind<A extends Annotation> extends Comparable<InjectorResourceBind<A>> {
 
     /**
-     * Assign class to the bind (a new instance will be created each time)
-     *
-     * @param type the type of value to assign
-     */
-    void assign(Class<?> type);
-
-    /**
      * Assign object to the bind
      *
      * @param value the instance to assign
