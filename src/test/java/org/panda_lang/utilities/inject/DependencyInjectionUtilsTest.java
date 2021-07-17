@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-package org.panda_lang.panda.utilities.inject;
+package org.panda_lang.utilities.inject;
 
 import org.junit.jupiter.api.Test;
-import org.panda_lang.utilities.inject.DependencyInjectionException;
-import org.panda_lang.utilities.inject.DependencyInjectionUtils;
 import org.panda_lang.utilities.inject.annotations.Injectable;
 
 import java.lang.annotation.Retention;
