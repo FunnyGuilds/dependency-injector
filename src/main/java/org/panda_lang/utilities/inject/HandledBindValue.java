@@ -16,8 +16,7 @@
 
 package org.panda_lang.utilities.inject;
 
-import org.panda_lang.utilities.commons.function.TriFunction;
-
+import panda.std.function.TriFunction;
 import java.lang.annotation.Annotation;
 
 final class HandledBindValue<A extends Annotation> implements BindValue<A> {

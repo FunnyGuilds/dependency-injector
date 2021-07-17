@@ -17,10 +17,9 @@
 package org.panda_lang.utilities.inject;
 
 import org.jetbrains.annotations.Nullable;
-import org.panda_lang.utilities.commons.function.Option;
-import org.panda_lang.utilities.commons.function.ThrowingQuadFunction;
-import org.panda_lang.utilities.commons.function.ThrowingTriFunction;
-
+import panda.std.Option;
+import panda.std.function.ThrowingQuadFunction;
+import panda.std.function.ThrowingTriFunction;
 import java.lang.annotation.Annotation;
 
 final class DefaultBindHandler<A extends Annotation, V, R, E extends Exception> implements BindHandler<A, V, R> {

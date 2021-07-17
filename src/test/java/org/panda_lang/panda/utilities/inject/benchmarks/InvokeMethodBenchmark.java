@@ -25,11 +25,10 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
-import org.panda_lang.utilities.commons.ReflectionUtils;
 import org.panda_lang.utilities.inject.DependencyInjection;
 import org.panda_lang.utilities.inject.GeneratedMethodInjector;
 import org.panda_lang.utilities.inject.MethodInjector;
-
+import panda.utilities.ReflectionUtils;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 

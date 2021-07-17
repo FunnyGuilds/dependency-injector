@@ -16,10 +16,9 @@
 
 package org.panda_lang.utilities.inject;
 
-import org.panda_lang.utilities.commons.function.Option;
-import org.panda_lang.utilities.commons.function.ThrowingQuadFunction;
-import org.panda_lang.utilities.commons.function.ThrowingTriFunction;
-
+import panda.std.Option;
+import panda.std.function.ThrowingQuadFunction;
+import panda.std.function.ThrowingTriFunction;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Parameter;

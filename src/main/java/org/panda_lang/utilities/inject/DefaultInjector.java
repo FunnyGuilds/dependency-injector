@@ -17,8 +17,7 @@
 package org.panda_lang.utilities.inject;
 
 import org.jetbrains.annotations.Nullable;
-import org.panda_lang.utilities.commons.ObjectUtils;
-
+import panda.utilities.ObjectUtils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;

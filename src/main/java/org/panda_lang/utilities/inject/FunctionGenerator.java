@@ -22,8 +22,7 @@ import javassist.CtConstructor;
 import javassist.CtField;
 import javassist.CtMethod;
 import javassist.NotFoundException;
-import org.panda_lang.utilities.commons.javassist.ClassPoolUtils;
-
+import panda.utilities.javassist.ClassPoolUtils;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.LinkedHashMap;

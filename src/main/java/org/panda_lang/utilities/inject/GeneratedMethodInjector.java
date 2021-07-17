@@ -16,13 +16,12 @@
 
 package org.panda_lang.utilities.inject;
 
-import org.panda_lang.utilities.commons.ArrayUtils;
-import org.panda_lang.utilities.commons.ClassUtils;
-import org.panda_lang.utilities.commons.ObjectUtils;
-import org.panda_lang.utilities.commons.StringUtils;
-import org.panda_lang.utilities.commons.collection.Pair;
-import org.panda_lang.utilities.commons.text.Joiner;
-
+import panda.std.Pair;
+import panda.utilities.ArrayUtils;
+import panda.utilities.ClassUtils;
+import panda.utilities.ObjectUtils;
+import panda.utilities.StringUtils;
+import panda.utilities.text.Joiner;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.LinkedHashMap;
@@ -77,7 +76,7 @@ public final class GeneratedMethodInjector {
 
             if (parameterType.isArray()) {
                 Pair<Class<?>, Integer> baseClass = ArrayUtils.getBaseClassWithDimensions(parameterType);
-                type = baseClass.getKey().getName() + StringUtils.repeated(baseClass.getValue(), "[]");
+                type = baseClass.getFirst().getName() + StringUtils.repeated(baseClass.getSecond(), "[]");
             }
 
             body.append(type).append(" arg").append(index).append(" = ((");

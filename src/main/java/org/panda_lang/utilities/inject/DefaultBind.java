@@ -16,9 +16,8 @@
 
 package org.panda_lang.utilities.inject;
 
-import org.panda_lang.utilities.commons.ObjectUtils;
-import org.panda_lang.utilities.commons.function.TriFunction;
-
+import panda.std.function.TriFunction;
+import panda.utilities.ObjectUtils;
 import java.lang.annotation.Annotation;
 import java.util.function.Supplier;
 

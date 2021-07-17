@@ -17,11 +17,10 @@
 package org.panda_lang.utilities.inject;
 
 import org.jetbrains.annotations.Nullable;
-import org.panda_lang.utilities.commons.ObjectUtils;
-import org.panda_lang.utilities.commons.function.Option;
-import org.panda_lang.utilities.commons.text.Joiner;
 import org.panda_lang.utilities.inject.annotations.Injectable;
-
+import panda.std.Option;
+import panda.utilities.ObjectUtils;
+import panda.utilities.text.Joiner;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Executable;
 import java.lang.reflect.Parameter;

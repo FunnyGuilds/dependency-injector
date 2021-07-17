@@ -16,9 +16,8 @@
 
 package org.panda_lang.utilities.inject;
 
-import org.panda_lang.utilities.commons.ArrayUtils;
 import org.panda_lang.utilities.inject.annotations.Injectable;
-
+import panda.utilities.ArrayUtils;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Executable;
 import java.util.Collection;

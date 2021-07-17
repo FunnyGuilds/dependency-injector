@@ -18,12 +18,11 @@ package org.panda_lang.panda.utilities.inject;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.panda_lang.utilities.commons.ReflectionUtils;
 import org.panda_lang.utilities.inject.DependencyInjection;
 import org.panda_lang.utilities.inject.GeneratedMethodInjector;
 import org.panda_lang.utilities.inject.Injector;
 import org.panda_lang.utilities.inject.annotations.Injectable;
-
+import panda.utilities.ReflectionUtils;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.reflect.Method;

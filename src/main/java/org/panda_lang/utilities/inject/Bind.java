@@ -17,8 +17,7 @@
 package org.panda_lang.utilities.inject;
 
 import org.jetbrains.annotations.NotNull;
-import org.panda_lang.utilities.commons.function.TriFunction;
-
+import panda.std.function.TriFunction;
 import java.lang.annotation.Annotation;
 import java.util.function.Supplier;
 

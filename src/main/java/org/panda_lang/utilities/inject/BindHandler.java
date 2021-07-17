@@ -16,8 +16,7 @@
 
 package org.panda_lang.utilities.inject;
 
-import org.panda_lang.utilities.commons.function.Option;
-
+import panda.std.Option;
 import java.lang.annotation.Annotation;
 
 interface BindHandler<A extends Annotation, V, R> {
