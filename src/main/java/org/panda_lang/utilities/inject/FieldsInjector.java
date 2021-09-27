@@ -17,12 +17,11 @@ public final class FieldsInjector<T> {
     public T newInstance(Object... injectorArgs) throws Throwable {
         T instance = constructorInjector.newInstance(injectorArgs);
 
-        for (Field field : instance.getClass().getDeclaredFields()) {
+        for (Field field : instance.getClass().getFields()) {
             if (!field.isAnnotationPresent(Inject.class)) {
                 continue;
             }
 
-            field.setAccessible(true);
             field.set(instance, processor.tryFetchValue(processor, new PropertyField(field), injectorArgs));
         }
 
