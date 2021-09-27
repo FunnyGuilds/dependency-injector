@@ -17,13 +17,13 @@ final class DependencyInjectionFieldsTest {
 
     static class Service {
 
-        private final boolean throughConstructor;
-        private final String customArgument;
+        public final boolean throughConstructor;
+        public final String customArgument;
 
         @Inject
-        private String fieldOne;
+        public String fieldOne;
         @Inject
-        private Integer fieldTwo;
+        public Integer fieldTwo;
 
         Service(boolean constructor, @Custom String customArgument) {
             this.throughConstructor = constructor;
