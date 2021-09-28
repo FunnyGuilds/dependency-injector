@@ -42,7 +42,7 @@ public final class DependencyInjectionUtils {
             throw new DependencyInjectionException(annotation + " is not an annotation");
         }
 
-        @Nullable Retention retention = annotation.getAnnotation(Retention.class);
+        Retention retention = annotation.getAnnotation(Retention.class);
 
         if (retention == null) {
             throw new DependencyInjectionException(annotation + " has no specified retention policy");
