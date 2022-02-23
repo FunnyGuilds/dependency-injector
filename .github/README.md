@@ -28,7 +28,7 @@ To use `annotations`, declare the dependency in your `pom.xml`
 
 <dependency>
     <groupId>org.panda-lang.utilities</groupId>
-    <artifactId>di</artifactId>
+    <artifactId>di-codegen</artifactId>
     <version>1.5.0</version>
 </dependency>
 ```
