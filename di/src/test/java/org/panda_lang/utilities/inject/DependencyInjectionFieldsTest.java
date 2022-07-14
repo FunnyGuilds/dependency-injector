@@ -15,7 +15,7 @@ final class DependencyInjectionFieldsTest {
     @Retention(RetentionPolicy.RUNTIME)
     @interface Custom { }
 
-    static class Service {
+    static class Service extends AbstractService {
 
         public final boolean throughConstructor;
         public final String customArgument;
@@ -41,17 +41,36 @@ final class DependencyInjectionFieldsTest {
 
     }
 
+    static abstract class AbstractService {
+
+        @Inject
+        protected float abstractFieldOne;
+        @Inject
+        private long abstractFieldTwo;
+
+        public String serveAbstract() {
+            assertEquals(1.2f, abstractFieldOne);
+            assertEquals(254623242914889729L, abstractFieldTwo);
+
+            return abstractFieldOne + " " + abstractFieldTwo;
+        }
+
+    }
+
     @Test
     void shouldInjectFields() throws Throwable {
         Injector injector = DependencyInjection.createInjector(resources -> {
             resources.on(boolean.class).assignInstance(true);
             resources.on(String.class).assignInstance("Hello Field");
             resources.on(Integer.class).assignInstance(7);
+            resources.on(float.class).assignInstance(1.2f);
+            resources.on(long.class).assignInstance(254623242914889729L);
             resources.annotatedWithTested(Custom.class).assignHandler((property, custom, objects) -> objects[0].toString());
         });
 
         Service service = injector.forFields(Service.class).newInstance("custom argument");
         assertEquals("Hello Field 7", service.serve());
+        assertEquals("1.2 254623242914889729", service.serveAbstract());
     }
 
 }
