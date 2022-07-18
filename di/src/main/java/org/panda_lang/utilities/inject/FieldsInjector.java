@@ -1,11 +1,13 @@
 package org.panda_lang.utilities.inject;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.panda_lang.utilities.inject.annotations.Inject;
 
 import java.lang.reflect.Field;
+import org.panda_lang.utilities.inject.annotations.PostConstruct;
 
 public final class FieldsInjector<T> {
 
@@ -26,8 +28,16 @@ public final class FieldsInjector<T> {
             }
 
             field.setAccessible(true);
-
             field.set(instance, processor.tryFetchValue(processor, new PropertyField(field), injectorArgs));
+        }
+
+        for (Method method : getAllMethods(new ArrayList<>(), instance.getClass())) {
+            if (!method.isAnnotationPresent(PostConstruct.class)) {
+                continue;
+            }
+
+            method.setAccessible(true);
+            method.invoke(instance, processor.tryFetchValues(processor, method, injectorArgs));
         }
 
         return instance;
@@ -41,6 +51,16 @@ public final class FieldsInjector<T> {
         }
 
         return fields;
+    }
+
+    private static List<Method> getAllMethods(List<Method> methods, Class<?> type) {
+        methods.addAll(Arrays.asList(type.getDeclaredMethods()));
+
+        if (type.getSuperclass() != null) {
+            getAllMethods(methods, type.getSuperclass());
+        }
+
+        return methods;
     }
 
 }

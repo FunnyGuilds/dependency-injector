@@ -16,6 +16,7 @@
 
 package org.panda_lang.utilities.inject;
 
+import java.lang.reflect.Method;
 import org.jetbrains.annotations.Nullable;
 import org.panda_lang.utilities.inject.annotations.Injectable;
 import panda.std.Option;
@@ -50,6 +51,11 @@ final class InjectorProcessor {
         }
 
         return values;
+    }
+
+    protected Object[] tryFetchValues(InjectorProcessor processor, Method method, Object... injectorArgs) throws Exception {
+        InjectorCache cache = InjectorCache.of(processor, method);
+        return fetchValues(cache, injectorArgs);
     }
 
     protected Object tryFetchValue(InjectorProcessor processor, Property property, Object... injectorArgs) throws Exception {
