@@ -34,7 +34,7 @@ public final class FieldsInjector<T> {
     }
 
     private static List<Field> getAllFields(Class<?> type) {
-        List<Field> fields = Arrays.asList(type.getDeclaredFields());
+        List<Field> fields = new ArrayList<>(Arrays.asList(type.getDeclaredFields()));
         if (type.getSuperclass() != null) {
             fields.addAll(getAllFields(type.getSuperclass()));
         }

@@ -23,9 +23,10 @@ final class MethodsCache {
     }
 
     private static List<Method> getAllMethods(Class<?> type) {
-        List<Method> methods = Arrays.asList(type.getDeclaredMethods());
+        List<Method> methods = new ArrayList<>(Arrays.asList(type.getDeclaredMethods()));
         if (type.getSuperclass() != null) {
-            methods.addAll(getAllMethods(type));
+            methods.addAll(getAllMethods(type.getSuperclass()));
+            return methods;
         }
         return methods;
     }
