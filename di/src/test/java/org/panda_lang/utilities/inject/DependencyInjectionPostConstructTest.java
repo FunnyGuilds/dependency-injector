@@ -25,9 +25,9 @@ final class DependencyInjectionPostConstructTest {
         private float abstractValue;
 
         @PostConstruct
-        public void abstractConstruct(float methodParameter) {
+        public void abstractConstruct(int methodParameter) {
             assertEquals(1.2f, abstractValue);
-            assertEquals(1.2f, methodParameter);
+            assertEquals(2022, methodParameter);
         }
 
     }
@@ -37,6 +37,7 @@ final class DependencyInjectionPostConstructTest {
         Injector injector = DependencyInjection.createInjector(resources -> {
             resources.on(String.class).assignInstance("Hello Field");
             resources.on(float.class).assignInstance(1.2f);
+            resources.on(int.class).assignInstance(2022);
         });
 
         injector.newInstanceWithFields(Service.class);
