@@ -21,7 +21,7 @@ public final class FieldsInjector<T> {
     public T newInstance(Object... injectorArgs) throws Throwable {
         T instance = constructorInjector.newInstance(injectorArgs);
 
-        for (Field field : getAllFields(new ArrayList<>(), instance.getClass())) {
+        for (Field field : getAllFields(instance.getClass())) {
             if (!field.isAnnotationPresent(Inject.class)) {
                 continue;
             }
@@ -33,10 +33,10 @@ public final class FieldsInjector<T> {
         return instance;
     }
 
-    private static List<Field> getAllFields(List<Field> fields, Class<?> type) {
-        fields.addAll(Arrays.asList(type.getDeclaredFields()));
+    private static List<Field> getAllFields(Class<?> type) {
+        List<Field> fields = Arrays.asList(type.getDeclaredFields());
         if (type.getSuperclass() != null) {
-            getAllFields(fields, type.getSuperclass());
+            fields.addAll(getAllFields(type.getSuperclass()));
         }
         return fields;
     }

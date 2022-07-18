@@ -16,16 +16,16 @@ final class MethodsCache {
 
     public List<Method> getAnnotatedMethods(Class<?> clazz, Class<? extends Annotation> annotation) {
         return this.cachedAnnotatedMethods.computeIfAbsent(Pair.of(clazz, annotation), (key) ->
-                getAllMethods(new ArrayList<>(), clazz)
+                getAllMethods(clazz)
                         .stream()
                         .filter(method -> method.isAnnotationPresent(annotation))
                         .collect(Collectors.toList()));
     }
 
-    private static List<Method> getAllMethods(List<Method> methods, Class<?> type) {
-        methods.addAll(Arrays.asList(type.getDeclaredMethods()));
+    private static List<Method> getAllMethods(Class<?> type) {
+        List<Method> methods = Arrays.asList(type.getDeclaredMethods());
         if (type.getSuperclass() != null) {
-            getAllMethods(methods, type.getSuperclass());
+            methods.addAll(getAllMethods(type));
         }
         return methods;
     }
