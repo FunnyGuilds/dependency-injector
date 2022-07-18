@@ -38,6 +38,7 @@ final class DefaultInjector implements Injector {
 
     private final Resources resources;
     private final InjectorProcessor processor;
+    private final MethodsCache methodsCache = new MethodsCache();
 
     private final Lazy<MethodInjectorFactory> methodInjectorFactory = new Lazy<>(() ->
             StreamSupport.stream(Spliterators.spliteratorUnknownSize(ServiceLoader.load(MethodInjectorFactory.class).iterator(), ORDERED), false)
@@ -99,7 +100,7 @@ final class DefaultInjector implements Injector {
 
     @Override
     public void invokeAnnotatedMethods(Class<? extends Annotation> annotation, Object instance, Object... injectorArgs) throws Throwable {
-        for (Method method : getAllMethods(new ArrayList<>(), instance.getClass())) {
+        for (Method method : methodsCache.getAnnotatedMethods(instance.getClass(), annotation)) {
             if (!method.isAnnotationPresent(annotation)) {
                 continue;
             }
@@ -138,14 +139,6 @@ final class DefaultInjector implements Injector {
     }
 
 
-    private static List<Method> getAllMethods(List<Method> methods, Class<?> type) {
-        methods.addAll(Arrays.asList(type.getDeclaredMethods()));
 
-        if (type.getSuperclass() != null) {
-            getAllMethods(methods, type.getSuperclass());
-        }
-
-        return methods;
-    }
 
 }
