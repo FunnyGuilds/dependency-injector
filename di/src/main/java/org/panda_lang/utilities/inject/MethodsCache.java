@@ -15,15 +15,6 @@ final class MethodsCache {
     private final Map<Class<?>, List<Method>> cachedMethods = new HashMap<>();
     private final Map<Pair<Class<?>, Class<? extends Annotation>>, List<Method>> cachedAnnotatedMethods = new HashMap<>();
 
-    public List<Method> getMethods(Class<?> clazz) {
-        List<Method> methods = this.cachedMethods.get(clazz);
-        if (methods == null) {
-            methods = getAllMethods(new ArrayList<>(), clazz);
-            this.cachedMethods.put(clazz, methods);
-        }
-        return methods;
-    }
-
     public List<Method> getAnnotatedMethods(Class<?> clazz, Class<? extends Annotation> annotation) {
         List<Method> methods = this.cachedAnnotatedMethods.get(Pair.of(clazz, annotation));
         if (methods == null) {
