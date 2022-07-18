@@ -5,16 +5,19 @@ import org.panda_lang.utilities.inject.annotations.Inject;
 import org.panda_lang.utilities.inject.annotations.PostConstruct;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-final class DependencyInjectionPostConstructTest {
+final class PostConstructTest {
 
     static class Service extends AbstractService {
 
         @Inject
         public String value;
 
+        private long longValue;
+
         @PostConstruct
         private void construct() {
             assertEquals("Hello Field", value);
+            longValue = 123456789L;
         }
 
     }
@@ -24,10 +27,13 @@ final class DependencyInjectionPostConstructTest {
         @Inject
         private float abstractValue;
 
+        protected boolean abstractBoolean;
+
         @PostConstruct
         public void abstractConstruct(int methodParameter) {
             assertEquals(1.2f, abstractValue);
             assertEquals(2022, methodParameter);
+            abstractBoolean = true;
         }
 
     }
@@ -40,7 +46,9 @@ final class DependencyInjectionPostConstructTest {
             resources.on(int.class).assignInstance(2022);
         });
 
-        injector.newInstanceWithFields(Service.class);
+        Service service = injector.newInstanceWithFields(Service.class);
+        assertEquals(123456789L, service.longValue);
+        assertEquals(true, service.abstractBoolean);
     }
 
 }
