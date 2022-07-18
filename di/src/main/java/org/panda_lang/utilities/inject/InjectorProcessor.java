@@ -53,11 +53,6 @@ final class InjectorProcessor {
         return values;
     }
 
-    protected Object[] tryFetchValues(InjectorProcessor processor, Method method, Object... injectorArgs) throws Exception {
-        InjectorCache cache = InjectorCache.of(processor, method);
-        return fetchValues(cache, injectorArgs);
-    }
-
     protected Object tryFetchValue(InjectorProcessor processor, Property property, Object... injectorArgs) throws Exception {
         InjectorCache cache = InjectorCache.of(processor, property);
         return fetchValue(cache, property, 0, injectorArgs);
