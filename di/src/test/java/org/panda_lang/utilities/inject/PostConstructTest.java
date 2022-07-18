@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.panda_lang.utilities.inject.annotations.Inject;
 import org.panda_lang.utilities.inject.annotations.PostConstruct;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class PostConstructTest {
 
@@ -48,7 +49,7 @@ final class PostConstructTest {
 
         Service service = injector.newInstanceWithFields(Service.class);
         assertEquals(123456789L, service.longValue);
-        assertEquals(true, service.abstractBoolean);
+        assertTrue(service.abstractBoolean);
     }
 
 }

@@ -16,7 +16,12 @@
 
 package org.panda_lang.utilities.inject;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.jetbrains.annotations.Nullable;
+import org.panda_lang.utilities.inject.annotations.PostConstruct;
 import panda.std.Lazy;
 import panda.utilities.ObjectUtils;
 import java.lang.reflect.Constructor;
@@ -66,7 +71,9 @@ final class DefaultInjector implements Injector {
 
     @Override
     public <T> T newInstance(Class<T> type, Object... injectorArgs) throws Throwable {
-        return forConstructor(type).newInstance(injectorArgs);
+        T instance = forConstructor(type).newInstance(injectorArgs);
+        invokeAnnotatedMethods(PostConstruct.class, instance, injectorArgs);
+        return instance;
     }
 
     @Override
@@ -80,12 +87,25 @@ final class DefaultInjector implements Injector {
 
     @Override
     public <T> T newInstanceWithFields(Class<T> type, Object... injectorArgs) throws Throwable {
-        return forFields(type).newInstance(injectorArgs);
+        T instance = forFields(type).newInstance(injectorArgs);
+        invokeAnnotatedMethods(PostConstruct.class, instance, injectorArgs);
+        return instance;
     }
 
     @Override
     public <T> T invokeMethod(Method method, Object instance, Object... injectorArgs) throws Throwable {
         return forMethod(method).invoke(instance, injectorArgs);
+    }
+
+    @Override
+    public void invokeAnnotatedMethods(Class<? extends Annotation> annotation, Object instance, Object... injectorArgs) throws Throwable {
+        for (Method method : getAllMethods(new ArrayList<>(), instance.getClass())) {
+            if (!method.isAnnotationPresent(annotation)) {
+                continue;
+            }
+
+            invokeMethod(method, instance, injectorArgs);
+        }
     }
 
     @Override
@@ -115,6 +135,17 @@ final class DefaultInjector implements Injector {
 
     public Resources getResources() {
         return resources;
+    }
+
+
+    private static List<Method> getAllMethods(List<Method> methods, Class<?> type) {
+        methods.addAll(Arrays.asList(type.getDeclaredMethods()));
+
+        if (type.getSuperclass() != null) {
+            getAllMethods(methods, type.getSuperclass());
+        }
+
+        return methods;
     }
 
 }
