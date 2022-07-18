@@ -16,7 +16,6 @@
 
 package org.panda_lang.utilities.inject;
 
-import java.lang.reflect.Method;
 import org.jetbrains.annotations.Nullable;
 import org.panda_lang.utilities.inject.annotations.Injectable;
 import panda.std.Option;

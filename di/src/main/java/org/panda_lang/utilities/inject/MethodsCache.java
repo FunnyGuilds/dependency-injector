@@ -12,20 +12,14 @@ import panda.std.Pair;
 
 final class MethodsCache {
 
-    private final Map<Class<?>, List<Method>> cachedMethods = new HashMap<>();
     private final Map<Pair<Class<?>, Class<? extends Annotation>>, List<Method>> cachedAnnotatedMethods = new HashMap<>();
 
     public List<Method> getAnnotatedMethods(Class<?> clazz, Class<? extends Annotation> annotation) {
-        List<Method> methods = this.cachedAnnotatedMethods.get(Pair.of(clazz, annotation));
-        if (methods == null) {
-            methods = getAllMethods(new ArrayList<>(), clazz)
-                    .stream()
-                    .filter(method -> method.isAnnotationPresent(annotation))
-                    .collect(Collectors.toList());
-
-            this.cachedAnnotatedMethods.put(Pair.of(clazz, annotation), methods);
-        }
-        return methods;
+        return this.cachedAnnotatedMethods.computeIfAbsent(Pair.of(clazz, annotation), (key) ->
+                getAllMethods(new ArrayList<>(), clazz)
+                        .stream()
+                        .filter(method -> method.isAnnotationPresent(annotation))
+                        .collect(Collectors.toList()));
     }
 
     private static List<Method> getAllMethods(List<Method> methods, Class<?> type) {
