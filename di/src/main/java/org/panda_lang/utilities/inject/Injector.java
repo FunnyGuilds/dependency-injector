@@ -16,6 +16,7 @@
 
 package org.panda_lang.utilities.inject;
 
+import java.lang.annotation.Annotation;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Constructor;
@@ -81,6 +82,15 @@ public interface Injector {
      * @throws java.lang.Throwable if anything happen in the invoked method
      */
     @Nullable <T> T invokeMethod(Method method, @Nullable Object instance, Object... injectorArgs) throws Throwable;
+
+    /**
+     * Invoke methods annotated with the given annotation
+     *
+     * @param annotation the annotation to look for
+     * @param instance the instance to use
+     * @throws Throwable if anything happen in the invoked method
+     */
+    void invokeAnnotatedMethods(Class<? extends Annotation> annotation, Object instance, Object... injectorArgs) throws Throwable;
 
     /**
      * Create injector for the given method

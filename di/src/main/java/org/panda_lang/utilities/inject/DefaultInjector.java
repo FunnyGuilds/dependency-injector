@@ -16,7 +16,12 @@
 
 package org.panda_lang.utilities.inject;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.jetbrains.annotations.Nullable;
+import org.panda_lang.utilities.inject.annotations.PostConstruct;
 import panda.std.Lazy;
 import panda.utilities.ObjectUtils;
 import java.lang.reflect.Constructor;
@@ -33,6 +38,7 @@ final class DefaultInjector implements Injector {
 
     private final Resources resources;
     private final InjectorProcessor processor;
+    private final MethodsCache methodsCache = new MethodsCache();
 
     private final Lazy<MethodInjectorFactory> methodInjectorFactory = new Lazy<>(() ->
             StreamSupport.stream(Spliterators.spliteratorUnknownSize(ServiceLoader.load(MethodInjectorFactory.class).iterator(), ORDERED), false)
@@ -66,7 +72,9 @@ final class DefaultInjector implements Injector {
 
     @Override
     public <T> T newInstance(Class<T> type, Object... injectorArgs) throws Throwable {
-        return forConstructor(type).newInstance(injectorArgs);
+        T instance = forConstructor(type).newInstance(injectorArgs);
+        invokeAnnotatedMethods(PostConstruct.class, instance, injectorArgs);
+        return instance;
     }
 
     @Override
@@ -80,12 +88,25 @@ final class DefaultInjector implements Injector {
 
     @Override
     public <T> T newInstanceWithFields(Class<T> type, Object... injectorArgs) throws Throwable {
-        return forFields(type).newInstance(injectorArgs);
+        T instance = forFields(type).newInstance(injectorArgs);
+        invokeAnnotatedMethods(PostConstruct.class, instance, injectorArgs);
+        return instance;
     }
 
     @Override
     public <T> T invokeMethod(Method method, Object instance, Object... injectorArgs) throws Throwable {
         return forMethod(method).invoke(instance, injectorArgs);
+    }
+
+    @Override
+    public void invokeAnnotatedMethods(Class<? extends Annotation> annotation, Object instance, Object... injectorArgs) throws Throwable {
+        for (Method method : methodsCache.getAnnotatedMethods(instance.getClass(), annotation)) {
+            if (!method.isAnnotationPresent(annotation)) {
+                continue;
+            }
+
+            invokeMethod(method, instance, injectorArgs);
+        }
     }
 
     @Override
