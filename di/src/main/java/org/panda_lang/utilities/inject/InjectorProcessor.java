@@ -157,7 +157,7 @@ final class InjectorProcessor {
     protected Bind<Annotation> fetchBind(@Nullable Annotation annotation, Property property) {
         Class<?> requiredType = annotation != null ? annotation.annotationType() : property.getType();
         return injector.getResources().getBind(requiredType).orThrow(() -> {
-            throw new DependencyInjectionException("Cannot find proper bind for " + property + " property");
+            throw new DependencyInjectionException("Cannot find proper bind for " + property + " property (type " + property.getType() + ")");
         });
     }
 
