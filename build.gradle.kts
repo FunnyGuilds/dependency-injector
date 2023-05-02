@@ -38,10 +38,6 @@ allprojects {
                     password = getEnvOrProperty("MAVEN_TOKEN", "mavenPassword")
                 }
             }
-            maven {
-                name = "titanvale"
-                url = uri("https://repo.titanvale.net/snapshots")
-            }
         }
     }
 
