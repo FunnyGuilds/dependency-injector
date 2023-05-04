@@ -2,7 +2,7 @@ plugins {
     `java-library`
     `maven-publish`
     signing
-    id("io.github.gradle-nexus.publish-plugin") version "1.1.0"
+    id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
 }
 
 description = "Dependency Injector|Parent"
@@ -99,14 +99,14 @@ subprojects {
         // General
         api("org.panda-lang:panda-utilities:0.5.3-alpha")
         api("org.panda-lang:expressible:1.3.4")
-        compileOnly("org.jetbrains:annotations:24.0.0")
+        compileOnly("org.jetbrains:annotations:24.0.1")
 
         // Benchmarks
-        testImplementation("org.openjdk.jmh:jmh-core:1.32")
-        testImplementation("org.openjdk.jmh:jmh-generator-annprocess:1.32")
+        testImplementation("org.openjdk.jmh:jmh-core:1.36")
+        testImplementation("org.openjdk.jmh:jmh-generator-annprocess:1.36")
 
         // Tests
-        val junit = "5.9.1"
+        val junit = "5.9.3"
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junit")
         testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit")
     }
