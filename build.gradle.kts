@@ -27,7 +27,7 @@ allprojects {
         repositories {
             maven {
                 name = "panda-repository"
-                url = uri("https://repo.panda-lang.org/${if (version.toString().endsWith("-SNAPSHOT")) "snapshots" else "releases"}")
+                url = uri("https://maven.reposilite.com/${if (version.toString().endsWith("-SNAPSHOT")) "snapshots" else "releases"}")
 
                 credentials {
                     username = getEnvOrProperty("MAVEN_NAME", "mavenUser")
