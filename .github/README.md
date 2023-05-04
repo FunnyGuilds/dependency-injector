@@ -1,4 +1,4 @@
-# Dependency Injection [![CI](https://github.com/dzikoysk/dependency-injector/actions/workflows/maven.yml/badge.svg)](https://github.com/dzikoysk/dependency-injector/actions/workflows/maven.yml) [![codecov](https://codecov.io/gh/dzikoysk/dependency-injector/branch/master/graph/badge.svg)](https://codecov.io/gh/dzikoysk/dependency-injector) ![maven](https://repo.panda-lang.org/api/badge/latest/releases/org/panda-lang/utilities/di?color=40c14a&name=Latest%20Release&prefix=v)
+# Dependency Injection [![CI](https://github.com/dzikoysk/dependency-injector/actions/workflows/gradle.yml/badge.svg)](https://github.com/dzikoysk/dependency-injector/actions/workflows/maven.yml) [![codecov](https://codecov.io/gh/dzikoysk/dependency-injector/branch/master/graph/badge.svg)](https://codecov.io/gh/dzikoysk/dependency-injector) ![maven](https://maven.reposilite.com/api/badge/latest/releases/org/panda-lang/utilities/di?color=40c14a&name=Latest%20Release&prefix=v)
 
 Blazingly fast and lightweight dependency injection framework for Java. Supported operations:
 * Creating a new instance of the specified type using Injector _(constructors)_
@@ -11,7 +11,7 @@ Library is available in `panda-repository`:
 ```xml
 <repository>
     <id>panda-repository</id>
-    <url>https://repo.panda-lang.org/releases</url>
+    <url>https://maven.reposilite.com/releases</url>
 </repository>
 ```
 
@@ -85,7 +85,7 @@ injector.getResources().on(Bean.class).assignInstance(Bean::new); // new instanc
 Service service = injector.forConstructor(Service.class).newInstance();
 ```
 
-Full example: [DependencyInjectionInstancesTest.java](https://github.com/dzikoysk/di/blob/master/src/test/java/org/panda_lang/panda/utilities/inject/DependencyInjectionInstancesTest.java)
+Full example: [DependencyInjectionInstancesTest.java](https://github.com/FunnyGuilds/dependency-injector/blob/master/di/src/test/java/org/panda_lang/utilities/inject/DependencyInjectionInstancesTest.java)
 
 #### Fields
 ```java
@@ -104,7 +104,7 @@ Injector injector = DependencyInjection.createInjector(resources -> {
 Service service = injector.newInstanceWithFields(Service.class);
 ```
 
-Full example: [DependencyInjectionFieldsTest.java](https://github.com/dzikoysk/dependency-injector/blob/master/src/test/java/org/panda_lang/panda/utilities/inject/DependencyInjectionFieldsTest.java)
+Full example: [DependencyInjectionFieldsTest.java](https://github.com/FunnyGuilds/dependency-injector/blob/master/di/src/test/java/org/panda_lang/utilities/inject/DependencyInjectionFieldsTest.java)
 
 
 #### Custom logic
@@ -166,4 +166,4 @@ e23442b2-f695-41fa-9290-0f1192118a1a
 Process finished with exit code 0
 ```
 
-Full example is available here -> [DependencyInjectionWikiTest.java](https://github.com/dzikoysk/dependency-injector/blob/master/src/test/java/org/panda_lang/panda/utilities/inject/DependencyInjectionWikiTest.java)
+Full example is available here -> [DependencyInjectionWikiTest.java](https://github.com/FunnyGuilds/dependency-injector/blob/master/di/src/test/java/org/panda_lang/utilities/inject/DependencyInjectionWikiTest.java)

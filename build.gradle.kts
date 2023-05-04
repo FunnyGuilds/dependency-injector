@@ -18,15 +18,15 @@ allprojects {
     repositories {
         mavenCentral()
         maven {
-            name = "panda-repository"
-            url = uri("https://repo.panda-lang.org/releases")
+            name = "reposilite-releases"
+            url = uri("https://maven.reposilite.com/releases")
         }
     }
 
     publishing {
         repositories {
             maven {
-                name = "panda-repository"
+                name = "reposilite"
                 url = uri("https://maven.reposilite.com/${if (version.toString().endsWith("-SNAPSHOT")) "snapshots" else "releases"}")
 
                 credentials {
@@ -122,7 +122,7 @@ subprojects {
 
     tasks.register("release") {
         dependsOn(
-            "publishAllPublicationsToPanda-repositoryRepository",
+            "publishAllPublicationsToReposiliteRepository",
             "publishToSonatype",
         )
     }
@@ -131,7 +131,7 @@ subprojects {
 tasks.register("release") {
     dependsOn(
         "clean", "build",
-        "publishAllPublicationsToPanda-repositoryRepository",
+        "publishAllPublicationsToReposiliteRepository",
         "publishAllPublicationsToSonatypeRepository",
         "closeAndReleaseSonatypeStagingRepository"
     )
