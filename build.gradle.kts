@@ -98,7 +98,7 @@ subprojects {
     dependencies {
         // General
         api("org.panda-lang:panda-utilities:0.5.3-alpha")
-        api("org.panda-lang:expressible:1.3.4")
+        api("org.panda-lang:expressible:1.3.5")
         compileOnly("org.jetbrains:annotations:24.0.1")
 
         // Benchmarks
