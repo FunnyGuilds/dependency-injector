@@ -21,7 +21,7 @@ To use `annotations`, declare the dependency in your `pom.xml`
 <dependency>
     <groupId>org.panda-lang.utilities</groupId>
     <artifactId>di</artifactId>
-    <version>1.7.0</version>
+    <version>1.6.0</version>
 </dependency>
 
 <!-- Codegen module -->
@@ -29,7 +29,7 @@ To use `annotations`, declare the dependency in your `pom.xml`
 <dependency>
     <groupId>org.panda-lang.utilities</groupId>
     <artifactId>di-codegen</artifactId>
-    <version>1.7.0</version>
+    <version>1.6.0</version>
 </dependency>
 ```
 

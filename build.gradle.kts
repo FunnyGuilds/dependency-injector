@@ -13,7 +13,7 @@ allprojects {
     apply(plugin = "maven-publish")
 
     group = "org.panda-lang.utilities"
-    version = "1.7.0"
+    version = "1.6.0"
 
     repositories {
         mavenCentral()
