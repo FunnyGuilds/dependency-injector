@@ -1,10 +1,9 @@
-package org.panda_lang.utilities.inject.annotation;
+package org.panda_lang.utilities.inject.annotations;
 
 import org.junit.jupiter.api.Test;
 import org.panda_lang.utilities.inject.DependencyInjection;
 import org.panda_lang.utilities.inject.Injector;
-import org.panda_lang.utilities.inject.annotations.Inject;
-import org.panda_lang.utilities.inject.annotations.PostConstruct;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
