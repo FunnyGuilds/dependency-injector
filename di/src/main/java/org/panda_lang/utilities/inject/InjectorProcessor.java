@@ -178,7 +178,7 @@ final class InjectorProcessor {
         }
 
         if (bind == null) {
-            throw new DependencyInjectionException("Cannot find proper bind for " + property + " property (type " + property.getType() + ")");
+            throw new DependencyInjectionException("Cannot find proper bind for property: " + property.getType().getSimpleName() + " " + property.getName());
         }
         return bind;
     }

@@ -88,9 +88,13 @@ final class DefaultInjector implements Injector {
 
     @Override
     public <T> T newInstanceWithFields(Class<T> type, Object... injectorArgs) throws Throwable {
-        T instance = forFields(type).newInstance(injectorArgs);
-        invokeAnnotatedMethods(PostConstruct.class, instance, injectorArgs);
-        return instance;
+        try {
+            T instance = this.forFields(type).newInstance(injectorArgs);
+            this.invokeAnnotatedMethods(PostConstruct.class, instance, injectorArgs);
+            return instance;
+        } catch (Throwable throwable) {
+            throw new Throwable("Cannot create instance of " + type.getSimpleName(), throwable);
+        }
     }
 
     @Override
