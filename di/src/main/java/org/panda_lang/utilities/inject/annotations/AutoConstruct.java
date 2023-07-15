@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 /**
  * Marks field that value should be automatically constructed with current injector resources.
  */
-@Target({ ElementType.FIELD, ElementType.TYPE_PARAMETER, ElementType.PARAMETER })
+@Target({ ElementType.FIELD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AutoConstruct {
 
