@@ -17,6 +17,7 @@
 package org.panda_lang.utilities.inject;
 
 import org.jetbrains.annotations.Nullable;
+import org.panda_lang.utilities.inject.annotations.AutoConstruct;
 import org.panda_lang.utilities.inject.annotations.Injectable;
 import panda.std.Option;
 import panda.utilities.ObjectUtils;
@@ -37,8 +38,19 @@ final class InjectorProcessor {
     private final Injector injector;
     private final Map<Executable, Annotation[]> injectableCache = new HashMap<>();
 
+    private final Bind<Annotation> autoConstructBind;
+
     InjectorProcessor(Injector injector) {
         this.injector = injector;
+
+        this.autoConstructBind = new DefaultBind<>(AutoConstruct.class);
+        this.autoConstructBind.assignHandler((property, annotation, injectorArgs) -> {
+            try {
+                return injector.newInstanceWithFields(property.getType(), injectorArgs);
+            } catch (Throwable ex) {
+                throw new DependencyInjectionException(ex);
+            }
+        });
     }
 
     protected Object[] fetchValues(InjectorCache cache, Object... injectorArgs) throws Exception {
@@ -132,9 +144,12 @@ final class InjectorProcessor {
             Parameter parameter = parameters[index];
 
             Class<?> requiredType = annotation != null ? annotation.annotationType() : parameter.getType();
-            Option<Bind<Annotation>> bindValue = resources.getBind(requiredType);
+            Bind<Annotation> bind = resources.getBind(requiredType).orNull();
+            if (bind == null && parameter.getAnnotation(AutoConstruct.class) != null) {
+                bind = this.autoConstructBind;
+            }
 
-            binds[index] = bindValue.orThrow(() -> {
+            if (bind == null) {
                 String simplifiedParameters = Joiner.on(", ").join(Arrays.stream(executable.getParameters())
                         .map(p -> p.getType().getSimpleName() + " " + p.getName())
                         .collect(Collectors.toList()))
@@ -148,7 +163,8 @@ final class InjectorProcessor {
                         "    in executable: " + executable.getDeclaringClass().getSimpleName() + "#" + executable.getName() + "(" + simplifiedParameters + ")" +
                         System.lineSeparator()
                 );
-            });
+            }
+            binds[index] = bind;
         }
 
         return binds;
@@ -156,9 +172,15 @@ final class InjectorProcessor {
 
     protected Bind<Annotation> fetchBind(@Nullable Annotation annotation, Property property) {
         Class<?> requiredType = annotation != null ? annotation.annotationType() : property.getType();
-        return injector.getResources().getBind(requiredType).orThrow(() -> {
+        Bind<Annotation> bind = this.injector.getResources().getBind(requiredType).orNull();
+        if (bind == null && property.getAnnotation(AutoConstruct.class) != null) {
+            bind = this.autoConstructBind;
+        }
+
+        if (bind == null) {
             throw new DependencyInjectionException("Cannot find proper bind for " + property + " property (type " + property.getType() + ")");
-        });
+        }
+        return bind;
     }
 
     protected Collection<BindHandler<Annotation, Object, ?>>[] fetchHandlers(Executable executable) {
