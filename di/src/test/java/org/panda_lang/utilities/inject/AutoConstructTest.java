@@ -21,6 +21,10 @@ final class AutoConstructTest {
             assertNotNull(this.repository);
         }
 
+        public void testMethod(@AutoConstruct DataProvider dataProvider) {
+            assertNotNull(dataProvider);
+        }
+
     }
 
     static class Repository {
@@ -52,13 +56,24 @@ final class AutoConstructTest {
     }
 
     @Test
-    void shouldRunPostConstructMethods() throws Throwable {
+    void shouldCreateInstances() throws Throwable {
         Injector injector = DependencyInjection.createInjector(resources -> {
             resources.on(String.class).assignInstance("TestString");
         });
 
+        injector.newInstanceWithFields(DataProvider.class);
         injector.newInstanceWithFields(Repository.class);
         injector.newInstanceWithFields(Service.class);
+    }
+
+    @Test
+    void shouldRunMethod() throws Throwable {
+        Injector injector = DependencyInjection.createInjector(resources -> {
+            resources.on(String.class).assignInstance("TestString");
+        });
+
+        Service service = injector.newInstanceWithFields(Service.class);
+        injector.invokeMethod(Service.class.getMethod("testMethod", DataProvider.class), service);
     }
 
 }

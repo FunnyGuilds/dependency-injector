@@ -147,9 +147,12 @@ final class InjectorProcessor {
             Parameter parameter = parameters[index];
 
             Class<?> requiredType = annotation != null ? annotation.annotationType() : parameter.getType();
-            Option<Bind<Annotation>> bindValue = resources.getBind(requiredType);
+            Bind<Annotation> bind = resources.getBind(requiredType).orNull();
+            if (bind == null && parameter.getAnnotation(AutoConstruct.class) != null) {
+                bind = this.autoConstructBind;
+            }
 
-            binds[index] = bindValue.orThrow(() -> {
+            if (bind == null) {
                 String simplifiedParameters = Joiner.on(", ").join(Arrays.stream(executable.getParameters())
                         .map(p -> p.getType().getSimpleName() + " " + p.getName())
                         .collect(Collectors.toList()))
@@ -163,7 +166,8 @@ final class InjectorProcessor {
                         "    in executable: " + executable.getDeclaringClass().getSimpleName() + "#" + executable.getName() + "(" + simplifiedParameters + ")" +
                         System.lineSeparator()
                 );
-            });
+            }
+            binds[index] = bind;
         }
 
         return binds;
@@ -172,14 +176,14 @@ final class InjectorProcessor {
     protected Bind<Annotation> fetchBind(@Nullable Annotation annotation, Property property) {
         Class<?> requiredType = annotation != null ? annotation.annotationType() : property.getType();
         Bind<Annotation> bind = this.injector.getResources().getBind(requiredType).orNull();
-        if (bind != null) {
-            return bind;
+        if (bind == null && property.getAnnotation(AutoConstruct.class) != null) {
+            bind = this.autoConstructBind;
         }
 
-        if (property.getAnnotation(AutoConstruct.class) != null) {
-            return this.autoConstructBind;
+        if (bind == null) {
+            throw new DependencyInjectionException("Cannot find proper bind for " + property + " property (type " + property.getType() + ")");
         }
-        throw new DependencyInjectionException("Cannot find proper bind for " + property + " property (type " + property.getType() + ")");
+        return bind;
     }
 
     protected Collection<BindHandler<Annotation, Object, ?>>[] fetchHandlers(Executable executable) {
