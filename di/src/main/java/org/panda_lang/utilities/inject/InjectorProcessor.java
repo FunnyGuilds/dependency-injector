@@ -17,6 +17,7 @@
 package org.panda_lang.utilities.inject;
 
 import org.jetbrains.annotations.Nullable;
+import org.panda_lang.utilities.inject.annotations.AutoConstruct;
 import org.panda_lang.utilities.inject.annotations.Injectable;
 import panda.std.Option;
 import panda.utilities.ObjectUtils;
@@ -37,8 +38,22 @@ final class InjectorProcessor {
     private final Injector injector;
     private final Map<Executable, Annotation[]> injectableCache = new HashMap<>();
 
+    private final Bind<Annotation> autoConstructBind;
+
     InjectorProcessor(Injector injector) {
         this.injector = injector;
+
+        this.autoConstructBind = new DefaultBind<>(Object.class);
+        this.autoConstructBind.assignHandler((property, annotation, injectorArgs) -> {
+            if (property.getAnnotation(AutoConstruct.class) != null) {
+                try {
+                    return injector.newInstanceWithFields(property.getType(), injectorArgs);
+                } catch (Throwable ex) {
+                    throw new DependencyInjectionException(ex);
+                }
+            }
+            return null;
+        });
     }
 
     protected Object[] fetchValues(InjectorCache cache, Object... injectorArgs) throws Exception {
@@ -156,9 +171,17 @@ final class InjectorProcessor {
 
     protected Bind<Annotation> fetchBind(@Nullable Annotation annotation, Property property) {
         Class<?> requiredType = annotation != null ? annotation.annotationType() : property.getType();
-        return injector.getResources().getBind(requiredType).orThrow(() -> {
-            throw new DependencyInjectionException("Cannot find proper bind for " + property + " property (type " + property.getType() + ")");
-        });
+
+        Bind<Annotation> bind = this.injector.getResources().getBind(requiredType).orNull();
+        if (bind != null) {
+            return bind;
+        }
+
+        if (property.getAnnotation(AutoConstruct.class) != null) {
+            return this.autoConstructBind;
+        }
+
+        throw new DependencyInjectionException("Cannot find proper bind for " + property + " property (type " + property.getType() + ")");
     }
 
     protected Collection<BindHandler<Annotation, Object, ?>>[] fetchHandlers(Executable executable) {

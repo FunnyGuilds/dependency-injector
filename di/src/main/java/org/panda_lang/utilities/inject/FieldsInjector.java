@@ -5,8 +5,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.panda_lang.utilities.inject.annotations.AutoConstruct;
 import org.panda_lang.utilities.inject.annotations.Inject;
-import org.panda_lang.utilities.inject.annotations.PostConstruct;
 
 public final class FieldsInjector<T> {
 
@@ -22,7 +22,7 @@ public final class FieldsInjector<T> {
         T instance = constructorInjector.newInstance(injectorArgs);
 
         for (Field field : getAllFields(instance.getClass())) {
-            if (!field.isAnnotationPresent(Inject.class)) {
+            if (!field.isAnnotationPresent(Inject.class) && !field.isAnnotationPresent(AutoConstruct.class)) {
                 continue;
             }
 

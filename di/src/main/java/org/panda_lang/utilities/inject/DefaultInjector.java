@@ -120,7 +120,7 @@ final class DefaultInjector implements Injector {
     }
 
     @Override
-    public <T> @Nullable T invokeParameter(Parameter parameter, Object... injectorArgs) throws Exception {
+    public <T> @Nullable T invokeParameter(Parameter parameter, Object... injectorArgs) throws Throwable {
         return ObjectUtils.cast(processor.tryFetchValue(processor, new PropertyParameter(parameter), injectorArgs));
     }
 
