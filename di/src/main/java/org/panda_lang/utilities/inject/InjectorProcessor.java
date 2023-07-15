@@ -43,16 +43,13 @@ final class InjectorProcessor {
     InjectorProcessor(Injector injector) {
         this.injector = injector;
 
-        this.autoConstructBind = new DefaultBind<>(Object.class);
+        this.autoConstructBind = new DefaultBind<>(AutoConstruct.class);
         this.autoConstructBind.assignHandler((property, annotation, injectorArgs) -> {
-            if (property.getAnnotation(AutoConstruct.class) != null) {
-                try {
-                    return injector.newInstanceWithFields(property.getType(), injectorArgs);
-                } catch (Throwable ex) {
-                    throw new DependencyInjectionException(ex);
-                }
+            try {
+                return injector.newInstanceWithFields(property.getType(), injectorArgs);
+            } catch (Throwable ex) {
+                throw new DependencyInjectionException(ex);
             }
-            return null;
         });
     }
 
