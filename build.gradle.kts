@@ -1,7 +1,11 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
     `java-library`
     `maven-publish`
     signing
+    jacoco
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
 }
 
@@ -118,6 +122,15 @@ subprojects {
 
     tasks.withType<Test> {
         useJUnitPlatform()
+
+        testLogging {
+            events(TestLogEvent.STARTED, TestLogEvent.PASSED, TestLogEvent.FAILED, TestLogEvent.SKIPPED)
+            exceptionFormat = TestExceptionFormat.FULL
+            showExceptions = true
+            showCauses = true
+            showStackTraces = true
+            showStandardStreams = true
+        }
     }
 
     tasks.register("release") {
@@ -126,6 +139,21 @@ subprojects {
             "publishToSonatype",
         )
     }
+}
+
+tasks.withType<JacocoReport> {
+    reports {
+        xml.configure(closureOf<Any> {
+            isEnabled = true
+        })
+        html.configure(closureOf<Any> {
+            isEnabled = true
+        })
+    }
+}
+
+tasks.withType<Test> {
+    finalizedBy(tasks.jacocoTestReport)
 }
 
 tasks.register("release") {
