@@ -1,4 +1,4 @@
-# Dependency Injection [![CI](https://github.com/dzikoysk/dependency-injector/actions/workflows/gradle.yml/badge.svg)](https://github.com/dzikoysk/dependency-injector/actions/workflows/maven.yml) [![codecov](https://codecov.io/gh/dzikoysk/dependency-injector/branch/master/graph/badge.svg)](https://codecov.io/gh/dzikoysk/dependency-injector) ![maven](https://maven.reposilite.com/api/badge/latest/releases/org/panda-lang/utilities/di?color=40c14a&name=Latest%20Release&prefix=v)
+# Dependency Injection [![CI](https://github.com/dzikoysk/dependency-injector/actions/workflows/gradle.yml/badge.svg)](https://github.com/dzikoysk/dependency-injector/actions/workflows/maven.yml) [![codecov](https://codecov.io/gh/FunnyGuilds/dependency-injector/branch/master/graph/badge.svg)](https://codecov.io/gh/FunnyGuilds/dependency-injector) ![maven](https://maven.reposilite.com/api/badge/latest/releases/org/panda-lang/utilities/di?color=40c14a&name=Latest%20Release&prefix=v)
 
 Blazingly fast and lightweight dependency injection framework for Java. Supported operations:
 * Creating a new instance of the specified type using Injector _(constructors)_
