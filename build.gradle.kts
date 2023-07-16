@@ -1,7 +1,11 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+import org.gradle.api.tasks.testing.logging.TestLogEvent
+
 plugins {
     `java-library`
     `maven-publish`
     signing
+    jacoco
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
 }
 
@@ -10,6 +14,7 @@ description = "Dependency Injector|Parent"
 allprojects {
     apply(plugin = "java-library")
     apply(plugin = "signing")
+    apply(plugin = "jacoco")
     apply(plugin = "maven-publish")
 
     group = "org.panda-lang.utilities"
@@ -92,6 +97,19 @@ allprojects {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    tasks.jacocoTestReport {
+        dependsOn(tasks.test)
+        reports {
+            xml.required.set(true)
+            html.required.set(true)
+        }
+    }
+
+    tasks.test {
+        finalizedBy(tasks.named<JacocoReport>("jacocoTestReport"))
+    }
+
 }
 
 subprojects {
@@ -118,6 +136,15 @@ subprojects {
 
     tasks.withType<Test> {
         useJUnitPlatform()
+
+        testLogging {
+            events(TestLogEvent.STARTED, TestLogEvent.PASSED, TestLogEvent.FAILED, TestLogEvent.SKIPPED)
+            exceptionFormat = TestExceptionFormat.FULL
+            showExceptions = true
+            showCauses = true
+            showStackTraces = true
+            showStandardStreams = true
+        }
     }
 
     tasks.register("release") {
@@ -127,7 +154,6 @@ subprojects {
         )
     }
 }
-
 tasks.register("release") {
     dependsOn(
         "clean", "build",
