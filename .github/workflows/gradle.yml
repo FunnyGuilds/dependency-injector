@@ -16,7 +16,7 @@ jobs:
     strategy:
       matrix:
         # LTS and the latest one
-        jdk: [ 8, 11, 17 ]
+        jdk: [ 17 ]
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK ${{ matrix.jdk }}
