@@ -14,6 +14,7 @@ description = "Dependency Injector|Parent"
 allprojects {
     apply(plugin = "java-library")
     apply(plugin = "signing")
+    apply(plugin = "jacoco")
     apply(plugin = "maven-publish")
 
     group = "org.panda-lang.utilities"
@@ -96,6 +97,19 @@ allprojects {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
+    tasks.jacocoTestReport {
+        dependsOn(tasks.test)
+        reports {
+            xml.required.set(true)
+            html.required.set(true)
+        }
+    }
+
+    tasks.test {
+        finalizedBy(tasks.named<JacocoReport>("jacocoTestReport"))
+    }
+
 }
 
 subprojects {
@@ -140,22 +154,6 @@ subprojects {
         )
     }
 }
-
-tasks.withType<JacocoReport> {
-    reports {
-        xml.configure(closureOf<Any> {
-            isEnabled = true
-        })
-        html.configure(closureOf<Any> {
-            isEnabled = true
-        })
-    }
-}
-
-tasks.withType<Test> {
-    finalizedBy(tasks.jacocoTestReport)
-}
-
 tasks.register("release") {
     dependsOn(
         "clean", "build",
