@@ -51,7 +51,6 @@ Injector supports three main ways to bind with a value:
 * Binding to the verified annotation `resources.annotatedWithTested(<Annotation>)` *(safer but slower alternative to `annotatedWith`)*
 
 Each binding supports three ways of assigning value:
-* `assign(<Type>)` - creates a new instance of type per call
 * `assignInstance(<Object>)`/`assignInstance(Supplier<Object>)` - binds the specified value/some kind of lazy values
 * `assignHandler((<Expected Type Of Value>, <Annotation>) -> { /* logic */ })` - binds custom handler
 
