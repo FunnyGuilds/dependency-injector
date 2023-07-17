@@ -16,11 +16,9 @@
 
 package org.panda_lang.utilities.inject;
 
-import org.jetbrains.annotations.Nullable;
-import org.panda_lang.utilities.inject.annotations.Injectable;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import org.panda_lang.utilities.inject.annotations.Injectable;
 
 public final class DependencyInjectionUtils {
 
@@ -30,11 +28,11 @@ public final class DependencyInjectionUtils {
      * @param annotation the annotation to check
      * @param <T> annotation type
      * @return the tested annotation
-     * @throws org.panda_lang.utilities.inject.DependencyInjectionException when:
+     * @throws DependencyInjectionException when:
      *  <ul>
      *      <li>the given class is not an annotation</li>
-     *      <li>annotation is not marked as @{@link org.panda_lang.utilities.inject.annotations.Injectable}</li>
-     *      <li>retention policy is not defined or its value is other than the {@link java.lang.annotation.RetentionPolicy#RUNTIME} </li>
+     *      <li>annotation is not marked as @{@link Injectable}</li>
+     *      <li>retention policy is not defined or its value is other than the {@link RetentionPolicy#RUNTIME} </li>
      *  </ul>
      */
     public static <T> Class<T> testAnnotation(Class<T> annotation) throws DependencyInjectionException {

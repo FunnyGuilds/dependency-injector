@@ -16,6 +16,7 @@
 
 package org.panda_lang.utilities.inject;
 
+import panda.utilities.ObjectUtils;
 import java.lang.reflect.Constructor;
 
 public final class ConstructorInjector<T> {
@@ -31,9 +32,8 @@ public final class ConstructorInjector<T> {
         this.cache = InjectorCache.of(processor, constructor);
     }
 
-    @SuppressWarnings("unchecked")
-    public T newInstance(Object... injectorArgs) throws Throwable {
-        return (T) constructor.newInstance(processor.fetchValues(cache, injectorArgs));
+    public T newInstance(Object... injectorArgs) throws Exception {
+        return ObjectUtils.cast(constructor.newInstance(processor.fetchValues(cache, injectorArgs)));
     }
 
     public Constructor<?> getConstructor() {

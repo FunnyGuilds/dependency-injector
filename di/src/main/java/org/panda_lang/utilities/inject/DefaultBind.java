@@ -61,7 +61,7 @@ class DefaultBind<A extends Annotation> implements Bind<A> {
 
     @Override
     public Object getValue(Property required, A annotation, Object... injectedArgs) throws Exception {
-        return value.getValue(required, annotation, injectedArgs);
+        return this.value.getValue(required, annotation, injectedArgs);
     }
 
     @Override
