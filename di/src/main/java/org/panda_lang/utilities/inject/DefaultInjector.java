@@ -58,16 +58,12 @@ final class DefaultInjector implements Injector {
             throw new InvalidParameterException("Class has to contain one and only constructor");
         }
 
-        return new ConstructorInjector<T>(processor, (Constructor<T>) type.getDeclaredConstructors()[0]);
+        return new ConstructorInjector<>(this.processor, (Constructor<T>) type.getDeclaredConstructors()[0]);
     }
 
     @Override
     public <T> ConstructorInjector<T> forConstructor(Constructor<T> constructor) {
-        if (!constructor.isAccessible()) {
-            constructor.setAccessible(true);
-        }
-
-        return new ConstructorInjector<>(processor, constructor);
+        return new ConstructorInjector<>(this.processor, constructor);
     }
 
     @Override
