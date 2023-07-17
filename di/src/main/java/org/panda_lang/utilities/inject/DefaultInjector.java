@@ -58,58 +58,58 @@ final class DefaultInjector implements Injector {
             throw new InvalidParameterException("Class has to contain one and only constructor");
         }
 
-        return new ConstructorInjector<T>(processor, (Constructor<T>) type.getDeclaredConstructors()[0]);
+        return new ConstructorInjector<>(this.processor, (Constructor<T>) type.getDeclaredConstructors()[0]);
     }
 
     @Override
     public <T> ConstructorInjector<T> forConstructor(Constructor<T> constructor) {
-        if (!constructor.isAccessible()) {
-            constructor.setAccessible(true);
-        }
-
-        return new ConstructorInjector<>(processor, constructor);
+        return new ConstructorInjector<>(this.processor, constructor);
     }
 
     @Override
-    public <T> T newInstance(Class<T> type, Object... injectorArgs) throws Throwable {
-        T instance = forConstructor(type).newInstance(injectorArgs);
-        invokeAnnotatedMethods(PostConstruct.class, instance, injectorArgs);
-        return instance;
+    public <T> T newInstance(Class<T> type, Object... injectorArgs) throws DependencyInjectionException {
+        try {
+            T instance = this.forConstructor(type).newInstance(injectorArgs);
+            this.invokeAnnotatedMethods(PostConstruct.class, instance, injectorArgs);
+            return instance;
+        } catch (Exception exception) {
+            throw new DependencyInjectionException("Cannot create instance of " + type.getSimpleName(), exception);
+        }
     }
 
     @Override
     public <T> FieldsInjector<T> forFields(Class<T> type) {
-        if (type.getDeclaredConstructors().length != 1) {
-            throw new InvalidParameterException("Class has to contain one and only constructor");
-        }
-
         return new FieldsInjector<T>(processor, forConstructor(type));
     }
 
     @Override
-    public <T> T newInstanceWithFields(Class<T> type, Object... injectorArgs) throws Throwable {
+    public <T> T newInstanceWithFields(Class<T> type, Object... injectorArgs) throws DependencyInjectionException {
         try {
             T instance = this.forFields(type).newInstance(injectorArgs);
             this.invokeAnnotatedMethods(PostConstruct.class, instance, injectorArgs);
             return instance;
-        } catch (Throwable throwable) {
-            throw new Throwable("Cannot create instance of " + type.getSimpleName(), throwable);
+        } catch (Exception exception) {
+            throw new DependencyInjectionException("Cannot create instance of " + type.getSimpleName(), exception);
         }
     }
 
     @Override
-    public <T> T invokeMethod(Method method, Object instance, Object... injectorArgs) throws Throwable {
-        return forMethod(method).invoke(instance, injectorArgs);
+    public <T> T invokeMethod(Method method, Object instance, Object... injectorArgs) throws DependencyInjectionException {
+        try {
+            return this.forMethod(method).invoke(instance, injectorArgs);
+        } catch (Exception exception) {
+            throw new DependencyInjectionException("Cannot invoke method " + method.getName() + " of " + instance.getClass().getSimpleName(), exception);
+        }
     }
 
     @Override
-    public void invokeAnnotatedMethods(Class<? extends Annotation> annotation, Object instance, Object... injectorArgs) throws Throwable {
-        for (Method method : methodsCache.getAnnotatedMethods(instance.getClass(), annotation)) {
+    public void invokeAnnotatedMethods(Class<? extends Annotation> annotation, Object instance, Object... injectorArgs) throws DependencyInjectionException {
+        for (Method method : this.methodsCache.getAnnotatedMethods(instance.getClass(), annotation)) {
             if (!method.isAnnotationPresent(annotation)) {
                 continue;
             }
 
-            invokeMethod(method, instance, injectorArgs);
+            this.invokeMethod(method, instance, injectorArgs);
         }
     }
 
@@ -124,7 +124,7 @@ final class DefaultInjector implements Injector {
     }
 
     @Override
-    public <T> @Nullable T invokeParameter(Parameter parameter, Object... injectorArgs) throws Throwable {
+    public <T> @Nullable T invokeParameter(Parameter parameter, Object... injectorArgs) throws Exception {
         return ObjectUtils.cast(processor.tryFetchValue(processor, new PropertyParameter(parameter), injectorArgs));
     }
 

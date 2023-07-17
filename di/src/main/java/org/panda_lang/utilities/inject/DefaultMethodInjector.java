@@ -16,6 +16,7 @@
 
 package org.panda_lang.utilities.inject;
 
+import panda.utilities.ObjectUtils;
 import java.lang.reflect.Method;
 
 public final class DefaultMethodInjector implements MethodInjector {
@@ -38,12 +39,12 @@ public final class DefaultMethodInjector implements MethodInjector {
      * @param injectorArgs arguments for injector
      * @param <T> type of return value
      * @return returned value
-     * @throws Throwable if anything happen in the evaluated method
+     * @throws Exception if anything happen in the evaluated method
      */
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T invoke(Object instance, Object... injectorArgs) throws Throwable {
-        return (T) method.invoke(instance, processor.fetchValues(cache, injectorArgs));
+    public <T> T invoke(Object instance, Object... injectorArgs) throws Exception {
+        return ObjectUtils.cast(this.method.invoke(instance, this.processor.fetchValues(this.cache, injectorArgs)));
     }
 
     @Override

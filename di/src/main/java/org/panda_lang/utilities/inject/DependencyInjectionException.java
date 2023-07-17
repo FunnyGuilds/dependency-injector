@@ -16,7 +16,13 @@
 
 package org.panda_lang.utilities.inject;
 
-public final class DependencyInjectionException extends RuntimeException {
+/**
+ * General injector exception thrown when something went wrong during the dependency injection
+ * or inside injected method/constructor
+ *
+ * @see MissingBindException for specific exception thrown when the bind is missing
+ */
+public class DependencyInjectionException extends RuntimeException {
 
     DependencyInjectionException(String message) {
         super(message);

@@ -45,13 +45,13 @@ public interface Bind<A extends Annotation> extends Comparable<Bind<A>> {
     void assignHandler(TriFunction<Property, A, Object[], ?> handler);
 
     /**
-     * Get value of bind for the required (parameter) type and instance of bind type
+     * Get the value of bind for the required (parameter) type and instance of a bind type
      *
      * @param required the required return type
      * @param annotation instance of bind generic type
-     * @param injectorArgs custom arguments for injector
+     * @param injectorArgs custom arguments for injector, used by custom handlers
      * @return the result value
-     * @throws Exception if anything wrong will happen, whole process should be stopped
+     * @throws Exception if anything wrong during obtaining value
      */
     Object getValue(Property required, A annotation, Object... injectorArgs) throws Exception;
 

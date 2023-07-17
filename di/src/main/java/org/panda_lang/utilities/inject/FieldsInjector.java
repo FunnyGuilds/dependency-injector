@@ -18,7 +18,7 @@ public final class FieldsInjector<T> {
         this.constructorInjector = constructorInjector;
     }
 
-    public T newInstance(Object... injectorArgs) throws Throwable {
+    public T newInstance(Object... injectorArgs) throws Exception {
         T instance = constructorInjector.newInstance(injectorArgs);
 
         for (Field field : getAllFields(instance.getClass())) {

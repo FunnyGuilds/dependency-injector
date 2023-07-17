@@ -19,7 +19,6 @@ package org.panda_lang.utilities.inject;
 import org.jetbrains.annotations.Nullable;
 import org.panda_lang.utilities.inject.annotations.AutoConstruct;
 import org.panda_lang.utilities.inject.annotations.Injectable;
-import panda.std.Option;
 import panda.utilities.ObjectUtils;
 import panda.utilities.text.Joiner;
 import java.lang.annotation.Annotation;
@@ -47,7 +46,7 @@ final class InjectorProcessor {
         this.autoConstructBind.assignHandler((property, annotation, injectorArgs) -> {
             try {
                 return injector.newInstanceWithFields(property.getType(), injectorArgs);
-            } catch (Throwable ex) {
+            } catch (Exception ex) {
                 throw new DependencyInjectionException(ex);
             }
         });
@@ -134,7 +133,7 @@ final class InjectorProcessor {
         return mappedAnnotations;
     }
 
-    protected Bind<Annotation>[] fetchBinds(Annotation[] annotations, Executable executable) {
+    protected Bind<Annotation>[] fetchBinds(Annotation[] annotations, Executable executable) throws MissingBindException {
         Resources resources = injector.getResources();
         Parameter[] parameters = executable.getParameters();
         Bind<Annotation>[] binds = ObjectUtils.cast(new Bind[parameters.length]);
@@ -155,8 +154,8 @@ final class InjectorProcessor {
                         .collect(Collectors.toList()))
                         .toString();
 
-                throw new DependencyInjectionException(
-                        "Cannot inject value due to missing bind" +
+                throw new MissingBindException(
+                        "Cannot find proper bind" +
                         System.lineSeparator() +
                         "    missing bind for parameter: " + parameter.getType().getSimpleName() + " " + parameter.getName() +
                         System.lineSeparator() +
@@ -170,7 +169,7 @@ final class InjectorProcessor {
         return binds;
     }
 
-    protected Bind<Annotation> fetchBind(@Nullable Annotation annotation, Property property) {
+    protected Bind<Annotation> fetchBind(@Nullable Annotation annotation, Property property) throws MissingBindException {
         Class<?> requiredType = annotation != null ? annotation.annotationType() : property.getType();
         Bind<Annotation> bind = this.injector.getResources().getBind(requiredType).orNull();
         if (bind == null && property.getAnnotation(AutoConstruct.class) != null) {
@@ -178,7 +177,7 @@ final class InjectorProcessor {
         }
 
         if (bind == null) {
-            throw new DependencyInjectionException("Cannot find proper bind for property: " + property.getType().getSimpleName() + " " + property.getName());
+            throw new MissingBindException("Cannot find proper bind for property: " + property.getType().getSimpleName() + " " + property.getName());
         }
         return bind;
     }
