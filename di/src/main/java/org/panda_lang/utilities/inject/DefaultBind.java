@@ -16,6 +16,7 @@
 
 package org.panda_lang.utilities.inject;
 
+import panda.std.function.ThrowingSupplier;
 import panda.std.function.ThrowingTriFunction;
 import panda.std.function.TriFunction;
 import panda.utilities.ObjectUtils;
@@ -51,7 +52,12 @@ class DefaultBind<A extends Annotation> implements Bind<A> {
     }
 
     @Override
-    public void assignInstance(Supplier<?> valueSupplier) {
+    public void assignSupplier(Supplier<?> valueSupplier) {
+        with(new StaticBindValue<>(valueSupplier));
+    }
+
+    @Override
+    public void assignThrowingSupplier(ThrowingSupplier<?, ? extends Exception> valueSupplier) {
         with(new StaticBindValue<>(valueSupplier));
     }
 

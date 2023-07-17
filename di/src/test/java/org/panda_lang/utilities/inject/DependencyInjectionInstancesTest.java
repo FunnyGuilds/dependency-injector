@@ -3,6 +3,7 @@ package org.panda_lang.utilities.inject;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 final class DependencyInjectionInstancesTest {
 
@@ -13,10 +14,24 @@ final class DependencyInjectionInstancesTest {
         // some logic, a few hours later...
 
         injector.getResources().on(Custom.class).assignInstance(new CustomImpl()); // singleton
-        injector.getResources().on(Bean.class).assignInstance(Bean::new); // new instance per call
+        injector.getResources().on(Bean.class).assignSupplier(Bean::new); // new instance per call
 
         Service service = injector.newInstance(Service.class);
         assertNotNull(service);
+    }
+
+    @Test
+    void shouldNotInjectInstances() {
+        Injector injector = DependencyInjection.createInjector(resources -> {
+            resources.on(Custom.class).assignThrowingSupplier(() -> {
+                throw new Exception("Failed");
+            });
+            resources.on(Bean.class).assignThrowingSupplier(() -> {
+                throw new Exception("Failed");
+            });
+        });
+
+        assertThrows(DependencyInjectionException.class, () -> injector.newInstance(Service.class));
     }
 
     public static class Bean { }

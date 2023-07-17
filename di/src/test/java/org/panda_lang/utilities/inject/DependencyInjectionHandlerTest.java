@@ -66,7 +66,7 @@ public class DependencyInjectionHandlerTest {
     }
 
     @Test
-    void shouldNotCreateInstance() {
+    void shouldNotCreateInstanceAndFail() {
         Injector injector = DependencyInjection.createInjector(resources -> {
             resources.on(String.class).assignThrowingHandler((type, annotation, args) -> {
                 throw new Exception("Failed");
