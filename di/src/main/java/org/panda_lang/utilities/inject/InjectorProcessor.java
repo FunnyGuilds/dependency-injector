@@ -171,6 +171,7 @@ final class InjectorProcessor {
         if (bind == null) {
             bind = this.injector.getResources().getBind(property.getType()).orNull();
         }
+
         if (bind == null && property.getAnnotation(AutoConstruct.class) != null) {
             bind = this.autoConstructBind;
         }
