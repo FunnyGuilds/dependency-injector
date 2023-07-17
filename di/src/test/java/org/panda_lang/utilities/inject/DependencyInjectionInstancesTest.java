@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 final class DependencyInjectionInstancesTest {
 
     @Test
-    void shouldInjectInstances() throws Throwable {
+    void shouldInjectInstances() {
         Injector injector = DependencyInjection.createInjector();
 
         // some logic, a few hours later...
@@ -15,7 +15,7 @@ final class DependencyInjectionInstancesTest {
         injector.getResources().on(Custom.class).assignInstance(new CustomImpl()); // singleton
         injector.getResources().on(Bean.class).assignInstance(Bean::new); // new instance per call
 
-        Service service = injector.forConstructor(Service.class).newInstance();
+        Service service = injector.newInstance(Service.class);
         assertNotNull(service);
     }
 

@@ -16,19 +16,24 @@
 
 package org.panda_lang.utilities.inject;
 
+import panda.std.function.ThrowingTriFunction;
 import panda.std.function.TriFunction;
 import java.lang.annotation.Annotation;
 
 final class HandledBindValue<A extends Annotation> implements BindValue<A> {
 
-    private final TriFunction<Property, A, Object[], ?> handler;
+    private final ThrowingTriFunction<Property, A, Object[], ?, ? extends Exception> handler;
 
-    HandledBindValue(TriFunction<Property, A, Object[], ?> handler) {
+    HandledBindValue(ThrowingTriFunction<Property, A, Object[], ?, ? extends Exception> handler) {
         this.handler = handler;
     }
 
+    HandledBindValue(TriFunction<Property, A, Object[], ?> handler) {
+        this.handler = handler::apply;
+    }
+
     @Override
-    public Object getValue(Property required, A annotation, Object... injectorArgs) {
+    public Object getValue(Property required, A annotation, Object... injectorArgs) throws Exception {
         return handler.apply(required, annotation, injectorArgs);
     }
 

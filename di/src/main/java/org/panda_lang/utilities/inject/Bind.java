@@ -17,6 +17,7 @@
 package org.panda_lang.utilities.inject;
 
 import org.jetbrains.annotations.NotNull;
+import panda.std.function.ThrowingTriFunction;
 import panda.std.function.TriFunction;
 import java.lang.annotation.Annotation;
 import java.util.function.Supplier;
@@ -43,6 +44,13 @@ public interface Bind<A extends Annotation> extends Comparable<Bind<A>> {
      * @param handler the handler which accepts type of parameter and bind type as arguments
      */
     void assignHandler(TriFunction<Property, A, Object[], ?> handler);
+
+    /**
+     * Assign custom handler to the bind which can throw an exception
+     *
+     * @param handler the handler which accepts type of parameter and bind type as arguments
+     */
+    void assignThrowingHandler(ThrowingTriFunction<Property, A, Object[], ?, ? extends Exception> handler);
 
     /**
      * Get the value of bind for the required (parameter) type and instance of a bind type
