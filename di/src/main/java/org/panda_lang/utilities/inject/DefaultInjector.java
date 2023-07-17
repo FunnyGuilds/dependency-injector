@@ -79,10 +79,6 @@ final class DefaultInjector implements Injector {
 
     @Override
     public <T> FieldsInjector<T> forFields(Class<T> type) {
-        if (type.getDeclaredConstructors().length != 1) {
-            throw new InvalidParameterException("Class has to contain one and only constructor");
-        }
-
         return new FieldsInjector<T>(processor, forConstructor(type));
     }
 
