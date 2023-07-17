@@ -17,7 +17,6 @@
 package org.panda_lang.utilities.inject;
 
 import panda.utilities.ObjectUtils;
-
 import java.lang.reflect.Method;
 
 public final class DefaultMethodInjector implements MethodInjector {
