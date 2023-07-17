@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 
 public interface MethodInjector {
 
-    <T> T invoke(Object instance, Object... injectorArgs) throws Throwable;
+    <T> T invoke(Object instance, Object... injectorArgs) throws Exception;
 
     Method getMethod();
 

@@ -16,7 +16,7 @@
 
 package org.panda_lang.utilities.inject;
 
-public final class DependencyInjectionException extends RuntimeException {
+public class DependencyInjectionException extends RuntimeException {
 
     DependencyInjectionException(String message) {
         super(message);

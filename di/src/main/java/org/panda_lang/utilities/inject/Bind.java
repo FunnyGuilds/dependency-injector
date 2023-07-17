@@ -49,9 +49,9 @@ public interface Bind<A extends Annotation> extends Comparable<Bind<A>> {
      *
      * @param required the required return type
      * @param annotation instance of bind generic type
-     * @param injectorArgs custom arguments for injector
+     * @param injectorArgs custom arguments for injector - used by custom handlers
      * @return the result value
-     * @throws Exception if anything wrong will happen, whole process should be stopped
+     * @throws Exception if anything wrong during getting value
      */
     Object getValue(Property required, A annotation, Object... injectorArgs) throws Exception;
 

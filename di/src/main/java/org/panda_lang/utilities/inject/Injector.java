@@ -31,9 +31,10 @@ public interface Injector {
      * @param type the class to instantiate
      * @param <T> the type
      * @return a new instance
-     * @throws java.lang.Throwable if anything happen in constructor
+     * @throws DependencyInjectionException if anything happens during the injection
+     * @throws MissingBindException if there is no bind for the given type
      */
-    <T> T newInstance(Class<T> type, Object... injectorArgs) throws Throwable;
+    <T> T newInstance(Class<T> type, Object... injectorArgs) throws DependencyInjectionException;
 
     /**
      * Create injector for the given type
@@ -59,9 +60,10 @@ public interface Injector {
      * @param type the class to instantiate
      * @param <T> the type
      * @return a new instance
-     * @throws java.lang.Throwable if anything happen in constructor
+     * @throws DependencyInjectionException if anything happens during the injection
+     * @throws MissingBindException if there is no bind for the given type
      */
-    <T> T newInstanceWithFields(Class<T> type, Object... injectorArgs) throws Throwable;
+    <T> T newInstanceWithFields(Class<T> type, Object... injectorArgs) throws DependencyInjectionException;
 
     /**
      * Create injector for fields (and constructor)
@@ -79,18 +81,20 @@ public interface Injector {
      * @param instance the instance to use (nullable for static context)
      * @param <T> the return type
      * @return the return value
-     * @throws java.lang.Throwable if anything happen in the invoked method
+     * @throws DependencyInjectionException if anything happens during execution of the method
+     * @throws MissingBindException if there is no bind for the given type
      */
-    @Nullable <T> T invokeMethod(Method method, @Nullable Object instance, Object... injectorArgs) throws Throwable;
+    @Nullable <T> T invokeMethod(Method method, @Nullable Object instance, Object... injectorArgs) throws DependencyInjectionException;
 
     /**
      * Invoke methods annotated with the given annotation
      *
      * @param annotation the annotation to look for
      * @param instance the instance to use
-     * @throws Throwable if anything happen in the invoked method
+     * @throws DependencyInjectionException if anything happens during execution of the method
+     * @throws MissingBindException if there is no bind for the given type
      */
-    void invokeAnnotatedMethods(Class<? extends Annotation> annotation, Object instance, Object... injectorArgs) throws Throwable;
+    void invokeAnnotatedMethods(Class<? extends Annotation> annotation, Object instance, Object... injectorArgs) throws DependencyInjectionException;
 
     /**
      * Create injector for the given method
@@ -110,14 +114,14 @@ public interface Injector {
     MethodInjector forGeneratedMethod(Method method) throws Exception;
 
     /**
-     * Get injected value of the given parameter
+     * Get value that would be used to inject the given parameter
      *
      * @param parameter the parameter invoke
      * @param <T> type of expected value
      * @return the associated binding value
-     * @throws java.lang.Throwable if anything happen
+     * @throws java.lang.Exception if anything happen
      */
-    @Nullable <T> T invokeParameter(Parameter parameter, Object... injectorArgs) throws Throwable;
+    @Nullable <T> T invokeParameter(Parameter parameter, Object... injectorArgs) throws Exception;
 
     /**
      * Create a fork of resources. The current resources will be used as a parent of a new instance.

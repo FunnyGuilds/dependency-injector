@@ -48,7 +48,7 @@ public final class GeneratedMethodInjector implements MethodInjector {
 
     @SuppressWarnings("unchecked")
     @Override
-    public <T> T invoke(Object instance, Object... injectorArgs) throws Throwable {
+    public <T> T invoke(Object instance, Object... injectorArgs) throws Exception {
         return (T) function.apply(instance, empty
                 ? InjectorProcessor.EMPTY
                 : processor.fetchValues(cache, injectorArgs));
