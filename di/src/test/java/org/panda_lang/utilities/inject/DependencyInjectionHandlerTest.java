@@ -20,7 +20,7 @@ public class DependencyInjectionHandlerTest {
 
     @Injectable
     @Retention(RetentionPolicy.RUNTIME)
-    @interface AwesomeRandom { }
+    @interface TestAnnotation { }
 
     public static class Service1 {
 
@@ -32,7 +32,7 @@ public class DependencyInjectionHandlerTest {
         public int fieldTwo;
 
         @Inject
-        @AwesomeRandom
+        @TestAnnotation
         public int fieldThree;
 
         @PostConstruct
@@ -40,7 +40,7 @@ public class DependencyInjectionHandlerTest {
             assertEquals("HelloWorld", this.fieldOne);
 
             assertEquals(7, this.fieldTwo);
-            assertTrue(this.fieldTwo >= 2 && this.fieldTwo <= 10);
+            assertEquals(2, this.fieldThree);
         }
 
     }
@@ -50,11 +50,11 @@ public class DependencyInjectionHandlerTest {
         Injector injector = DependencyInjection.createInjector(resources -> {
             resources.annotatedWith(Custom.class).assignHandler((type, annotation, args) -> "HelloWorld");
             resources.on(int.class).assignHandler((type, annotation, args) -> {
-                AwesomeRandom randomAnnotation = type.getAnnotation(AwesomeRandom.class);
-                if (randomAnnotation == null) {
+                TestAnnotation testAnnotation = type.getAnnotation(TestAnnotation.class);
+                if (testAnnotation == null) {
                     return 7;
                 }
-                return ThreadLocalRandom.current().nextInt(2, 10);
+                return 2;
             });
         });
 
