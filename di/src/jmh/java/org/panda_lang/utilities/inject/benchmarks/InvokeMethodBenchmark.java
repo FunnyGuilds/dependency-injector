@@ -16,6 +16,8 @@
 
 package org.panda_lang.utilities.inject.benchmarks;
 
+import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.annotations.Fork;
 import org.openjdk.jmh.annotations.Level;
@@ -28,15 +30,13 @@ import org.openjdk.jmh.annotations.Warmup;
 import org.panda_lang.utilities.inject.DependencyInjection;
 import org.panda_lang.utilities.inject.MethodInjector;
 import panda.utilities.ReflectionUtils;
-import java.lang.reflect.Method;
-import java.util.concurrent.TimeUnit;
 
-/* JDK14
-    Benchmark                                        Mode  Cnt      Score      Error   Units
-    InvokeMethodBenchmark.direct             thrpt   10  65887,724 ± 7180,279  ops/ms
-    InvokeMethodBenchmark.generatedInjected  thrpt   10  63508,263 ± 6460,304  ops/ms
-    InvokeMethodBenchmark.injected           thrpt   10  30296,259 ± 2018,541  ops/ms
-    InvokeMethodBenchmark.reflection         thrpt   10  45549,553 ± 1892,456  ops/ms
+/* JDK17 (I5-8600K OC 4.5 Ghz, 32GB RAM 3200Mhz, Windows 10)
+    Benchmark                                 Mode  Cnt       Score       Error   Units
+    InvokeMethodBenchmark.direct             thrpt   10  478642.016 � 18582.582  ops/ms
+    InvokeMethodBenchmark.generatedInjected  thrpt   10  136923.888 �  3366.589  ops/ms
+    InvokeMethodBenchmark.injected           thrpt   10  130443.893 � 29652.246  ops/ms
+    InvokeMethodBenchmark.reflection         thrpt   10  279781.028 � 10225.142  ops/ms
  */
 @Fork(value = 1)
 @Warmup(iterations = 10, time = 2)
