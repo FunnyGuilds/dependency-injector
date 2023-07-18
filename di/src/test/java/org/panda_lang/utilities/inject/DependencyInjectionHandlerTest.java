@@ -1,29 +1,29 @@
 package org.panda_lang.utilities.inject;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.util.concurrent.ThreadLocalRandom;
 import org.junit.jupiter.api.Test;
 import org.panda_lang.utilities.inject.annotations.Inject;
 import org.panda_lang.utilities.inject.annotations.Injectable;
 import org.panda_lang.utilities.inject.annotations.PostConstruct;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.util.concurrent.ThreadLocalRandom;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DependencyInjectionHandlerTest {
 
     @Injectable
     @Retention(RetentionPolicy.RUNTIME)
-    @interface Custom {
-    }
+    @interface Custom { }
 
     @Injectable
     @Retention(RetentionPolicy.RUNTIME)
-    @interface AwesomeRandom {
-    }
+    @interface AwesomeRandom { }
 
     public static class Service1 {
+
         @Inject
         @Custom
         public String fieldOne;
@@ -42,6 +42,7 @@ public class DependencyInjectionHandlerTest {
             assertEquals(7, this.fieldTwo);
             assertTrue(this.fieldTwo >= 2 && this.fieldTwo <= 10);
         }
+
     }
 
     @Test
@@ -61,8 +62,10 @@ public class DependencyInjectionHandlerTest {
     }
 
     public static class Service2 {
+
         @Inject
         public String fieldOne;
+
     }
 
     @Test
