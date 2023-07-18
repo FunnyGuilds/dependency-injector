@@ -58,7 +58,7 @@ final class DependencyInjectionFieldsTest {
     }
 
     @Test
-    void shouldInjectFields() throws Throwable {
+    void shouldInjectFields() {
         Injector injector = DependencyInjection.createInjector(resources -> {
             resources.on(boolean.class).assignInstance(true);
             resources.on(String.class).assignInstance("Hello Field");
@@ -68,7 +68,7 @@ final class DependencyInjectionFieldsTest {
             resources.annotatedWithTested(Custom.class).assignHandler((property, custom, objects) -> objects[0].toString());
         });
 
-        Service service = injector.forFields(Service.class).newInstance("custom argument");
+        Service service = injector.newInstanceWithFields(Service.class,"custom argument");
         assertEquals("Hello Field 7", service.serve());
         assertEquals("1.2 254623242914889729", service.serveAbstract());
     }

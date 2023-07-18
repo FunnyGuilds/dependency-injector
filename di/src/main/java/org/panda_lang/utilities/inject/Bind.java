@@ -17,6 +17,8 @@
 package org.panda_lang.utilities.inject;
 
 import org.jetbrains.annotations.NotNull;
+import panda.std.function.ThrowingSupplier;
+import panda.std.function.ThrowingTriFunction;
 import panda.std.function.TriFunction;
 import java.lang.annotation.Annotation;
 import java.util.function.Supplier;
@@ -24,7 +26,7 @@ import java.util.function.Supplier;
 public interface Bind<A extends Annotation> extends Comparable<Bind<A>> {
 
     /**
-     * Assign object to the bind
+     * Assign an object to the bind
      *
      * @param value the instance to assign
      */
@@ -38,11 +40,25 @@ public interface Bind<A extends Annotation> extends Comparable<Bind<A>> {
     void assignInstance(Supplier<?> valueSupplier);
 
     /**
+     * Assign value supplier to the bind which can throw an exception
+     *
+     * @param valueSupplier the supplier to assign
+     */
+    void assignThrowingInstance(ThrowingSupplier<?, ? extends Exception> valueSupplier);
+
+    /**
      * Assign custom handler to the bind
      *
      * @param handler the handler which accepts type of parameter and bind type as arguments
      */
     void assignHandler(TriFunction<Property, A, Object[], ?> handler);
+
+    /**
+     * Assign custom handler to the bind which can throw an exception
+     *
+     * @param handler the handler which accepts type of parameter and bind type as arguments
+     */
+    void assignThrowingHandler(ThrowingTriFunction<Property, A, Object[], ?, ? extends Exception> handler);
 
     /**
      * Get the value of bind for the required (parameter) type and instance of a bind type

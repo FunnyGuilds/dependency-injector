@@ -18,21 +18,26 @@ package org.panda_lang.utilities.inject;
 
 import java.lang.annotation.Annotation;
 import java.util.function.Supplier;
+import panda.std.function.ThrowingSupplier;
 
 final class StaticBindValue<A extends Annotation> implements BindValue<A> {
 
-    private final Supplier<?> valueSupplier;
+    private final ThrowingSupplier<?, ? extends Exception> valueSupplier;
 
     StaticBindValue(Object value) {
-        this(() -> value);
+        this((ThrowingSupplier<?, ? extends Exception>) () -> value);
     }
 
-    StaticBindValue(Supplier<?> valueSupplier) {
+    StaticBindValue(ThrowingSupplier<?, ? extends Exception> valueSupplier) {
         this.valueSupplier = valueSupplier;
     }
 
+    StaticBindValue(Supplier<?> valueSupplier) {
+        this.valueSupplier = valueSupplier::get;
+    }
+
     @Override
-    public Object getValue(Property required, A annotation, Object... injectorArgs) {
+    public Object getValue(Property required, A annotation, Object... injectorArgs) throws Exception {
         return valueSupplier.get();
     }
 

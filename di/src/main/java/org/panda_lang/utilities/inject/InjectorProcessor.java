@@ -43,13 +43,7 @@ final class InjectorProcessor {
         this.injector = injector;
 
         this.autoConstructBind = new DefaultBind<>(AutoConstruct.class);
-        this.autoConstructBind.assignHandler((property, annotation, injectorArgs) -> {
-            try {
-                return injector.newInstanceWithFields(property.getType(), injectorArgs);
-            } catch (Exception ex) {
-                throw new DependencyInjectionException(ex);
-            }
-        });
+        this.autoConstructBind.assignThrowingHandler((property, annotation, injectorArgs) -> injector.newInstanceWithFields(property.getType(), injectorArgs));
     }
 
     protected Object[] fetchValues(InjectorCache cache, Object... injectorArgs) throws Exception {
@@ -170,8 +164,14 @@ final class InjectorProcessor {
     }
 
     protected Bind<Annotation> fetchBind(@Nullable Annotation annotation, Property property) throws MissingBindException {
-        Class<?> requiredType = annotation != null ? annotation.annotationType() : property.getType();
-        Bind<Annotation> bind = this.injector.getResources().getBind(requiredType).orNull();
+        Bind<Annotation> bind = annotation != null
+                ? this.injector.getResources().getBind(annotation.annotationType()).orNull()
+                : null;
+
+        if (bind == null) {
+            bind = this.injector.getResources().getBind(property.getType()).orNull();
+        }
+
         if (bind == null && property.getAnnotation(AutoConstruct.class) != null) {
             bind = this.autoConstructBind;
         }
