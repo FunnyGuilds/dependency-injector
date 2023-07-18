@@ -106,8 +106,20 @@ allprojects {
         }
     }
 
-    tasks.test {
+    tasks.check {
         finalizedBy(tasks.named<JacocoReport>("jacocoTestReport"))
+    }
+
+    tasks.withType<Javadoc> {
+        (options as StandardJavadocDocletOptions).let {
+            it.addStringOption("Xdoclint:none", "-quiet") // mute warnings
+            it.links(
+                    "https://javadoc.io/doc/org.jetbrains/annotations/24.0.1/",
+                    "https://javadoc.io/doc/org.panda-lang/panda-utilities/0.5.3-alpha/",
+                    "https://javadoc.io/doc/org.panda-lang/expressible/1.3.5/"
+            )
+            it.encoding = "UTF-8"
+        }
     }
 
 }
