@@ -22,6 +22,8 @@ import org.panda_lang.utilities.inject.annotations.Injectable;
 
 public final class DependencyInjectionUtils {
 
+    private DependencyInjectionUtils() { }
+
     /**
      * Check if annotation is available at runtime and it is annotated by @Injectable annotation
      *
