@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.panda_lang.utilities.inject.benchmarks;
+package org.panda_lang.utilities.inject;
 
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
@@ -27,8 +27,6 @@ import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
-import org.panda_lang.utilities.inject.DependencyInjection;
-import org.panda_lang.utilities.inject.MethodInjector;
 import panda.utilities.ReflectionUtils;
 
 /* JDK17 (I5-8600K OC 4.5 Ghz, 32GB RAM 3200Mhz, Windows 10)
@@ -44,7 +42,7 @@ import panda.utilities.ReflectionUtils;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class InvokeMethodBenchmark {
 
-    public static class Entity {
+    private static class Entity {
         private int points;
         public Integer bump() { return ++points; }
     }
@@ -73,7 +71,7 @@ public class InvokeMethodBenchmark {
     public static class DIState {
 
         private Entity entity;
-        private Method method ;
+        private Method method;
         private MethodInjector injectedMethod;
         private MethodInjector generatedInjectedMethod;
 
