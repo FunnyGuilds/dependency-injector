@@ -32,8 +32,6 @@ import java.util.stream.Collectors;
 
 final class InjectorProcessor {
 
-    protected static final Object[] EMPTY = { };
-
     private final Injector injector;
     private final Map<Executable, Annotation[]> injectableCache = new HashMap<>();
 
@@ -49,16 +47,14 @@ final class InjectorProcessor {
     protected Object[] fetchValues(InjectorCache cache, Object... injectorArgs) throws Exception {
         Property[] properties = cache.getProperties();
         Object[] values = new Object[cache.getInjectable().length];
-
         for (int index = 0; index < values.length; index++) {
             values[index] = fetchValue(cache, properties[index], index, injectorArgs);
         }
-
         return values;
     }
 
-    protected Object tryFetchValue(InjectorProcessor processor, Property property, Object... injectorArgs) throws Exception {
-        InjectorCache cache = InjectorCache.of(processor, property);
+    protected @Nullable Object fetchValue(Property property, Object... injectorArgs) throws Exception {
+        InjectorCache cache = InjectorCache.of(this, property);
         return fetchValue(cache, property, 0, injectorArgs);
     }
 
@@ -67,11 +63,9 @@ final class InjectorProcessor {
 
         for (BindHandler<Annotation, Object, ?> handler : cache.getHandlers()[index]) {
             Annotation annotation = null;
-
             if (handler.getAnnotation().isPresent()) {
                 annotation = cache.getAnnotations()[index].get(handler.getAnnotation().get());
             }
-
             value = handler.process(property, annotation, ObjectUtils.cast(value), injectorArgs);
         }
 
@@ -80,17 +74,14 @@ final class InjectorProcessor {
 
     protected Property[] fetchInjectorProperties(Parameter[] parameters) {
         Property[] properties = new Property[parameters.length];
-
         for (int index = 0; index < parameters.length; index++) {
             properties[index] = new PropertyParameter(parameters[index]);
         }
-
         return properties;
     }
 
     protected Annotation[] fetchAnnotations(Executable executable) {
         Annotation[] injectorAnnotations = injectableCache.get(executable);
-
         if (injectorAnnotations != null) {
             return injectorAnnotations;
         }
@@ -116,11 +107,9 @@ final class InjectorProcessor {
 
         for (int index = 0; index < annotations.length; index++) {
             Map<Class<? extends Annotation>, Annotation> annotationMap = new HashMap<>();
-
             for (Annotation annotation : annotations[index]) {
                 annotationMap.put(annotation.annotationType(), annotation);
             }
-
             mappedAnnotations[index] = annotationMap;
         }
 
@@ -136,8 +125,14 @@ final class InjectorProcessor {
             Annotation annotation = annotations[index];
             Parameter parameter = parameters[index];
 
-            Class<?> requiredType = annotation != null ? annotation.annotationType() : parameter.getType();
-            Bind<Annotation> bind = resources.getBind(requiredType).orNull();
+            Bind<Annotation> bind = annotation != null
+                    ? this.injector.getResources().getBind(annotation.annotationType()).orNull()
+                    : null;
+
+            if (bind == null) {
+                bind = this.injector.getResources().getBind(parameter.getType()).orNull();
+            }
+
             if (bind == null && parameter.getAnnotation(AutoConstruct.class) != null) {
                 bind = this.autoConstructBind;
             }

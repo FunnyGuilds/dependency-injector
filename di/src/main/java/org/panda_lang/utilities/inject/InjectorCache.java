@@ -79,7 +79,7 @@ final class InjectorCache {
     }
 
     public static InjectorCache of(InjectorProcessor processor, Property property) {
-        Annotation annotation = ArrayUtils.findIn(property.getAnnotations(), a -> a.annotationType().isAnnotationPresent(Injectable.class)).getOrNull();
+        Annotation annotation = ArrayUtils.findIn(property.getAnnotations(), a -> a.annotationType().isAnnotationPresent(Injectable.class)).orNull();
 
         return new InjectorCache(
                 ArrayUtils.of(property),

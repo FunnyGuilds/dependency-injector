@@ -17,9 +17,6 @@
 package org.panda_lang.utilities.inject;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import org.jetbrains.annotations.Nullable;
 import org.panda_lang.utilities.inject.annotations.PostConstruct;
 import panda.std.Lazy;
@@ -125,7 +122,7 @@ final class DefaultInjector implements Injector {
 
     @Override
     public <T> @Nullable T invokeParameter(Parameter parameter, Object... injectorArgs) throws Exception {
-        return ObjectUtils.cast(processor.tryFetchValue(processor, new PropertyParameter(parameter), injectorArgs));
+        return ObjectUtils.cast(processor.fetchValue(new PropertyParameter(parameter), injectorArgs));
     }
 
     @Override
