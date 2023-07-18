@@ -53,7 +53,7 @@ final class DependencyInjectionWikiTest {
 
     @Injectable // mark annotation as DI ready annotation
     @Retention(RetentionPolicy.RUNTIME) // make sure that the annotation is visible at runtime
-    @interface AwesomeRandom { }
+    private @interface AwesomeRandom { }
 
     private static final class Entity {
         private final UUID id;

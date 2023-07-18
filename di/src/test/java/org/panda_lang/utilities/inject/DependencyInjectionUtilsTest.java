@@ -36,18 +36,18 @@ class DependencyInjectionUtilsTest {
         assertDoesNotThrow(() -> DependencyInjectionUtils.testAnnotation(InjectableAnnotation.class));
     }
 
-    static class NotAnAnnotation { }
+    private static class NotAnAnnotation { }
 
-    @interface DefaultAnnotation { }
+    private @interface DefaultAnnotation { }
 
     @Retention(RetentionPolicy.CLASS)
-    @interface ClassAnnotation { }
+    private @interface ClassAnnotation { }
 
     @Retention(RetentionPolicy.RUNTIME)
-    @interface RuntimeAnnotation { }
+    private @interface RuntimeAnnotation { }
 
     @Injectable
     @Retention(RetentionPolicy.RUNTIME)
-    @interface InjectableAnnotation { }
+    private @interface InjectableAnnotation { }
 
 }

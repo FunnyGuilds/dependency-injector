@@ -13,9 +13,9 @@ final class DependencyInjectionFieldsTest {
 
     @Injectable
     @Retention(RetentionPolicy.RUNTIME)
-    @interface Custom { }
+    private @interface Custom { }
 
-    static class Service extends AbstractService {
+    private static class Service extends AbstractService {
 
         public final boolean throughConstructor;
         public final String customArgument;
@@ -41,7 +41,7 @@ final class DependencyInjectionFieldsTest {
 
     }
 
-    static abstract class AbstractService {
+    private static abstract class AbstractService {
 
         @Inject
         protected float abstractFieldOne;

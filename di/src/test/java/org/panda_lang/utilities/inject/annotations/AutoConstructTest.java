@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class AutoConstructTest {
 
-    static class Service {
+    private static class Service {
 
         @AutoConstruct
         private Repository repository;
@@ -26,7 +26,7 @@ final class AutoConstructTest {
 
     }
 
-    static class Repository {
+    private static class Repository {
 
         @AutoConstruct
         private DataProvider dataProvider;
@@ -42,7 +42,7 @@ final class AutoConstructTest {
 
     }
 
-    static class DataProvider {
+    private static class DataProvider {
 
         @Inject
         private String testValue;

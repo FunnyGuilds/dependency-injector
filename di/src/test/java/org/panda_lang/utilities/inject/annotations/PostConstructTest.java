@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class PostConstructTest {
 
-    static class Service extends AbstractService {
+    private static class Service extends AbstractService {
 
         @Inject
         public String value;
@@ -24,7 +24,7 @@ final class PostConstructTest {
 
     }
 
-    abstract static class AbstractService {
+    private abstract static class AbstractService {
 
         @Inject
         private float abstractValue;

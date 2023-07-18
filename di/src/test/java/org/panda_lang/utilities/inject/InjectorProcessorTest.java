@@ -28,9 +28,7 @@ final class InjectorProcessorTest {
 
     @Injectable
     @Retention(RetentionPolicy.RUNTIME)
-    @interface TestAnnotation {
-
-    }
+    private @interface TestAnnotation { }
 
     private static class TestClass {
 

@@ -34,12 +34,12 @@ final class DependencyInjectionInstancesTest {
         assertThrows(DependencyInjectionException.class, () -> injector.newInstance(Service.class));
     }
 
-    public static class Bean { }
+    private static class Bean { }
 
-    public interface Custom { }
-    static class CustomImpl implements Custom { }
+    private interface Custom { }
+    private static class CustomImpl implements Custom { }
 
-    static class Service {
+    private static class Service {
         public Service(Bean bean, Custom custom) {
             assertNotNull(bean);
             assertNotNull(custom);

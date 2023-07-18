@@ -16,13 +16,13 @@ public class DependencyInjectionHandlerTest {
 
     @Injectable
     @Retention(RetentionPolicy.RUNTIME)
-    @interface Custom { }
+    private @interface Custom { }
 
     @Injectable
     @Retention(RetentionPolicy.RUNTIME)
-    @interface TestAnnotation { }
+    private @interface TestAnnotation { }
 
-    public static class Service1 {
+    private static class Service1 {
 
         @Inject
         @Custom
@@ -61,7 +61,7 @@ public class DependencyInjectionHandlerTest {
         injector.newInstanceWithFields(Service1.class);
     }
 
-    public static class Service2 {
+    private static class Service2 {
 
         @Inject
         public String fieldOne;
