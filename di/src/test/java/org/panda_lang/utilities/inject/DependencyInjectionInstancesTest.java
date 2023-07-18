@@ -14,7 +14,7 @@ final class DependencyInjectionInstancesTest {
         // some logic, a few hours later...
 
         injector.getResources().on(Custom.class).assignInstance(new CustomImpl()); // singleton
-        injector.getResources().on(Bean.class).assignSupplier(Bean::new); // new instance per call
+        injector.getResources().on(Bean.class).assignInstance(Bean::new); // new instance per call
 
         Service service = injector.newInstance(Service.class);
         assertNotNull(service);
@@ -23,10 +23,10 @@ final class DependencyInjectionInstancesTest {
     @Test
     void shouldNotInjectInstances() {
         Injector injector = DependencyInjection.createInjector(resources -> {
-            resources.on(Custom.class).assignThrowingSupplier(() -> {
+            resources.on(Custom.class).assignThrowingInstance(() -> {
                 throw new Exception("Failed");
             });
-            resources.on(Bean.class).assignThrowingSupplier(() -> {
+            resources.on(Bean.class).assignThrowingInstance(() -> {
                 throw new Exception("Failed");
             });
         });

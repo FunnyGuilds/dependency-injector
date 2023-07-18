@@ -16,7 +16,6 @@
 
 package org.panda_lang.utilities.inject;
 
-import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import panda.std.function.ThrowingSupplier;
 import panda.std.function.ThrowingTriFunction;
@@ -38,23 +37,14 @@ public interface Bind<A extends Annotation> extends Comparable<Bind<A>> {
      *
      * @param valueSupplier the supplier to assign
      */
-    void assignSupplier(Supplier<?> valueSupplier);
-
-    /**
-     * @deprecated use {@link #assignSupplier(Supplier)} instead
-     */
-    @Deprecated
-    @ApiStatus.ScheduledForRemoval(inVersion = "2.0.0")
-    default void assignInstance(Supplier<?> valueSupplier) {
-        this.assignSupplier(valueSupplier);
-    }
+    void assignInstance(Supplier<?> valueSupplier);
 
     /**
      * Assign value supplier to the bind which can throw an exception
      *
      * @param valueSupplier the supplier to assign
      */
-    void assignThrowingSupplier(ThrowingSupplier<?, ? extends Exception> valueSupplier);
+    void assignThrowingInstance(ThrowingSupplier<?, ? extends Exception> valueSupplier);
 
     /**
      * Assign custom handler to the bind

@@ -52,12 +52,12 @@ class DefaultBind<A extends Annotation> implements Bind<A> {
     }
 
     @Override
-    public void assignSupplier(Supplier<?> valueSupplier) {
+    public void assignInstance(Supplier<?> valueSupplier) {
         with(new StaticBindValue<>(valueSupplier));
     }
 
     @Override
-    public void assignThrowingSupplier(ThrowingSupplier<?, ? extends Exception> valueSupplier) {
+    public void assignThrowingInstance(ThrowingSupplier<?, ? extends Exception> valueSupplier) {
         with(new StaticBindValue<>(valueSupplier));
     }
 
