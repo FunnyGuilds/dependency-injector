@@ -30,6 +30,8 @@ import java.util.function.BiFunction;
 
 public final class GeneratedMethodInjector implements MethodInjector {
 
+    private static final Object[] EMPTY = new Object[0];
+
     private static final AtomicInteger ID = new AtomicInteger();
 
     private final InjectorProcessor processor;
@@ -50,7 +52,7 @@ public final class GeneratedMethodInjector implements MethodInjector {
     @Override
     public <T> T invoke(Object instance, Object... injectorArgs) throws Exception {
         return (T) function.apply(instance, empty
-                ? InjectorProcessor.EMPTY
+                ? EMPTY
                 : processor.fetchValues(cache, injectorArgs));
     }
 
