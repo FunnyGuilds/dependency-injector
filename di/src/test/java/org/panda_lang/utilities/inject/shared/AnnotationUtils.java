@@ -20,11 +20,11 @@ public final class AnnotationUtils {
             }
 
             if (method.getName().equals("hashCode")) {
-                return 0;
+                return annotationClass.hashCode() * 127;
             }
 
             if (method.getName().equals("equals")) {
-                return proxy == args[0];
+                return args[0] instanceof Annotation && annotationClass.equals(((Annotation) args[0]).annotationType());
             }
 
             throw new UnsupportedOperationException("Unsupported method: " + method);
