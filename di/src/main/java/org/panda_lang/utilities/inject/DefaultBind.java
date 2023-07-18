@@ -16,6 +16,8 @@
 
 package org.panda_lang.utilities.inject;
 
+import panda.std.function.ThrowingSupplier;
+import panda.std.function.ThrowingTriFunction;
 import panda.std.function.TriFunction;
 import panda.utilities.ObjectUtils;
 import java.lang.annotation.Annotation;
@@ -55,7 +57,17 @@ class DefaultBind<A extends Annotation> implements Bind<A> {
     }
 
     @Override
+    public void assignThrowingInstance(ThrowingSupplier<?, ? extends Exception> valueSupplier) {
+        with(new StaticBindValue<>(valueSupplier));
+    }
+
+    @Override
     public void assignHandler(TriFunction<Property, A, Object[], ?> handler) {
+        with(new HandledBindValue<>(handler));
+    }
+
+    @Override
+    public void assignThrowingHandler(ThrowingTriFunction<Property, A, Object[], ?, ? extends Exception> handler) {
         with(new HandledBindValue<>(handler));
     }
 
