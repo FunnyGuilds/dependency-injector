@@ -28,10 +28,6 @@ public class DependencyInjectionException extends RuntimeException {
         super(message);
     }
 
-    DependencyInjectionException(Throwable cause) {
-        super(cause);
-    }
-
     DependencyInjectionException(String message, Throwable cause) {
         super(message, cause);
     }
