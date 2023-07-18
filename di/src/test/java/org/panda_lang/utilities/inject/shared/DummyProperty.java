@@ -17,14 +17,16 @@ public class DummyProperty<T> implements Property {
     public DummyProperty(String name, Class<T> type, List<Class<? extends Annotation>> annotations) {
         this.name = name;
         this.type = type;
-        this.annotations = PandaStream.of(annotations)
-                .toMap(annotation -> annotation, annotation -> {
+        this.annotations = PandaStream.of(annotations).toMap(
+                annotation -> annotation,
+                annotation -> {
                     try {
                         return AnnotationUtils.instanceAnnotation(annotation);
                     } catch (Exception ex) {
                         throw new RuntimeException(ex);
                     }
-                });
+                }
+        );
     }
 
     @SafeVarargs
