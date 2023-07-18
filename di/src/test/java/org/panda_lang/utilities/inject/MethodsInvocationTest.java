@@ -4,6 +4,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -43,7 +44,7 @@ public class MethodsInvocationTest {
     private @interface TestAnnotation { }
 
     @Retention(RetentionPolicy.RUNTIME)
-    private @interface TestAnnotation2 {}
+    private @interface TestAnnotation2 { }
 
     @Test
     void shouldInvokeMethods() throws NoSuchMethodException {
@@ -52,10 +53,10 @@ public class MethodsInvocationTest {
         });
 
         TestClass testClass = new TestClass();
-        injector.invokeMethod(TestClass.class.getMethod("testMethod"), testClass);
+        assertDoesNotThrow(() -> injector.invokeMethod(TestClass.class.getMethod("testMethod"), testClass));
         assertEquals("test", testClass.testString);
 
-        injector.invokeAnnotatedMethods(TestAnnotation.class, testClass);
+        assertDoesNotThrow(() -> injector.invokeAnnotatedMethods(TestAnnotation.class, testClass));
         assertEquals(6, testClass.testInt);
     }
 
