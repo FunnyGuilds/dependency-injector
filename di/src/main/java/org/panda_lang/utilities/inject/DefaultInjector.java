@@ -76,7 +76,12 @@ final class DefaultInjector implements Injector {
 
     @Override
     public <T> FieldsInjector<T> forFields(Class<T> type) {
-        return new FieldsInjector<T>(processor, forConstructor(type));
+        return new FieldsInjector<>(processor, forConstructor(type));
+    }
+
+    @Override
+    public <T> FieldsInjector<T> forFields(Constructor<T> constructor) {
+        return new FieldsInjector<>(processor, forConstructor(constructor));
     }
 
     @Override
