@@ -30,6 +30,7 @@ class DependencyInjectionUtilsTest {
     void testAnnotation() {
         assertThrows(DependencyInjectionException.class, () -> DependencyInjectionUtils.testAnnotation(NotAnAnnotation.class));
         assertThrows(DependencyInjectionException.class, () -> DependencyInjectionUtils.testAnnotation(DefaultAnnotation.class));
+        assertThrows(DependencyInjectionException.class, () -> DependencyInjectionUtils.testAnnotation(ClassAnnotation.class));
         assertThrows(DependencyInjectionException.class, () -> DependencyInjectionUtils.testAnnotation(RuntimeAnnotation.class));
 
         assertDoesNotThrow(() -> DependencyInjectionUtils.testAnnotation(InjectableAnnotation.class));
@@ -38,6 +39,9 @@ class DependencyInjectionUtilsTest {
     static class NotAnAnnotation { }
 
     @interface DefaultAnnotation { }
+
+    @Retention(RetentionPolicy.CLASS)
+    @interface ClassAnnotation { }
 
     @Retention(RetentionPolicy.RUNTIME)
     @interface RuntimeAnnotation { }
