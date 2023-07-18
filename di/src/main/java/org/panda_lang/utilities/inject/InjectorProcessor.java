@@ -35,7 +35,7 @@ final class InjectorProcessor {
     private final Injector injector;
     private final Map<Executable, Annotation[]> injectableCache = new HashMap<>();
 
-    private final Bind<Annotation> autoConstructBind;
+    final Bind<Annotation> autoConstructBind;
 
     InjectorProcessor(Injector injector) {
         this.injector = injector;
