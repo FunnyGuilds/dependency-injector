@@ -64,6 +64,16 @@ final class DefaultInjector implements Injector {
     }
 
     @Override
+    public <T> FieldsInjector<T> forFields(Class<T> type) {
+        return new FieldsInjector<>(processor, forConstructor(type));
+    }
+
+    @Override
+    public <T> FieldsInjector<T> forFields(Constructor<T> constructor) {
+        return new FieldsInjector<>(processor, forConstructor(constructor));
+    }
+
+    @Override
     public <T> T newInstance(Class<T> type, Object... injectorArgs) throws DependencyInjectionException {
         try {
             T instance = this.forConstructor(type).newInstance(injectorArgs);
@@ -75,13 +85,14 @@ final class DefaultInjector implements Injector {
     }
 
     @Override
-    public <T> FieldsInjector<T> forFields(Class<T> type) {
-        return new FieldsInjector<>(processor, forConstructor(type));
-    }
-
-    @Override
-    public <T> FieldsInjector<T> forFields(Constructor<T> constructor) {
-        return new FieldsInjector<>(processor, forConstructor(constructor));
+    public <T> T newInstance(Constructor<T> constructor, Object... injectorArgs) throws DependencyInjectionException {
+        try {
+            T instance = this.forConstructor(constructor).newInstance(injectorArgs);
+            this.invokeAnnotatedMethods(PostConstruct.class, instance, injectorArgs);
+            return instance;
+        } catch (Exception exception) {
+            throw new DependencyInjectionException("Cannot create instance of " + constructor.getDeclaringClass().getSimpleName(), exception);
+        }
     }
 
     @Override
@@ -93,6 +104,27 @@ final class DefaultInjector implements Injector {
         } catch (Exception exception) {
             throw new DependencyInjectionException("Cannot create instance of " + type.getSimpleName(), exception);
         }
+    }
+
+    @Override
+    public <T> T newInstanceWithFields(Constructor<T> constructor, Object... injectorArgs) throws DependencyInjectionException {
+        try {
+            T instance = this.forFields(constructor).newInstance(injectorArgs);
+            this.invokeAnnotatedMethods(PostConstruct.class, instance, injectorArgs);
+            return instance;
+        } catch (Exception exception) {
+            throw new DependencyInjectionException("Cannot create instance of " + constructor.getDeclaringClass().getSimpleName(), exception);
+        }
+    }
+
+    @Override
+    public MethodInjector forMethod(Method method) {
+        return new DefaultMethodInjector(processor, method);
+    }
+
+    @Override
+    public MethodInjector forGeneratedMethod(Method method) throws Exception {
+        return methodInjectorFactory.get().createMethodInjector(processor, method);
     }
 
     @Override
@@ -113,16 +145,6 @@ final class DefaultInjector implements Injector {
 
             this.invokeMethod(method, instance, injectorArgs);
         }
-    }
-
-    @Override
-    public MethodInjector forMethod(Method method) {
-        return new DefaultMethodInjector(processor, method);
-    }
-
-    @Override
-    public MethodInjector forGeneratedMethod(Method method) throws Exception {
-        return methodInjectorFactory.get().createMethodInjector(processor, method);
     }
 
     @Override
