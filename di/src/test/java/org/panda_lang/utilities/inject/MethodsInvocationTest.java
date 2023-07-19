@@ -41,13 +41,13 @@ public class MethodsInvocationTest {
     }
 
     @Retention(RetentionPolicy.RUNTIME)
-    private @interface TestAnnotation { }
+    private @interface TestAnnotation {}
 
     @Retention(RetentionPolicy.RUNTIME)
-    private @interface TestAnnotation2 { }
+    private @interface TestAnnotation2 {}
 
     @Test
-    void shouldInvokeMethods() throws NoSuchMethodException {
+    void shouldInvokeMethods() {
         Injector injector = DependencyInjection.createInjector(resources -> {
             resources.on(int.class).assignInstance(3);
         });
@@ -61,7 +61,7 @@ public class MethodsInvocationTest {
     }
 
     @Test
-    void shouldNotInvokeMethods() throws NoSuchMethodException {
+    void shouldNotInvokeMethods() {
         Injector injector = DependencyInjection.createInjector(resources -> {
             resources.on(int.class).assignInstance(3);
         });

@@ -16,13 +16,12 @@
 
 package org.panda_lang.utilities.inject;
 
-import org.junit.jupiter.api.Test;
-import org.panda_lang.utilities.inject.annotations.Inject;
-import org.panda_lang.utilities.inject.annotations.Injectable;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.UUID;
+import org.junit.jupiter.api.Test;
+import org.panda_lang.utilities.inject.annotations.Inject;
+import org.panda_lang.utilities.inject.annotations.Injectable;
 
 final class DependencyInjectionWikiTest {
 
@@ -53,9 +52,10 @@ final class DependencyInjectionWikiTest {
 
     @Injectable // mark annotation as DI ready annotation
     @Retention(RetentionPolicy.RUNTIME) // make sure that the annotation is visible at runtime
-    private @interface AwesomeRandom { }
+    private @interface AwesomeRandom {}
 
     private static final class Entity {
+
         private final UUID id;
 
         @Inject //it's not required, but it might be useful to disable "unused method" warnings/scanning for annotations
@@ -66,6 +66,7 @@ final class DependencyInjectionWikiTest {
         public UUID getId() {
             return id;
         }
+
     }
 
 }

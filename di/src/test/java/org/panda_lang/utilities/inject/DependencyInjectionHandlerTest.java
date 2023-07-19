@@ -14,11 +14,11 @@ public class DependencyInjectionHandlerTest {
 
     @Injectable
     @Retention(RetentionPolicy.RUNTIME)
-    private @interface Custom { }
+    private @interface Custom {}
 
     @Injectable
     @Retention(RetentionPolicy.RUNTIME)
-    private @interface TestAnnotation { }
+    private @interface TestAnnotation {}
 
     private static class Service1 {
 

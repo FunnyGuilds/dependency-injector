@@ -32,23 +32,27 @@ final class DependencyInjectionInstancesTest {
             });
         });
 
-        assertThrows(InvalidParameterException.class, () -> injector.forConstructor(InvalidClass.class).newInstance(), "Class has contain one and only one constructor");
+        assertThrows(InvalidParameterException.class, () -> injector.forConstructor(InvalidClass.class).newInstance(), "Class has to contain one and only constructor");
         assertThrows(DependencyInjectionException.class, () -> injector.newInstance(Service.class));
     }
 
-    private static class Bean { }
+    private static class Bean {}
 
-    private interface Custom { }
-    private static class CustomImpl implements Custom { }
+    private interface Custom {}
+
+    private static class CustomImpl implements Custom {}
 
     private static class Service {
+
         public Service(Bean bean, Custom custom) {
             assertNotNull(bean);
             assertNotNull(custom);
         }
+
     }
 
     private static class InvalidClass { // 2 constructors (only 1 is allowed)
+
         public InvalidClass(Bean bean, Custom custom) {
             assertNotNull(bean);
             assertNotNull(custom);
@@ -57,6 +61,7 @@ final class DependencyInjectionInstancesTest {
         public InvalidClass(Bean bean) {
             assertNotNull(bean);
         }
+
     }
 
 }
