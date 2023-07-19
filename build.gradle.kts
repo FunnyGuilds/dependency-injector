@@ -134,8 +134,10 @@ subprojects {
         compileOnly("org.jetbrains:annotations:24.0.1")
 
         // Benchmarks
-        jmh("org.openjdk.jmh:jmh-core:1.36")
-        jmh("org.openjdk.jmh:jmh-generator-annprocess:1.36")
+        val jmh = 1.36
+        jmh("org.openjdk.jmh:jmh-core:$jmh")
+        jmh("org.openjdk.jmh:jmh-generator-annprocess:$jmh")
+        jmhAnnotationProcessor("org.openjdk.jmh:jmh-generator-annprocess:$jmh")
 
         // Tests
         val junit = "5.9.3"
