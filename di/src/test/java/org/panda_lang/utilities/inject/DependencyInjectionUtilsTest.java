@@ -16,13 +16,13 @@
 
 package org.panda_lang.utilities.inject;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import org.junit.jupiter.api.Test;
 import org.panda_lang.utilities.inject.annotations.Injectable;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DependencyInjectionUtilsTest {
 
@@ -36,18 +36,18 @@ class DependencyInjectionUtilsTest {
         assertDoesNotThrow(() -> DependencyInjectionUtils.testAnnotation(InjectableAnnotation.class));
     }
 
-    static class NotAnAnnotation { }
+    private static class NotAnAnnotation {}
 
-    @interface DefaultAnnotation { }
+    private @interface DefaultAnnotation {}
 
     @Retention(RetentionPolicy.CLASS)
-    @interface ClassAnnotation { }
+    private @interface ClassAnnotation {}
 
     @Retention(RetentionPolicy.RUNTIME)
-    @interface RuntimeAnnotation { }
+    private @interface RuntimeAnnotation {}
 
     @Injectable
     @Retention(RetentionPolicy.RUNTIME)
-    @interface InjectableAnnotation { }
+    private @interface InjectableAnnotation {}
 
 }

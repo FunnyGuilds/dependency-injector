@@ -1,21 +1,21 @@
 package org.panda_lang.utilities.inject;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import org.junit.jupiter.api.Test;
 import org.panda_lang.utilities.inject.annotations.Inject;
 import org.panda_lang.utilities.inject.annotations.Injectable;
 
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class DependencyInjectionFieldsTest {
 
     @Injectable
     @Retention(RetentionPolicy.RUNTIME)
-    @interface Custom { }
+    private @interface Custom {}
 
-    static class Service extends AbstractService {
+    private static class Service extends AbstractService {
 
         public final boolean throughConstructor;
         public final String customArgument;
@@ -41,7 +41,7 @@ final class DependencyInjectionFieldsTest {
 
     }
 
-    static abstract class AbstractService {
+    private static abstract class AbstractService {
 
         @Inject
         protected float abstractFieldOne;
@@ -68,7 +68,7 @@ final class DependencyInjectionFieldsTest {
             resources.annotatedWithTested(Custom.class).assignHandler((property, custom, objects) -> objects[0].toString());
         });
 
-        Service service = injector.newInstanceWithFields(Service.class,"custom argument");
+        Service service = injector.newInstanceWithFields(Service.class, "custom argument");
         assertEquals("Hello Field 7", service.serve());
         assertEquals("1.2 254623242914889729", service.serveAbstract());
     }

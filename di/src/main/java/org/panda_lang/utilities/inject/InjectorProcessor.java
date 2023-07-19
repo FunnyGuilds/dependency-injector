@@ -188,4 +188,8 @@ final class InjectorProcessor {
         return handlers;
     }
 
+   Bind<Annotation> getAutoConstructBind() {
+        return this.autoConstructBind;
+    }
+
 }

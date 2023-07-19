@@ -1,5 +1,6 @@
 package org.panda_lang.utilities.inject;
 
+import java.security.InvalidParameterException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -31,19 +32,36 @@ final class DependencyInjectionInstancesTest {
             });
         });
 
+        assertThrows(InvalidParameterException.class, () -> injector.forConstructor(InvalidClass.class).newInstance(), "Class has to contain one and only constructor");
         assertThrows(DependencyInjectionException.class, () -> injector.newInstance(Service.class));
     }
 
-    public static class Bean { }
+    private static class Bean {}
 
-    public interface Custom { }
-    static class CustomImpl implements Custom { }
+    private interface Custom {}
 
-    static class Service {
+    private static class CustomImpl implements Custom {}
+
+    private static class Service {
+
         public Service(Bean bean, Custom custom) {
             assertNotNull(bean);
             assertNotNull(custom);
         }
+
+    }
+
+    private static class InvalidClass { // 2 constructors (only 1 is allowed)
+
+        public InvalidClass(Bean bean, Custom custom) {
+            assertNotNull(bean);
+            assertNotNull(custom);
+        }
+
+        public InvalidClass(Bean bean) {
+            assertNotNull(bean);
+        }
+
     }
 
 }

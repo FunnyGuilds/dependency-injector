@@ -2,7 +2,6 @@ package org.panda_lang.utilities.inject;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import java.util.concurrent.ThreadLocalRandom;
 import org.junit.jupiter.api.Test;
 import org.panda_lang.utilities.inject.annotations.Inject;
 import org.panda_lang.utilities.inject.annotations.Injectable;
@@ -10,19 +9,18 @@ import org.panda_lang.utilities.inject.annotations.PostConstruct;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DependencyInjectionHandlerTest {
 
     @Injectable
     @Retention(RetentionPolicy.RUNTIME)
-    @interface Custom { }
+    private @interface Custom {}
 
     @Injectable
     @Retention(RetentionPolicy.RUNTIME)
-    @interface TestAnnotation { }
+    private @interface TestAnnotation {}
 
-    public static class Service1 {
+    private static class Service1 {
 
         @Inject
         @Custom
@@ -61,7 +59,7 @@ public class DependencyInjectionHandlerTest {
         injector.newInstanceWithFields(Service1.class);
     }
 
-    public static class Service2 {
+    private static class Service2 {
 
         @Inject
         public String fieldOne;
