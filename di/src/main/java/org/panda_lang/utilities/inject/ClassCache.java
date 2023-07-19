@@ -10,6 +10,9 @@ import org.panda_lang.utilities.inject.annotations.AutoConstruct;
 import org.panda_lang.utilities.inject.annotations.Inject;
 import panda.std.Pair;
 
+/**
+ * Utility class for caching class data (fields, methods, etc.) to improve performance.
+ */
 final class ClassCache {
 
     private static final Map<Class<?>, Field[]> CACHED_FIELDS = new ConcurrentHashMap<>();
@@ -19,10 +22,22 @@ final class ClassCache {
 
     private ClassCache() { }
 
+    /**
+     * Get all fields of the class.
+     * The result is cached.
+     * @param clazz class to get fields from
+     * @return array of fields
+     */
     public static Field[] getFields(Class<?> clazz) {
         return CACHED_FIELDS.computeIfAbsent(clazz, ClassCache::getAllFields);
     }
 
+    /**
+     * Get all fields of the class that are annotated with {@link Inject} or {@link AutoConstruct} and make them accessible.
+     * The result is cached.
+     * @param clazz class to get fields from
+     * @return array of fields
+     */
     public static Field[] getInjectorFields(Class<?> clazz) {
         return INJECTOR_CACHED_FIELDS.computeIfAbsent(
                 clazz,
@@ -42,6 +57,13 @@ final class ClassCache {
         return fields;
     }
 
+    /**
+     * Get all methods of the class that are annotated with the specified annotation.
+     * The result is cached.
+     * @param clazz class to get methods from
+     * @param annotation annotation to filter methods by
+     * @return array of methods
+     */
     public static Method[] getAnnotatedMethods(Class<?> clazz, Class<? extends Annotation> annotation) {
         return CACHED_ANNOTATED_METHODS.computeIfAbsent(
                 Pair.of(clazz, annotation),

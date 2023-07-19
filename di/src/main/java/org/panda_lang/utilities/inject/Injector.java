@@ -66,7 +66,7 @@ public interface Injector {
      * @param type the class to instantiate
      * @param <T>  the type
      * @return a new instance
-     * @throws DependencyInjectionException if anything happens during the injection
+     * @throws DependencyInjectionException if anything happened during the injection
      */
     <T> T newInstance(Class<T> type, Object... injectorArgs) throws DependencyInjectionException;
 
@@ -110,10 +110,13 @@ public interface Injector {
 
     /**
      * Generate injector for the given method
+     * <p>
+     * This method should be used only with <strong>di-codegen</strong> module or other {@link MethodInjector} implementation
+     * Otherwise, it will fall back to {@link #forMethod(Method)} and performance could be degraded
      *
      * @param method the method to process (works only for public properties)
      * @return injector for the given method
-     * @throws Exception if anything happen during the generation of method wrapper
+     * @throws Exception if anything happens during the generation of method wrapper
      */
     MethodInjector forGeneratedMethod(Method method) throws Exception;
 
@@ -133,17 +136,17 @@ public interface Injector {
      *
      * @param annotation the annotation to look for
      * @param instance   the instance to use
-     * @throws DependencyInjectionException if anything happens during execution of the method
+     * @throws DependencyInjectionException if anything happens during execution of the methods
      */
     void invokeAnnotatedMethods(Class<? extends Annotation> annotation, Object instance, Object... injectorArgs) throws DependencyInjectionException;
 
     /**
      * Get value that would be used to inject the given parameter
      *
-     * @param parameter the parameter invoke
+     * @param parameter the parameter for which the value will be returned
      * @param <T>       type of expected value
      * @return the associated binding value
-     * @throws Exception if anything happen
+     * @throws Exception if anything happens during invocation of the parameter
      */
     @Nullable <T> T invokeParameter(Parameter parameter, Object... injectorArgs) throws Exception;
 

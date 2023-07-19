@@ -39,7 +39,7 @@ public final class DefaultMethodInjector implements MethodInjector {
      * @param injectorArgs arguments for injector
      * @param <T> type of return value
      * @return returned value
-     * @throws Exception if anything happen in the evaluated method
+     * @throws Exception if anything happens in the evaluated method
      */
     @SuppressWarnings("unchecked")
     @Override
