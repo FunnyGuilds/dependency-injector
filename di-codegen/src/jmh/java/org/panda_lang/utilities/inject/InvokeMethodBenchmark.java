@@ -30,11 +30,11 @@ import org.openjdk.jmh.annotations.Warmup;
 import panda.utilities.ReflectionUtils;
 
 /* JDK17 (I5-8600K OC 4.5 Ghz, 32GB RAM 3200Mhz, Windows 10)
-    Benchmark                                 Mode  Cnt       Score       Error   Units
-    InvokeMethodBenchmark.direct             thrpt   10  478642.016 � 18582.582  ops/ms
-    InvokeMethodBenchmark.generatedInjected  thrpt   10  136923.888 �  3366.589  ops/ms
-    InvokeMethodBenchmark.injected           thrpt   10  130443.893 � 29652.246  ops/ms
-    InvokeMethodBenchmark.reflection         thrpt   10  279781.028 � 10225.142  ops/ms
+    Benchmark                                 Mode  Cnt       Score      Error   Units
+    InvokeMethodBenchmark.direct             thrpt   10  489587.548 �  637.710  ops/ms
+    InvokeMethodBenchmark.generatedInjected  thrpt   10  432125.047 � 1024.577  ops/ms
+    InvokeMethodBenchmark.injected           thrpt   10  139114.066 �  470.687  ops/ms
+    InvokeMethodBenchmark.reflection         thrpt   10  286117.805 � 1293.496  ops/ms
  */
 @Fork(value = 1)
 @Warmup(iterations = 10, time = 2)
@@ -42,7 +42,7 @@ import panda.utilities.ReflectionUtils;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class InvokeMethodBenchmark {
 
-    private static class Entity {
+    public static class Entity {
         private int points;
         public Integer bump() { return ++points; }
     }

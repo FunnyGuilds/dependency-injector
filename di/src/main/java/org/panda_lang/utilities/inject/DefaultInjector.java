@@ -35,7 +35,6 @@ final class DefaultInjector implements Injector {
 
     private final Resources resources;
     private final InjectorProcessor processor;
-    private final MethodsCache methodsCache = new MethodsCache();
 
     private final Lazy<MethodInjectorFactory> methodInjectorFactory = new Lazy<>(() ->
             StreamSupport.stream(Spliterators.spliteratorUnknownSize(ServiceLoader.load(MethodInjectorFactory.class).iterator(), ORDERED), false)
@@ -51,11 +50,11 @@ final class DefaultInjector implements Injector {
     @Override
     @SuppressWarnings("unchecked")
     public <T> ConstructorInjector<T> forConstructor(Class<T> type) {
-        if (type.getDeclaredConstructors().length != 1) {
+        Constructor<?>[] constructors = type.getDeclaredConstructors();
+        if (constructors.length != 1) {
             throw new InvalidParameterException("Class has to contain one and only constructor");
         }
-
-        return new ConstructorInjector<>(this.processor, (Constructor<T>) type.getDeclaredConstructors()[0]);
+        return new ConstructorInjector<>(this.processor, (Constructor<T>) constructors[0]);
     }
 
     @Override
@@ -138,11 +137,7 @@ final class DefaultInjector implements Injector {
 
     @Override
     public void invokeAnnotatedMethods(Class<? extends Annotation> annotation, Object instance, Object... injectorArgs) throws DependencyInjectionException {
-        for (Method method : this.methodsCache.getAnnotatedMethods(instance.getClass(), annotation)) {
-            if (!method.isAnnotationPresent(annotation)) {
-                continue;
-            }
-
+        for (Method method : ClassCache.getAnnotatedMethods(instance.getClass(), annotation)) {
             this.invokeMethod(method, instance, injectorArgs);
         }
     }
