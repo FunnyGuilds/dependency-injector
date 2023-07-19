@@ -26,7 +26,7 @@ public class MethodsInvocationTest {
 
         @TestAnnotation
         public void annotatedMethod(int value) {
-            this.testInt *= value;
+            this.testInt += value;
         }
 
         @TestAnnotation2
@@ -57,7 +57,7 @@ public class MethodsInvocationTest {
         assertEquals("test", testClass.testString);
 
         assertDoesNotThrow(() -> injector.invokeAnnotatedMethods(TestAnnotation.class, testClass));
-        assertEquals(6, testClass.testInt);
+        assertEquals(5, testClass.testInt);
     }
 
     @Test
