@@ -30,11 +30,11 @@ import org.openjdk.jmh.annotations.Warmup;
 import panda.utilities.ReflectionUtils;
 
 /* JDK17 (I5-8600K OC 4.5 Ghz, 32GB RAM 3200Mhz, Windows 10)
-    Benchmark                                 Mode  Cnt       Score       Error   Units
-    InvokeMethodBenchmark.direct             thrpt   10  478642.016 � 18582.582  ops/ms
-    InvokeMethodBenchmark.generatedInjected  thrpt   10  136923.888 �  3366.589  ops/ms
-    InvokeMethodBenchmark.injected           thrpt   10  130443.893 � 29652.246  ops/ms
-    InvokeMethodBenchmark.reflection         thrpt   10  279781.028 � 10225.142  ops/ms
+    Benchmark                                 Mode  Cnt       Score      Error   Units
+    InvokeMethodBenchmark.direct             thrpt   10  490066.514 � 1134.644  ops/ms
+    InvokeMethodBenchmark.generatedInjected  thrpt   10  140271.341 � 1260.811  ops/ms
+    InvokeMethodBenchmark.injected           thrpt   10  140393.799 �  471.445  ops/ms
+    InvokeMethodBenchmark.reflection         thrpt   10  286036.589 � 1494.508  ops/ms
  */
 @Fork(value = 1)
 @Warmup(iterations = 10, time = 2)

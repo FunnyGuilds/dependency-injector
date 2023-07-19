@@ -19,11 +19,11 @@ import org.openjdk.jmh.annotations.Warmup;
 import org.panda_lang.utilities.inject.annotations.Inject;
 
 /* JDK17 (I5-8600K OC 4.5 Ghz, 32GB RAM 3200Mhz, Windows 10)
-    Benchmark                                            Mode  Cnt        Score       Error   Units
-    InstanceConstructionWithFieldsBenchmark.direct          thrpt   10  1786947.021 �   9127.717  ops/ms
-    InstanceConstructionWithFieldsBenchmark.injected        thrpt   10     1328.763 �      4.493  ops/ms
-    InstanceConstructionWithFieldsBenchmark.injectedStatic  thrpt   10     1707.824 �     16.935  ops/ms
-    InstanceConstructionWithFieldsBenchmark.reflection      thrpt   10    25232.337 �     48.927  ops/ms
+    Benchmark                                                Mode  Cnt        Score      Error   Units
+    InstanceConstructionWithFieldsBenchmark.direct          thrpt   10  1787251.269 � 3254.179  ops/ms
+    InstanceConstructionWithFieldsBenchmark.injected        thrpt   10     1699.664 �    2.746  ops/ms
+    InstanceConstructionWithFieldsBenchmark.injectedStatic  thrpt   10     2222.043 �   12.408  ops/ms
+    InstanceConstructionWithFieldsBenchmark.reflection      thrpt   10    25156.935 �  119.734  ops/ms
  */
 @Fork(value = 1)
 @Warmup(iterations = 10, time = 2)
@@ -123,7 +123,7 @@ public class InstanceConstructionWithFieldsBenchmark {
     }
 
     public static void main(String[] args) throws Exception {
-        BenchmarkRunner.run(InvokeMethodBenchmark.class);
+        BenchmarkRunner.run(InstanceConstructionWithFieldsBenchmark.class);
     }
 
 }

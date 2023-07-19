@@ -14,11 +14,11 @@ import org.openjdk.jmh.annotations.State;
 import org.openjdk.jmh.annotations.Warmup;
 
 /* JDK17 (I5-8600K OC 4.5 Ghz, 32GB RAM 3200Mhz, Windows 10)
-    Benchmark                                  Mode  Cnt        Score       Error   Units
-    InstanceConstructionBenchmark.direct                    thrpt   10  1722222.040 � 261518.655  ops/ms
-    InstanceConstructionBenchmark.injected                  thrpt   10     1678.588 �     11.786  ops/ms
-    InstanceConstructionBenchmark.injectedStatic            thrpt   10     2678.599 �     15.572  ops/ms
-    InstanceConstructionBenchmark.reflection                thrpt   10   104147.946 �    336.587  ops/ms
+    Benchmark                                      Mode  Cnt        Score      Error   Units
+    InstanceConstructionBenchmark.direct          thrpt   10  1786519.662 � 1501.003  ops/ms
+    InstanceConstructionBenchmark.injected        thrpt   10     1742.075 �   13.386  ops/ms
+    InstanceConstructionBenchmark.injectedStatic  thrpt   10     2782.905 �   21.410  ops/ms
+    InstanceConstructionBenchmark.reflection      thrpt   10   103925.242 �  270.782  ops/ms
  */
 @Fork(value = 1)
 @Warmup(iterations = 10, time = 2)
@@ -92,7 +92,7 @@ public class InstanceConstructionBenchmark {
     }
 
     public static void main(String[] args) throws Exception {
-        BenchmarkRunner.run(InvokeMethodBenchmark.class);
+        BenchmarkRunner.run(InstanceConstructionBenchmark.class);
     }
 
 }
