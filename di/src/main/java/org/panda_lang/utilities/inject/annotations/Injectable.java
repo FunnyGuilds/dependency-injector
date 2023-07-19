@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 
 /**
  * Enables DI context for annotated annotation.
- * Only annotations annotated with @Injectable can be used with annotation based binds.
+ * Only annotations annotated with {@link Injectable} can be used with annotation-based binds.
  */
 @Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)

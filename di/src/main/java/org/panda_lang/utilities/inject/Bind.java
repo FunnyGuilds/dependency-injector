@@ -72,14 +72,14 @@ public interface Bind<A extends Annotation> extends Comparable<Bind<A>> {
     Object getValue(Property required, A annotation, Object... injectorArgs) throws Exception;
 
     /**
-     * Get associated type with the bind
+     * Get an associated type with the bind
      *
      * @return the associated type
      */
     Class<?> getAssociatedType();
 
     /**
-     * Get data type
+     * Get a data type
      *
      * @return the data type
      */

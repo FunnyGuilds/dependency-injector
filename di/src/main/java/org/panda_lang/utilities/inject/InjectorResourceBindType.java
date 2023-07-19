@@ -29,7 +29,7 @@ enum InjectorResourceBindType {
         this.priority = priority;
     }
 
-    protected int getPriority() {
+    int getPriority() {
         return priority;
     }
 

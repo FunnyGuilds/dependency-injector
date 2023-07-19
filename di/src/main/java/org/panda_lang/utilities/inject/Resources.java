@@ -33,7 +33,7 @@ public interface Resources {
      * Create bind for the specified type
      *
      * @param associatedType type to bind
-     * @return the bind based on associated type
+     * @return the bind based on an associated type
      */
     Bind<?> on(Class<?> associatedType);
 
@@ -47,7 +47,8 @@ public interface Resources {
     <A extends Annotation> Bind<A> annotatedWith(Class<A> annotation);
 
     /**
-     * Create bind for parameters annotated with the specified annotation tested by the {@link org.panda_lang.utilities.inject.DependencyInjectionUtils#testAnnotation(Class)} method
+     * Create bind for parameters annotated with the specified annotation
+     * tested by the {@link DependencyInjectionUtils#testAnnotation(Class)} method
      *
      * @param annotation the annotation to bind
      * @param <A> type of annotation

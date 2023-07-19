@@ -25,7 +25,7 @@ public final class DependencyInjectionUtils {
     private DependencyInjectionUtils() { }
 
     /**
-     * Check if annotation is available at runtime and it is annotated by @Injectable annotation
+     * Check if annotation is available at runtime and is annotated by {@link Injectable} annotation
      *
      * @param annotation the annotation to check
      * @param <T> annotation type
@@ -43,7 +43,6 @@ public final class DependencyInjectionUtils {
         }
 
         Retention retention = annotation.getAnnotation(Retention.class);
-
         if (retention == null) {
             throw new DependencyInjectionException(annotation + " has no specified retention policy");
         }

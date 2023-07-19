@@ -57,7 +57,7 @@ public interface Property {
     Type getParametrizedType();
 
     /**
-     * Get property type
+     * Get a property type
      *
      * @return the type of property
      */
