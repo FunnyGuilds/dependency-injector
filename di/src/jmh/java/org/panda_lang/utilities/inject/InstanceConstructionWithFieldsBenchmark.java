@@ -19,11 +19,13 @@ import org.openjdk.jmh.annotations.Warmup;
 import org.panda_lang.utilities.inject.annotations.Inject;
 
 /* JDK17 (I5-8600K OC 4.5 Ghz, 32GB RAM 3200Mhz, Windows 10)
-    Benchmark                                                Mode  Cnt        Score      Error   Units
-    InstanceConstructionWithFieldsBenchmark.direct          thrpt   10  1787251.269 � 3254.179  ops/ms
-    InstanceConstructionWithFieldsBenchmark.injected        thrpt   10     1699.664 �    2.746  ops/ms
-    InstanceConstructionWithFieldsBenchmark.injectedStatic  thrpt   10     2222.043 �   12.408  ops/ms
-    InstanceConstructionWithFieldsBenchmark.reflection      thrpt   10    25156.935 �  119.734  ops/ms
+    Benchmark                                                    Mode  Cnt        Score      Error   Units
+    InstanceConstructionWithFieldsBenchmark.direct              thrpt   10  1784219.469 � 7246.175  ops/ms
+    InstanceConstructionWithFieldsBenchmark.injected            thrpt   10     1508.048 �   10.094  ops/ms
+    InstanceConstructionWithFieldsBenchmark.injectedFast        thrpt   10     2540.255 �   11.664  ops/ms
+    InstanceConstructionWithFieldsBenchmark.injectedStatic      thrpt   10     2139.461 �   15.704  ops/ms
+    InstanceConstructionWithFieldsBenchmark.injectedStaticFast  thrpt   10     3807.769 �   19.776  ops/ms
+    InstanceConstructionWithFieldsBenchmark.reflection          thrpt   10    21433.173 �   28.671  ops/ms
  */
 @Fork(value = 1)
 @Warmup(iterations = 10, time = 2)
@@ -79,8 +81,8 @@ public class InstanceConstructionWithFieldsBenchmark {
 
     @Benchmark
     public void reflection(DIState state) throws Throwable {
-        Entity object = state.constructor.newInstance(123456789, "PandaIsCool");
-        state.constructor.setAccessible(true);
+        Entity object = state.entityConstructor.newInstance(123456789, "PandaIsCool");
+        state.entityConstructor.setAccessible(true);
 
         Field dataField = Entity.class.getDeclaredField("data");
         dataField.setAccessible(true);
@@ -97,21 +99,31 @@ public class InstanceConstructionWithFieldsBenchmark {
     }
 
     @Benchmark
-    public void injectedStatic(DIState state) throws Exception {
-        state.entityInjector.forFields(state.constructor).newInstance();
+    public void injectedFast(DIState state) throws Exception {
+        state.entityInjector.forConstructor(Entity.class).newInstance();
+    }
+
+    @Benchmark
+    public void injectedStatic(DIState state) {
+        state.entityInjector.newInstanceWithFields(state.entityConstructor);
+    }
+
+    @Benchmark
+    public void injectedStaticFast(DIState state) throws Exception {
+        state.entityInjector.forConstructor(state.entityConstructor).newInstance();
     }
 
     @State(Scope.Benchmark)
     public static class DIState {
 
-        private Constructor<Entity> constructor;
+        private Constructor<Entity> entityConstructor;
         private Injector entityInjector;
         private final Supplier<EntityData> entityDataSupplier = () -> new EntityData(123456789, 24.5243F);
         private final EntityStorage entityStorage = new EntityStorage(Arrays.asList("Item1", "Item2", "Item3"));
 
         @Setup(Level.Trial)
         public void setup() throws Exception {
-            this.constructor = Entity.class.getDeclaredConstructor(int.class, String.class);
+            this.entityConstructor = Entity.class.getDeclaredConstructor(int.class, String.class);
             this.entityInjector = DependencyInjection.createInjector(resources -> {
                 resources.on(int.class).assignInstance(123456789);
                 resources.on(String.class).assignInstance("PandaIsCool");

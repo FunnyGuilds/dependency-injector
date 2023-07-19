@@ -31,10 +31,10 @@ import panda.utilities.ReflectionUtils;
 
 /* JDK17 (I5-8600K OC 4.5 Ghz, 32GB RAM 3200Mhz, Windows 10)
     Benchmark                                 Mode  Cnt       Score      Error   Units
-    InvokeMethodBenchmark.direct             thrpt   10  490066.514 � 1134.644  ops/ms
-    InvokeMethodBenchmark.generatedInjected  thrpt   10  140271.341 � 1260.811  ops/ms
-    InvokeMethodBenchmark.injected           thrpt   10  140393.799 �  471.445  ops/ms
-    InvokeMethodBenchmark.reflection         thrpt   10  286036.589 � 1494.508  ops/ms
+    InvokeMethodBenchmark.direct             thrpt   10  488842.179 � 1773.358  ops/ms
+    InvokeMethodBenchmark.generatedInjected  thrpt   10  136348.796 � 7989.812  ops/ms
+    InvokeMethodBenchmark.injected           thrpt   10  138790.899 �  768.450  ops/ms
+    InvokeMethodBenchmark.reflection         thrpt   10  285895.850 � 1426.981  ops/ms
  */
 @Fork(value = 1)
 @Warmup(iterations = 10, time = 2)
