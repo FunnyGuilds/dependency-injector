@@ -1,0 +1,26 @@
+name: Benchmark DI
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    name: "Build with JDK${{ matrix.jdk }}"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # LTS and the latest one
+        jdk: [ 17 ]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK ${{ matrix.jdk }}
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'temurin'
+        java-version: ${{ matrix.jdk }}
+        cache: 'gradle'
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    - name: Run JMH benchmarks
+      run: |
+       ./gradlew :di:jmh --no-daemon
+       ./gradlew :di-codegen:jmh --no-daemon
