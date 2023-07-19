@@ -25,16 +25,6 @@ import org.jetbrains.annotations.Nullable;
 public interface Injector {
 
     /**
-     * Create a new instance of the specified type using Injector
-     *
-     * @param type the class to instantiate
-     * @param <T>  the type
-     * @return a new instance
-     * @throws DependencyInjectionException if anything happens during the injection
-     */
-    <T> T newInstance(Class<T> type, Object... injectorArgs) throws DependencyInjectionException;
-
-    /**
      * Create injector for the given type
      *
      * @param type the type to process
@@ -51,16 +41,6 @@ public interface Injector {
      * @return constructor injector
      */
     <T> ConstructorInjector<T> forConstructor(Constructor<T> constructor);
-
-    /**
-     * Create a new instance of the specified type using Injector with support for field injection
-     *
-     * @param type the class to instantiate
-     * @param <T>  the type
-     * @return a new instance
-     * @throws DependencyInjectionException if anything happens during the injection
-     */
-    <T> T newInstanceWithFields(Class<T> type, Object... injectorArgs) throws DependencyInjectionException;
 
     /**
      * Create injector for fields (and constructor)
@@ -81,6 +61,63 @@ public interface Injector {
     <T> FieldsInjector<T> forFields(Constructor<T> constructor);
 
     /**
+     * Create a new instance of the specified type using Injector
+     *
+     * @param type the class to instantiate
+     * @param <T>  the type
+     * @return a new instance
+     * @throws DependencyInjectionException if anything happens during the injection
+     */
+    <T> T newInstance(Class<T> type, Object... injectorArgs) throws DependencyInjectionException;
+
+    /**
+     * Create a new instance of the specified constructor using Injector
+     *
+     * @param constructor the constructor to instantiate
+     * @param <T>         the type
+     * @return a new instance
+     * @throws DependencyInjectionException if anything happens during the injection
+     */
+    <T> T newInstance(Constructor<T> constructor, Object... injectorArgs) throws DependencyInjectionException;
+
+    /**
+     * Create a new instance of the specified type using Injector with support for field injection
+     *
+     * @param type the class to instantiate
+     * @param <T>  type of class
+     * @return a new instance
+     * @throws DependencyInjectionException if anything happens during the injection
+     */
+    <T> T newInstanceWithFields(Class<T> type, Object... injectorArgs) throws DependencyInjectionException;
+
+    /**
+     * Create a new instance of the specified constructor using Injector with support for field injection
+     *
+     * @param constructor the constructor to instantiate
+     * @param <T>         type of class
+     * @return a new instance
+     * @throws DependencyInjectionException if anything happens during the injection
+     */
+    <T> T newInstanceWithFields(Constructor<T> constructor, Object... injectorArgs) throws DependencyInjectionException;
+
+    /**
+     * Create injector for the given method
+     *
+     * @param method the method to process
+     * @return injector for the given method
+     */
+    MethodInjector forMethod(Method method);
+
+    /**
+     * Generate injector for the given method
+     *
+     * @param method the method to process (works only for public properties)
+     * @return injector for the given method
+     * @throws Exception if anything happen during the generation of method wrapper
+     */
+    MethodInjector forGeneratedMethod(Method method) throws Exception;
+
+    /**
      * Invoke the method using Injector
      *
      * @param method   the method to invoke
@@ -99,23 +136,6 @@ public interface Injector {
      * @throws DependencyInjectionException if anything happens during execution of the method
      */
     void invokeAnnotatedMethods(Class<? extends Annotation> annotation, Object instance, Object... injectorArgs) throws DependencyInjectionException;
-
-    /**
-     * Create injector for the given method
-     *
-     * @param method the method to process
-     * @return injector for the given method
-     */
-    MethodInjector forMethod(Method method);
-
-    /**
-     * Generate injector for the given method
-     *
-     * @param method the method to process (works only for public properties)
-     * @return injector for the given method
-     * @throws Exception if anything happen during the generation of method wrapper
-     */
-    MethodInjector forGeneratedMethod(Method method) throws Exception;
 
     /**
      * Get value that would be used to inject the given parameter
