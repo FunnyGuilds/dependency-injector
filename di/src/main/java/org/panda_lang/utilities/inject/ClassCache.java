@@ -17,6 +17,8 @@ final class ClassCache {
 
     private static final Map<Pair<Class<?>, Class<? extends Annotation>>, Method[]> CACHED_ANNOTATED_METHODS = new HashMap<>();
 
+    private ClassCache() { }
+
     public static Field[] getFields(Class<?> clazz) {
         return CACHED_FIELDS.computeIfAbsent(clazz, ClassCache::getAllFields);
     }
