@@ -4,18 +4,18 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import org.panda_lang.utilities.inject.annotations.AutoConstruct;
 import org.panda_lang.utilities.inject.annotations.Inject;
 import panda.std.Pair;
 
 final class ClassCache {
 
-    private static final Map<Class<?>, Field[]> CACHED_FIELDS = new HashMap<>();
-    private static final Map<Class<?>, Field[]> INJECTOR_CACHED_FIELDS = new HashMap<>();
+    private static final Map<Class<?>, Field[]> CACHED_FIELDS = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, Field[]> INJECTOR_CACHED_FIELDS = new ConcurrentHashMap<>();
 
-    private static final Map<Pair<Class<?>, Class<? extends Annotation>>, Method[]> CACHED_ANNOTATED_METHODS = new HashMap<>();
+    private static final Map<Pair<Class<?>, Class<? extends Annotation>>, Method[]> CACHED_ANNOTATED_METHODS = new ConcurrentHashMap<>();
 
     private ClassCache() { }
 
