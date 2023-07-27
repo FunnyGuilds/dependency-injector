@@ -18,5 +18,6 @@
         "patch"
       ]
     }
-  ]
+  ],
+  "labels": ["Dependencies"]
 }
