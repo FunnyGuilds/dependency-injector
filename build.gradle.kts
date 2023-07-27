@@ -140,7 +140,7 @@ subprojects {
         jmhAnnotationProcessor("org.openjdk.jmh:jmh-generator-annprocess:$jmh")
 
         // Tests
-        val junit = "5.9.3"
+        val junit = "5.10.0"
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junit")
         testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit")
     }
