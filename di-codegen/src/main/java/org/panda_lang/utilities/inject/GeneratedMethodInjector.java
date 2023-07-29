@@ -16,17 +16,16 @@
 
 package org.panda_lang.utilities.inject;
 
-import panda.std.Pair;
-import panda.utilities.ArrayUtils;
-import panda.utilities.ClassUtils;
-import panda.utilities.ObjectUtils;
-import panda.utilities.StringUtils;
-import panda.utilities.text.Joiner;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.LinkedHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.dynamic.DynamicType;
+import net.bytebuddy.implementation.MethodCall;
+import net.bytebuddy.implementation.bytecode.assign.Assigner;
+import net.bytebuddy.matcher.ElementMatchers;
+import panda.utilities.ObjectUtils;
 
 public final class GeneratedMethodInjector implements MethodInjector {
 
@@ -51,83 +50,48 @@ public final class GeneratedMethodInjector implements MethodInjector {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T invoke(Object instance, Object... injectorArgs) throws Exception {
-        return (T) function.apply(instance, empty
-                ? EMPTY
-                : processor.fetchValues(cache, injectorArgs));
+        return (T) function.apply(instance, empty ? EMPTY : processor.fetchValues(cache, injectorArgs));
     }
 
     private static BiFunction<Object, Object[], Object> generate(Method method) throws Exception {
-        if (!Modifier.isPublic(method.getModifiers())) {
-            throw new IllegalStateException(method + " has to be public");
-        }
-
         Class<?> declaringClass = method.getDeclaringClass();
-
         if (!Modifier.isPublic(declaringClass.getModifiers())) {
             throw new IllegalStateException(declaringClass + " has to be public");
         }
 
-        StringBuilder body = new StringBuilder();
-        body.append(declaringClass.getName()).append(" instance = (").append(declaringClass.getName()).append(") $1;\n");
-        body.append(Object.class.getName()).append("[] array = (").append(Object.class.getName()).append("[]) $2;\n");
-
-        Class<?>[] parameterTypes = method.getParameterTypes();
-
-        for (int index = 0; index < parameterTypes.length; index++) {
-            Class<?> parameterType = parameterTypes[index];
-            String type = parameterType.getName();
-
-            if (parameterType.isArray()) {
-                Pair<Class<?>, Integer> baseClass = ArrayUtils.getBaseClassWithDimensions(parameterType);
-                type = baseClass.getFirst().getName() + StringUtils.repeated(baseClass.getSecond(), "[]");
-            }
-
-            body.append(type).append(" arg").append(index).append(" = ((");
-
-            // Auto-boxing impl
-            if (parameterType.isPrimitive()) {
-                Class<?> objectType = ClassUtils.getNonPrimitiveClass(parameterType);
-                body.append(objectType.getName()).append(") array[").append(index).append("]).").append(type).append("Value();\n");
-            }
-            else {
-                body.append(type).append(") array[").append(index).append("]);\n");
-            }
+        if (!Modifier.isPublic(method.getModifiers())) {
+            throw new IllegalStateException(method + " has to be public");
         }
 
-        Class<?> returnType = method.getReturnType();
-        boolean isVoid = method.getReturnType() == void.class;
-        Class<?> objectType = ClassUtils.getNonPrimitiveClass(returnType);
+        ByteBuddy byteBuddy = new ByteBuddy();
+        DynamicType.Unloaded<?> classPackage = byteBuddy
+                .makePackage(declaringClass.getPackage().getName())
+                .innerTypeOf(declaringClass)
+                .asMemberType()
+                .make();
 
-        if (!isVoid) {
-            body.append("return ");
+        Class<?> loaded = byteBuddy.subclass(Object.class)
+                .implement(GeneratedFunction.class)
+                .name(declaringClass.getName() + "$" + method.getName() + "$" + ID.incrementAndGet())
+                .method(ElementMatchers.named("apply"))
+                .intercept(MethodCall.invoke(method)
+                        .onArgument(0)
+                        .withArgumentArrayElements(1)
+                        .withAssigner(Assigner.DEFAULT, Assigner.Typing.DYNAMIC))
+                .make()
+                .include(classPackage)
+                .load(declaringClass.getClassLoader())
+                .getLoaded();
 
-            // Auto-boxing impl
-            if (returnType.isPrimitive()) {
-                body.append("new ").append(objectType.getName()).append("(");
-            }
-        }
-
-        body.append("instance.").append(method.getName())
-                .append("(")
-                .append(Joiner.on(", ").join(parameterTypes, (index, value) -> "arg" + index))
-                .append(")");
-
-        // Auto-boxing impl
-        if (!isVoid && returnType.isPrimitive()) {
-            body.append(")");
-        }
-
-        body.append(";");
-
-        String name = Injector.class.getPackage().getName() + ".PandaDI" + ID.incrementAndGet() + method.getDeclaringClass().getSimpleName() + method.getName();
-        Class<?> type = new FunctionGenerator(name, BiFunction.class, new LinkedHashMap<>(), body.toString()).generate(Injector.class);
-
-        return ObjectUtils.cast(type.newInstance());
+        return ObjectUtils.cast(loaded.getDeclaredConstructor().newInstance());
     }
 
     @Override
     public Method getMethod() {
-        return method;
+        return this.method;
     }
+
+    @FunctionalInterface
+    public interface GeneratedFunction extends BiFunction<Object, Object[], Object> { }
 
 }
