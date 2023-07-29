@@ -6,7 +6,6 @@ plugins {
     `maven-publish`
     signing
     jacoco
-    id("me.champeau.jmh") version "0.7.1"
     id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
 }
 
@@ -15,7 +14,6 @@ description = "Dependency Injector|Parent"
 allprojects {
     apply(plugin = "java-library")
     apply(plugin = "jacoco")
-    apply(plugin = "me.champeau.jmh")
     apply(plugin = "signing")
     apply(plugin = "maven-publish")
 
@@ -133,12 +131,6 @@ subprojects {
         api("org.panda-lang:expressible:1.3.5")
         compileOnly("org.jetbrains:annotations:24.0.1")
 
-        // Benchmarks
-        val jmh = 1.36
-        jmh("org.openjdk.jmh:jmh-core:$jmh")
-        jmh("org.openjdk.jmh:jmh-generator-annprocess:$jmh")
-        jmhAnnotationProcessor("org.openjdk.jmh:jmh-generator-annprocess:$jmh")
-
         // Tests
         val junit = "5.9.3"
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junit")
@@ -170,6 +162,7 @@ subprojects {
         )
     }
 }
+
 tasks.register("release") {
     dependsOn(
         "clean", "build",
