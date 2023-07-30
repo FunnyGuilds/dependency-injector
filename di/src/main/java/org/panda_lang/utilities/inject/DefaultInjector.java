@@ -48,13 +48,8 @@ final class DefaultInjector implements Injector {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <T> ConstructorInjector<T> forConstructor(Class<T> type) {
-        Constructor<?>[] constructors = type.getDeclaredConstructors();
-        if (constructors.length != 1) {
-            throw new InvalidParameterException("Class has to contain one and only constructor");
-        }
-        return new ConstructorInjector<>(this.processor, (Constructor<T>) constructors[0]);
+        return new ConstructorInjector<>(this.processor, ClassCache.getConstructor(type));
     }
 
     @Override

@@ -27,7 +27,7 @@ import net.bytebuddy.implementation.bytecode.assign.Assigner;
 import net.bytebuddy.matcher.ElementMatchers;
 import panda.utilities.ObjectUtils;
 
-public final class GeneratedMethodInjector implements MethodInjector {
+final class GeneratedMethodInjector implements MethodInjector {
 
     private static final Object[] EMPTY = new Object[0];
 
@@ -50,7 +50,7 @@ public final class GeneratedMethodInjector implements MethodInjector {
     @SuppressWarnings("unchecked")
     @Override
     public <T> T invoke(Object instance, Object... injectorArgs) throws Exception {
-        return (T) function.apply(instance, empty ? EMPTY : processor.fetchValues(cache, injectorArgs));
+        return (T) this.function.apply(instance, this.empty ? EMPTY : this.processor.fetchValues(this.cache, injectorArgs));
     }
 
     private static BiFunction<Object, Object[], Object> generate(Method method) throws Exception {
@@ -66,8 +66,6 @@ public final class GeneratedMethodInjector implements MethodInjector {
         ByteBuddy byteBuddy = new ByteBuddy();
         DynamicType.Unloaded<?> classPackage = byteBuddy
                 .makePackage(declaringClass.getPackage().getName())
-                .innerTypeOf(declaringClass)
-                .asMemberType()
                 .make();
 
         Class<?> loaded = byteBuddy.subclass(Object.class)

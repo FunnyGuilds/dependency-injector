@@ -15,12 +15,12 @@ import org.openjdk.jmh.annotations.Warmup;
 
 /* JDK17 (I5-8600K OC 4.5 Ghz, 32GB RAM 3200Mhz, Windows 10)
     Benchmark                                          Mode  Cnt        Score      Error   Units
-    InstanceConstructionBenchmark.direct              thrpt   10  1786513.822 � 2208.503  ops/ms
-    InstanceConstructionBenchmark.injected            thrpt   10     1793.499 �   10.822  ops/ms
-    InstanceConstructionBenchmark.injectedFast        thrpt   10     2871.334 �   25.445  ops/ms
-    InstanceConstructionBenchmark.injectedStatic      thrpt   10     2700.881 �    3.946  ops/ms
-    InstanceConstructionBenchmark.injectedStaticFast  thrpt   10     2852.005 �   21.373  ops/ms
-    InstanceConstructionBenchmark.reflection          thrpt   10   104001.170 �   81.311  ops/ms
+    InstanceConstructionBenchmark.direct              thrpt   10  1789904.378 � 1122.822  ops/ms
+    InstanceConstructionBenchmark.injected            thrpt   10     2629.149 �   66.627  ops/ms
+    InstanceConstructionBenchmark.injectedFast        thrpt   10     2890.650 �   35.665  ops/ms
+    InstanceConstructionBenchmark.injectedStatic      thrpt   10     2681.387 �    3.025  ops/ms
+    InstanceConstructionBenchmark.injectedStaticFast  thrpt   10     2890.723 �    8.385  ops/ms
+    InstanceConstructionBenchmark.reflection          thrpt   10   104444.640 �   88.579  ops/ms
  */
 @Fork(value = 1)
 @Warmup(iterations = 10, time = 2)
