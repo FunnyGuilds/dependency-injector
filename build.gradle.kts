@@ -128,11 +128,11 @@ subprojects {
     dependencies {
         // General
         api("org.panda-lang:panda-utilities:0.5.3-alpha")
-        api("org.panda-lang:expressible:1.3.5")
-        compileOnly("org.jetbrains:annotations:24.0.1")
+        api("org.panda-lang:expressible:1.3.6")
+        compileOnly("org.jetbrains:annotations:24.1.0")
 
         // Tests
-        val junit = "5.10.0"
+        val junit = "5.10.1"
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junit")
         testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit")
     }
