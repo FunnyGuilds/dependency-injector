@@ -8,6 +8,7 @@ import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import org.jetbrains.annotations.ApiStatus;
 import org.panda_lang.utilities.inject.annotations.AutoConstruct;
 import org.panda_lang.utilities.inject.annotations.Inject;
 import panda.std.Pair;
@@ -16,6 +17,7 @@ import panda.utilities.ObjectUtils;
 /**
  * Utility class for caching class data (fields, methods, etc.) to improve performance.
  */
+@ApiStatus.Internal
 final class ClassCache {
 
     private static final Map<Class<?>, Constructor<?>> CACHED_CONSTRUCTORS = new ConcurrentHashMap<>();

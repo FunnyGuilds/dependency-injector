@@ -33,15 +33,15 @@ import org.panda_lang.utilities.inject.annotations.Inject;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class InstanceConstructionWithFieldsBenchmark {
 
-    private static class Entity {
+    public static class Entity {
 
         private final int id;
         private final String name;
 
         @Inject
-        private EntityData data;
+        public EntityData data;
         @Inject
-        private EntityStorage storage;
+        public EntityStorage storage;
 
         public Entity(int id, String name) {
             this.name = name;
@@ -50,7 +50,7 @@ public class InstanceConstructionWithFieldsBenchmark {
 
     }
 
-    private static class EntityData {
+    public static class EntityData {
 
         private final int coins;
         private final float health;
@@ -130,6 +130,8 @@ public class InstanceConstructionWithFieldsBenchmark {
                 resources.on(EntityData.class).assignInstance(this.entityDataSupplier);
                 resources.on(EntityStorage.class).assignInstance(this.entityStorage);
             });
+
+            CodegenFieldsInjector<Entity> entityCodegenFieldsInjector = new CodegenFieldsInjector<>(new InjectorProcessor(this.entityInjector), this.entityInjector.forConstructor(Entity.class));
         }
 
     }

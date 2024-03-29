@@ -78,7 +78,7 @@ final class DependencyInjectionTest {
             assertEquals(DYNAMIC, (Integer) injector.fork(resources -> resources.on(int.class).assignInstance(DYNAMIC)).invokeMethod(testForkedInjector, instance));
 
             MethodInjector generatedMethodInjector = injector.fork(resources -> resources.on(int.class).assignInstance(DYNAMIC)).forGeneratedMethod(testForkedInjector);
-            assertTrue(generatedMethodInjector instanceof GeneratedMethodInjector);
+            assertTrue(generatedMethodInjector instanceof CodegenMethodInjector);
             assertEquals(DYNAMIC, (Integer) generatedMethodInjector.invoke(instance));
         });
 

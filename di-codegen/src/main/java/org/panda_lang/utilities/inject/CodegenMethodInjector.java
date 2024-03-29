@@ -27,7 +27,7 @@ import net.bytebuddy.implementation.bytecode.assign.Assigner;
 import net.bytebuddy.matcher.ElementMatchers;
 import panda.utilities.ObjectUtils;
 
-final class GeneratedMethodInjector implements MethodInjector {
+final class CodegenMethodInjector implements MethodInjector {
 
     private static final Object[] EMPTY = new Object[0];
 
@@ -35,22 +35,28 @@ final class GeneratedMethodInjector implements MethodInjector {
 
     private final InjectorProcessor processor;
     private final Method method;
-    private final BiFunction<Object, Object[], Object> function;
     private final InjectorCache cache;
     private final boolean empty;
 
-    GeneratedMethodInjector(InjectorProcessor processor, Method method) throws Exception {
+    private final BiFunction<Object, Object[], Object> generated;
+
+    CodegenMethodInjector(InjectorProcessor processor, Method method) throws Exception {
         this.processor = processor;
         this.method = method;
-        this.function = generate(method);
         this.cache = InjectorCache.of(processor, method);
         this.empty = method.getParameterCount() == 0;
+
+        this.generated = generate(method);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T invoke(Object instance, Object... injectorArgs) throws Exception {
-        return (T) this.function.apply(instance, this.empty ? EMPTY : this.processor.fetchValues(this.cache, injectorArgs));
+        return (T) this.generated.apply(instance,
+                this.empty
+                        ? EMPTY
+                        : this.processor.fetchValues(this.cache, injectorArgs)
+        );
     }
 
     private static BiFunction<Object, Object[], Object> generate(Method method) throws Exception {

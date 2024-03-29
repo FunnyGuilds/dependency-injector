@@ -18,13 +18,13 @@ package org.panda_lang.utilities.inject;
 
 import java.lang.annotation.Annotation;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 import org.panda_lang.utilities.inject.annotations.PostConstruct;
 import panda.std.Lazy;
 import panda.utilities.ObjectUtils;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
-import java.security.InvalidParameterException;
 import java.util.ServiceLoader;
 import java.util.Spliterators;
 import java.util.stream.StreamSupport;
@@ -39,7 +39,7 @@ final class DefaultInjector implements Injector {
     private final Lazy<MethodInjectorFactory> methodInjectorFactory = new Lazy<>(() ->
             StreamSupport.stream(Spliterators.spliteratorUnknownSize(ServiceLoader.load(MethodInjectorFactory.class).iterator(), ORDERED), false)
                     .findAny()
-                    .orElseGet(() -> ((processor, method) -> forMethod(method)))
+                    .orElseGet(() -> ((processor, method) -> this.forMethod(method)))
     );
 
     public DefaultInjector(Resources resources) {
@@ -49,22 +49,42 @@ final class DefaultInjector implements Injector {
 
     @Override
     public <T> ConstructorInjector<T> forConstructor(Class<T> type) {
-        return new ConstructorInjector<>(this.processor, ClassCache.getConstructor(type));
+        return new DefaultConstructorInjector<>(this.processor, ClassCache.getConstructor(type));
     }
 
     @Override
     public <T> ConstructorInjector<T> forConstructor(Constructor<T> constructor) {
-        return new ConstructorInjector<>(this.processor, constructor);
+        return new DefaultConstructorInjector<>(this.processor, constructor);
+    }
+
+    @Override
+    public <T> ConstructorInjector<T> forGeneratedConstructor(Constructor<T> constructor) {
+        return this.forConstructor(constructor);
+    }
+
+    @Override
+    public <T> ConstructorInjector<T> forGeneratedConstructor(Class<T> type) {
+        return this.forConstructor(type);
     }
 
     @Override
     public <T> FieldsInjector<T> forFields(Class<T> type) {
-        return new FieldsInjector<>(processor, forConstructor(type));
+        return new DefaultFieldsInjector<>(this.processor, this.forConstructor(type));
     }
 
     @Override
     public <T> FieldsInjector<T> forFields(Constructor<T> constructor) {
-        return new FieldsInjector<>(processor, forConstructor(constructor));
+        return new DefaultFieldsInjector<>(this.processor, this.forConstructor(constructor));
+    }
+
+    @Override
+    public <T> FieldsInjector<T> forGeneratedFields(Constructor<T> constructor) {
+        return this.forFields(constructor);
+    }
+
+    @Override
+    public <T> FieldsInjector<T> forGeneratedFields(Class<T> type) {
+        return this.forFields(type);
     }
 
     @Override
@@ -113,16 +133,16 @@ final class DefaultInjector implements Injector {
 
     @Override
     public MethodInjector forMethod(Method method) {
-        return new DefaultMethodInjector(processor, method);
+        return new DefaultMethodInjector(this.processor, method);
     }
 
     @Override
     public MethodInjector forGeneratedMethod(Method method) throws Exception {
-        return methodInjectorFactory.get().createMethodInjector(processor, method);
+        return this.methodInjectorFactory.get().createMethodInjector(this.processor, method);
     }
 
     @Override
-    public <T> T invokeMethod(Method method, Object instance, Object... injectorArgs) throws DependencyInjectionException {
+    public <T> @UnknownNullability T invokeMethod(Method method, Object instance, Object... injectorArgs) throws DependencyInjectionException {
         try {
             return this.forMethod(method).invoke(instance, injectorArgs);
         } catch (Exception exception) {
@@ -138,22 +158,22 @@ final class DefaultInjector implements Injector {
     }
 
     @Override
-    public <T> @Nullable T invokeParameter(Parameter parameter, Object... injectorArgs) throws Exception {
-        return ObjectUtils.cast(processor.fetchValue(new PropertyParameter(parameter), injectorArgs));
+    public <T> @UnknownNullability T invokeParameter(Parameter parameter, Object... injectorArgs) throws Exception {
+        return ObjectUtils.cast(this.processor.fetchValue(new PropertyParameter(parameter), injectorArgs));
     }
 
     @Override
     public Injector fork(InjectorController controller) {
-        return DependencyInjection.INJECTOR_FACTORY.createInjector(controller, resources.fork());
+        return DependencyInjection.INJECTOR_FACTORY.createInjector(controller, this.resources.fork());
     }
 
     @Override
     public Injector duplicate(InjectorController controller) {
-        return DependencyInjection.INJECTOR_FACTORY.createInjector(controller, resources.duplicate());
+        return DependencyInjection.INJECTOR_FACTORY.createInjector(controller, this.resources.duplicate());
     }
 
     public Resources getResources() {
-        return resources;
+        return this.resources;
     }
 
 }
