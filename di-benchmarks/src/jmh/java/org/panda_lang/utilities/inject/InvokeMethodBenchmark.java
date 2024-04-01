@@ -26,19 +26,21 @@ import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.Threads;
 import org.openjdk.jmh.annotations.Warmup;
 import panda.utilities.ReflectionUtils;
 
-/* JDK17 (I5-8600K OC 4.5 Ghz, 32GB RAM 3200Mhz, Windows 10)
+/* JDK17 (R9-5900X, 32GB RAM 3200Mhz, Windows 11)
     Benchmark                                 Mode  Cnt       Score       Error   Units
-    InvokeMethodBenchmark.direct             thrpt   10  492235.407 �   988.297  ops/ms
-    InvokeMethodBenchmark.generatedInjected  thrpt   10  432266.343 �   737.527  ops/ms
-    InvokeMethodBenchmark.injected           thrpt   10  142187.855 �   502.770  ops/ms
-    InvokeMethodBenchmark.reflection         thrpt   10  189730.282 � 22464.101  ops/ms
+    InvokeMethodBenchmark.direct             thrpt   10  868064.094 �  2086.213  ops/ms
+    InvokeMethodBenchmark.generatedInjected  thrpt   10  864293.983 � 13610.569  ops/ms
+    InvokeMethodBenchmark.injected           thrpt   10  857157.778 � 22008.580  ops/ms
+    InvokeMethodBenchmark.reflection         thrpt   10  434325.439 �  1554.849  ops/ms
  */
 @Fork(value = 1)
 @Warmup(iterations = 10, time = 2)
 @Measurement(iterations = 10, time = 2)
+@Threads(4)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class InvokeMethodBenchmark {
 
