@@ -39,9 +39,7 @@ final class DefaultInjector implements Injector {
     private final Lazy<ConstructorInjectorFactory> constructorInjectorFactory = new Lazy<>(() ->
             StreamSupport.stream(Spliterators.spliteratorUnknownSize(ServiceLoader.load(ConstructorInjectorFactory.class).iterator(), ORDERED), false)
                     .findAny()
-                    .orElseGet(() -> ((processor, constructor) -> {
-                        return this.forConstructor(constructor);
-                    }))
+                    .orElseGet(() -> ((processor, constructor) -> this.forConstructor(constructor)))
     );
     private final Lazy<MethodInjectorFactory> methodInjectorFactory = new Lazy<>(() ->
             StreamSupport.stream(Spliterators.spliteratorUnknownSize(ServiceLoader.load(MethodInjectorFactory.class).iterator(), ORDERED), false)
