@@ -36,6 +36,13 @@ final class DefaultInjector implements Injector {
     private final Resources resources;
     private final InjectorProcessor processor;
 
+    private final Lazy<ConstructorInjectorFactory> constructorInjectorFactory = new Lazy<>(() ->
+            StreamSupport.stream(Spliterators.spliteratorUnknownSize(ServiceLoader.load(ConstructorInjectorFactory.class).iterator(), ORDERED), false)
+                    .findAny()
+                    .orElseGet(() -> ((processor, constructor) -> {
+                        return this.forConstructor(constructor);
+                    }))
+    );
     private final Lazy<MethodInjectorFactory> methodInjectorFactory = new Lazy<>(() ->
             StreamSupport.stream(Spliterators.spliteratorUnknownSize(ServiceLoader.load(MethodInjectorFactory.class).iterator(), ORDERED), false)
                     .findAny()
@@ -58,13 +65,14 @@ final class DefaultInjector implements Injector {
     }
 
     @Override
-    public <T> ConstructorInjector<T> forGeneratedConstructor(Constructor<T> constructor) {
-        return this.forConstructor(constructor);
+    public <T> ConstructorInjector<T> forGeneratedConstructor(Class<T> type) {
+        return this.forGeneratedConstructor(ClassCache.getConstructor(type));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public <T> ConstructorInjector<T> forGeneratedConstructor(Class<T> type) {
-        return this.forConstructor(type);
+    public <T> ConstructorInjector<T> forGeneratedConstructor(Constructor<T> constructor) {
+        return (ConstructorInjector<T>) this.constructorInjectorFactory.get().createConstructorInjector(this.processor, constructor);
     }
 
     @Override
@@ -137,7 +145,7 @@ final class DefaultInjector implements Injector {
     }
 
     @Override
-    public MethodInjector forGeneratedMethod(Method method) throws Exception {
+    public MethodInjector forGeneratedMethod(Method method) {
         return this.methodInjectorFactory.get().createMethodInjector(this.processor, method);
     }
 

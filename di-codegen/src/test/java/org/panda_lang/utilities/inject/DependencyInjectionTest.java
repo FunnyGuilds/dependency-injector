@@ -66,7 +66,7 @@ final class DependencyInjectionTest {
         });
 
         Assertions.assertDoesNotThrow(() -> {
-            TestClass instance = injector.newInstance(TestClass.class);
+            TestClass instance = injector.forGeneratedConstructor(TestClass.class).newInstance();
 
             Method testTypeInvoke = ReflectionUtils.getMethod(TestClass.class, "testTypeInvoke", String.class).get();
             assertEquals(HELLO, injector.invokeMethod(testTypeInvoke, instance));
@@ -87,7 +87,7 @@ final class DependencyInjectionTest {
 
     public static final class TestClass {
 
-        TestClass(String value) {
+        public TestClass(String value) {
             assertEquals(HELLO, value);
         }
 

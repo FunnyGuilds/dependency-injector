@@ -28,7 +28,7 @@ import org.openjdk.jmh.annotations.Warmup;
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class InstanceConstructionBenchmark {
 
-    private static class Entity {
+    public static class Entity {
 
         private final int id;
         private final String name;
@@ -71,7 +71,7 @@ public class InstanceConstructionBenchmark {
 
     @Benchmark
     public void injectedFast(DIState state) throws Exception {
-        state.entityInjector.forConstructor(state.entityConstructor).newInstance();
+        state.entityInjector.forConstructor(Entity.class).newInstance();
     }
 
     @Benchmark
@@ -82,6 +82,16 @@ public class InstanceConstructionBenchmark {
     @Benchmark
     public void injectedStaticFast(DIState state) throws Exception {
         state.entityInjector.forConstructor(state.entityConstructor).newInstance();
+    }
+
+    @Benchmark
+    public void generatedInjected(DIState state) throws Exception {
+        state.entityInjector.forGeneratedConstructor(Entity.class).newInstance();
+    }
+
+    @Benchmark
+    public void generatedInjectedStatic(DIState state) throws Exception {
+        state.entityInjector.forGeneratedConstructor(state.entityConstructor).newInstance();
     }
 
     @State(Scope.Benchmark)

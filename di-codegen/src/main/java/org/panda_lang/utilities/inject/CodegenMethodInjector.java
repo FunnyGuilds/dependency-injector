@@ -31,8 +31,6 @@ final class CodegenMethodInjector implements MethodInjector {
 
     private static final Object[] EMPTY = new Object[0];
 
-    private static final AtomicInteger ID = new AtomicInteger();
-
     private final InjectorProcessor processor;
     private final Method method;
     private final InjectorCache cache;
@@ -40,13 +38,12 @@ final class CodegenMethodInjector implements MethodInjector {
 
     private final BiFunction<Object, Object[], Object> generated;
 
-    CodegenMethodInjector(InjectorProcessor processor, Method method) throws Exception {
+    CodegenMethodInjector(InjectorProcessor processor, Method method) {
         this.processor = processor;
         this.method = method;
         this.cache = InjectorCache.of(processor, method);
         this.empty = method.getParameterCount() == 0;
-
-        this.generated = generate(method);
+        this.generated = CodegenCache.getMethodInvoker(method);
     }
 
     @SuppressWarnings("unchecked")
@@ -59,43 +56,9 @@ final class CodegenMethodInjector implements MethodInjector {
         );
     }
 
-    private static BiFunction<Object, Object[], Object> generate(Method method) throws Exception {
-        Class<?> declaringClass = method.getDeclaringClass();
-        if (!Modifier.isPublic(declaringClass.getModifiers())) {
-            throw new IllegalStateException(declaringClass + " has to be public");
-        }
-
-        if (!Modifier.isPublic(method.getModifiers())) {
-            throw new IllegalStateException(method + " has to be public");
-        }
-
-        ByteBuddy byteBuddy = new ByteBuddy();
-        DynamicType.Unloaded<?> classPackage = byteBuddy
-                .makePackage(declaringClass.getPackage().getName())
-                .make();
-
-        Class<?> loaded = byteBuddy.subclass(Object.class)
-                .implement(GeneratedFunction.class)
-                .name(declaringClass.getName() + "$" + method.getName() + "$" + ID.incrementAndGet())
-                .method(ElementMatchers.named("apply"))
-                .intercept(MethodCall.invoke(method)
-                        .onArgument(0)
-                        .withArgumentArrayElements(1)
-                        .withAssigner(Assigner.DEFAULT, Assigner.Typing.DYNAMIC))
-                .make()
-                .include(classPackage)
-                .load(declaringClass.getClassLoader())
-                .getLoaded();
-
-        return ObjectUtils.cast(loaded.getDeclaredConstructor().newInstance());
-    }
-
     @Override
     public Method getMethod() {
         return this.method;
     }
-
-    @FunctionalInterface
-    public interface GeneratedFunction extends BiFunction<Object, Object[], Object> { }
 
 }

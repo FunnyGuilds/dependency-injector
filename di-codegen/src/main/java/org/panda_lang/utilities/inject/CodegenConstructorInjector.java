@@ -33,22 +33,18 @@ final class CodegenConstructorInjector<T> implements ConstructorInjector<T> {
 
     private static final Object[] EMPTY = new Object[0];
 
-    private static final AtomicInteger ID = new AtomicInteger();
-
     private final InjectorProcessor processor;
     private final Constructor<T> constructor;
     private final boolean empty;
     private final InjectorCache cache;
-
     private final Function<Object[], Object> generated;
 
-    CodegenConstructorInjector(InjectorProcessor processor, Constructor<T> constructor) throws Exception {
+    CodegenConstructorInjector(InjectorProcessor processor, Constructor<T> constructor) {
         this.processor = processor;
         this.constructor = constructor;
         this.empty = constructor.getParameterCount() == 0;
         this.cache = InjectorCache.of(processor, constructor);
-
-        this.generated = generate(constructor);
+        this.generated = CodegenCache.getConstructorInvoker(constructor);
     }
 
     @SuppressWarnings("unchecked")
@@ -61,45 +57,9 @@ final class CodegenConstructorInjector<T> implements ConstructorInjector<T> {
         );
     }
 
-    private static Function<Object[], Object> generate(Constructor<?> constructor) throws Exception {
-        Class<?> declaringClass = constructor.getDeclaringClass();
-        if (!Modifier.isPublic(declaringClass.getModifiers())) {
-            throw new IllegalStateException(declaringClass + " has to be public");
-        }
-
-        if (!Modifier.isPublic(constructor.getModifiers())) {
-            throw new IllegalStateException(constructor + " has to be public");
-        }
-
-        ByteBuddy byteBuddy = new ByteBuddy();
-        DynamicType.Unloaded<?> classPackage = byteBuddy
-                .makePackage(declaringClass.getPackage().getName())
-                .make();
-
-        Class<?> loaded = byteBuddy.subclass(Object.class)
-                .implement(GeneratedFunction.class)
-                .name(declaringClass.getName() + "$" + constructor.getName() + "$" + ID.incrementAndGet())
-                .method(ElementMatchers.named("apply"))
-                .intercept(MethodCall.invoke(constructor)
-                        .onArgument(0)
-                        .withArgumentArrayElements(1)
-                        .withAssigner(Assigner.DEFAULT, Assigner.Typing.DYNAMIC))
-                .make()
-                .include(classPackage)
-                .load(declaringClass.getClassLoader())
-                .getLoaded();
-
-        return ObjectUtils.cast(loaded.getDeclaredConstructor().newInstance());
-    }
-
     @Override
     public Constructor<T> getConstructor() {
         return this.constructor;
-    }
-
-    @FunctionalInterface
-    public interface GeneratedFunction extends Function<Object[], Object> {
-
     }
 
 }

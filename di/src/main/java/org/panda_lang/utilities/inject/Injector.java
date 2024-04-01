@@ -44,9 +44,9 @@ public interface Injector {
      */
     <T> ConstructorInjector<T> forConstructor(Constructor<T> constructor);
 
-    <T> ConstructorInjector<T> forGeneratedConstructor(Constructor<T> constructor);
-
     <T> ConstructorInjector<T> forGeneratedConstructor(Class<T> type);
+
+    <T> ConstructorInjector<T> forGeneratedConstructor(Constructor<T> constructor);
 
     /**
      * Create injector for fields (and constructor)
@@ -66,9 +66,9 @@ public interface Injector {
      */
     <T> FieldsInjector<T> forFields(Constructor<T> constructor);
 
-    <T> FieldsInjector<T> forGeneratedFields(Constructor<T> constructor);
-
     <T> FieldsInjector<T> forGeneratedFields(Class<T> type);
+
+    <T> FieldsInjector<T> forGeneratedFields(Constructor<T> constructor);
 
     /**
      * Create a new instance of the specified type using Injector
@@ -128,7 +128,7 @@ public interface Injector {
      * @return injector for the given method
      * @throws Exception if anything happens during the generation of method wrapper
      */
-    MethodInjector forGeneratedMethod(Method method) throws Exception;
+    MethodInjector forGeneratedMethod(Method method);
 
     /**
      * Invoke the method using Injector
