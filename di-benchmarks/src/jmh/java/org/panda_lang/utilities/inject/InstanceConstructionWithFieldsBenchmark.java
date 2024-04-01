@@ -15,33 +15,35 @@ import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.Threads;
 import org.openjdk.jmh.annotations.Warmup;
 import org.panda_lang.utilities.inject.annotations.Inject;
 
-/* JDK17 (I5-8600K OC 4.5 Ghz, 32GB RAM 3200Mhz, Windows 10)
-    Benchmark                                                    Mode  Cnt        Score      Error   Units
-    InstanceConstructionWithFieldsBenchmark.direct              thrpt   10  1784219.469 � 7246.175  ops/ms
-    InstanceConstructionWithFieldsBenchmark.injected            thrpt   10     1508.048 �   10.094  ops/ms
-    InstanceConstructionWithFieldsBenchmark.injectedFast        thrpt   10     2540.255 �   11.664  ops/ms
-    InstanceConstructionWithFieldsBenchmark.injectedStatic      thrpt   10     2139.461 �   15.704  ops/ms
-    InstanceConstructionWithFieldsBenchmark.injectedStaticFast  thrpt   10     3807.769 �   19.776  ops/ms
-    InstanceConstructionWithFieldsBenchmark.reflection          thrpt   10    21433.173 �   28.671  ops/ms
+/* JDK17 (R9-5900X, 32GB RAM 3200Mhz, Windows 11)
+    Benchmark                                                    Mode  Cnt        Score       Error   Units
+    InstanceConstructionWithFieldsBenchmark.direct              thrpt   10  8568409.473 � 56063.080  ops/ms
+    InstanceConstructionWithFieldsBenchmark.injected            thrpt   10     8734.063 �   132.188  ops/ms
+    InstanceConstructionWithFieldsBenchmark.injectedFast        thrpt   10    10741.429 �   337.507  ops/ms
+    InstanceConstructionWithFieldsBenchmark.injectedStatic      thrpt   10     8002.083 �   540.164  ops/ms
+    InstanceConstructionWithFieldsBenchmark.injectedStaticFast  thrpt   10    10337.340 �   404.279  ops/ms
+    InstanceConstructionWithFieldsBenchmark.reflection          thrpt   10    28319.446 �   555.004  ops/ms
  */
 @Fork(value = 1)
 @Warmup(iterations = 10, time = 2)
 @Measurement(iterations = 10, time = 2)
+@Threads(4)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class InstanceConstructionWithFieldsBenchmark {
 
-    private static class Entity {
+    public static class Entity {
 
         private final int id;
         private final String name;
 
         @Inject
-        private EntityData data;
+        public EntityData data;
         @Inject
-        private EntityStorage storage;
+        public EntityStorage storage;
 
         public Entity(int id, String name) {
             this.name = name;
@@ -50,7 +52,7 @@ public class InstanceConstructionWithFieldsBenchmark {
 
     }
 
-    private static class EntityData {
+    public static class EntityData {
 
         private final int coins;
         private final float health;
@@ -130,6 +132,8 @@ public class InstanceConstructionWithFieldsBenchmark {
                 resources.on(EntityData.class).assignInstance(this.entityDataSupplier);
                 resources.on(EntityStorage.class).assignInstance(this.entityStorage);
             });
+
+            CodegenFieldsInjector<Entity> entityCodegenFieldsInjector = new CodegenFieldsInjector<>(new InjectorProcessor(this.entityInjector), this.entityInjector.forConstructor(Entity.class));
         }
 
     }

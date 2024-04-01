@@ -66,7 +66,7 @@ final class DependencyInjectionTest {
         });
 
         Assertions.assertDoesNotThrow(() -> {
-            TestClass instance = injector.newInstance(TestClass.class);
+            TestClass instance = injector.forGeneratedConstructor(TestClass.class).newInstance();
 
             Method testTypeInvoke = ReflectionUtils.getMethod(TestClass.class, "testTypeInvoke", String.class).get();
             assertEquals(HELLO, injector.invokeMethod(testTypeInvoke, instance));
@@ -78,7 +78,7 @@ final class DependencyInjectionTest {
             assertEquals(DYNAMIC, (Integer) injector.fork(resources -> resources.on(int.class).assignInstance(DYNAMIC)).invokeMethod(testForkedInjector, instance));
 
             MethodInjector generatedMethodInjector = injector.fork(resources -> resources.on(int.class).assignInstance(DYNAMIC)).forGeneratedMethod(testForkedInjector);
-            assertTrue(generatedMethodInjector instanceof GeneratedMethodInjector);
+            assertTrue(generatedMethodInjector instanceof CodegenMethodInjector);
             assertEquals(DYNAMIC, (Integer) generatedMethodInjector.invoke(instance));
         });
 
@@ -87,7 +87,7 @@ final class DependencyInjectionTest {
 
     public static final class TestClass {
 
-        TestClass(String value) {
+        public TestClass(String value) {
             assertEquals(HELLO, value);
         }
 

@@ -1,23 +1,19 @@
 package org.panda_lang.utilities.inject;
 
-import java.lang.reflect.Field;
+/*
+TODO: Make FieldsInjector independent from ConstructorInjector (allow to inject fields to any object)
+Currently it's just ConstructorInjector with additional fields injection
+ */
+public interface FieldsInjector<T> extends ConstructorInjector<T> {
 
-public final class FieldsInjector<T> {
-
-    private final InjectorProcessor processor;
-    private final ConstructorInjector<T> constructorInjector;
-
-    FieldsInjector(InjectorProcessor processor, ConstructorInjector<T> constructorInjector) {
-        this.processor = processor;
-        this.constructorInjector = constructorInjector;
-    }
-
-    public T newInstance(Object... injectorArgs) throws Exception {
-        T instance = this.constructorInjector.newInstance(injectorArgs);
-        for (Field field : ClassCache.getInjectorFields(instance.getClass())) {
-            field.set(instance, this.processor.fetchValue(new PropertyField(field), injectorArgs));
-        }
-        return instance;
-    }
+    /**
+     * Create a new instance of the specified constructor and inject their fields
+     *
+     * @param injectorArgs arguments for injector
+     * @return new instance of the specified type
+     * @throws Exception if anything happens during the instance creation
+     */
+    @Override
+    T newInstance(Object... injectorArgs) throws Exception;
 
 }

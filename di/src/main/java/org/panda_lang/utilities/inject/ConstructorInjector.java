@@ -1,43 +1,23 @@
-/*
- * Copyright (c) 2020 Dzikoysk
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package org.panda_lang.utilities.inject;
 
-import panda.utilities.ObjectUtils;
 import java.lang.reflect.Constructor;
+import org.jetbrains.annotations.ApiStatus;
 
-public final class ConstructorInjector<T> {
+public interface ConstructorInjector<T> {
 
-    private final InjectorProcessor processor;
-    private final Constructor<?> constructor;
-    private final InjectorCache cache;
+    /**
+     * Create a new instance of the specified constructor
+     *
+     * @param injectorArgs arguments for injector
+     * @return new instance of the specified type
+     * @throws Exception if anything happens during the instance creation
+     */
+    T newInstance(Object... injectorArgs) throws Exception;
 
-    ConstructorInjector(InjectorProcessor processor, Constructor<T> constructor) {
-        this.processor = processor;
-        this.constructor = constructor;
-        constructor.setAccessible(true);
-        this.cache = InjectorCache.of(processor, constructor);
-    }
-
-    public T newInstance(Object... injectorArgs) throws Exception {
-        return ObjectUtils.cast(constructor.newInstance(processor.fetchValues(cache, injectorArgs)));
-    }
-
-    public Constructor<?> getConstructor() {
-        return constructor;
-    }
+    /**
+     * @return constructor that will be used to create new instance
+     */
+    @ApiStatus.Internal
+    Constructor<T> getConstructor();
 
 }
