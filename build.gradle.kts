@@ -132,7 +132,7 @@ subprojects {
         compileOnly("org.jetbrains:annotations:24.1.0")
 
         // Tests
-        val junit = "5.10.2"
+        val junit = "5.11.0"
         testImplementation("org.junit.jupiter:junit-jupiter-api:$junit")
         testImplementation("org.junit.jupiter:junit-jupiter-engine:$junit")
     }
