@@ -18,30 +18,29 @@ import panda.utilities.ArrayUtils;
 
 public class CodegenFieldsInjector<T> implements FieldsInjector<T> {
 
-    private static final AtomicInteger ID = new AtomicInteger();
+    private static final Object[] EMPTY = new Object[0];
 
     private final InjectorProcessor processor;
     private final ConstructorInjector<T> constructorInjector;
     private final Class<?> declaringClass;
-
+    private final Field[] fields;
     private final BiConsumer<Object, Object[]> generated;
 
-    CodegenFieldsInjector(InjectorProcessor processor, ConstructorInjector<T> constructorInjector) throws Exception {
+    CodegenFieldsInjector(InjectorProcessor processor, ConstructorInjector<T> constructorInjector) {
         this.processor = processor;
         this.constructorInjector = constructorInjector;
         this.declaringClass = constructorInjector.getConstructor().getDeclaringClass();
-
-        this.generated = generate(this.declaringClass);
+        this.fields = ClassCache.getInjectorFields(this.declaringClass);
+        this.generated = CodegenCache.getFieldInvoker(this.declaringClass, this.fields);
     }
 
     @Override
     public T newInstance(Object... injectorArgs) throws Exception {
         T instance = this.constructorInjector.newInstance(injectorArgs);
 
-        Field[] fields = ClassCache.getInjectorFields(this.declaringClass);
-        Object[] values = new Object[fields.length];
-        for (int i = 0; i < fields.length; i++) {
-            values[i] = this.processor.fetchValue(new PropertyField(fields[i]), injectorArgs);
+        Object[] values = new Object[this.fields.length];
+        for (int i = 0; i < this.fields.length; i++) {
+            values[i] = this.processor.fetchValue(new PropertyField(this.fields[i]), injectorArgs);
         }
         this.generated.accept(instance, values);
 
@@ -51,45 +50,6 @@ public class CodegenFieldsInjector<T> implements FieldsInjector<T> {
     @Override
     public Constructor<T> getConstructor() {
         return this.constructorInjector.getConstructor();
-    }
-
-    private static BiConsumer<Object, Object[]> generate(Class<?> declaringClass) throws Exception {
-        if (!Modifier.isPublic(declaringClass.getModifiers())) {
-            throw new IllegalStateException(declaringClass + " has to be public");
-        }
-
-        Field[] fields = ClassCache.getInjectorFields(declaringClass);
-        for (Field field : fields) {
-            int modifiers = field.getModifiers();
-            if (!Modifier.isPublic(modifiers)) {
-                throw new IllegalStateException(field + " has to be public");
-            } else if (Modifier.isFinal(modifiers)) {
-                throw new IllegalStateException(field + " cannot be final");
-            }
-        }
-
-        ByteBuddy byteBuddy = new ByteBuddy();
-        DynamicType.Unloaded<?> classPackage = byteBuddy
-                .makePackage(declaringClass.getPackage().getName())
-                .make();
-
-
-        /*DynamicType.Builder.MethodDefinition.ExceptionDefinition<Object> init = byteBuddy.subclass(Object.class)
-                .implement(GeneratedConsumer.class)
-                .name(declaringClass.getName() + "$init$" + ID.incrementAndGet())
-                .method(ElementMatchers.named("accept"))
-                .withoutCode()
-                .defineMethod("init", void.class, Modifier.PUBLIC)
-                .withParameters(ArrayUtils.merge(new Type[]{declaringClass}, Arrays.stream(fields).map(Field::getType).toArray(Class[]::new)))
-                .intercept(FieldAccessor.ofField("instance").setsArgumentAt(0));
-
-        DynamicType.Unloaded<Object> unloaded = init
-                .intercept(MethodDelegation.to(FieldAccessor.ofField("instance")))
-                .make();*/
-
-        return (instance, values) -> {
-
-        };
     }
 
     public static class Interceptor {
@@ -115,6 +75,8 @@ public class CodegenFieldsInjector<T> implements FieldsInjector<T> {
     }
 
     @FunctionalInterface
-    public interface GeneratedConsumer extends BiConsumer<Object, Object[]> { }
+    public interface GeneratedConsumer extends BiConsumer<Object, Object[]> {
+
+    }
 
 }
