@@ -20,7 +20,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 public interface Injector {
 
@@ -42,6 +44,10 @@ public interface Injector {
      */
     <T> ConstructorInjector<T> forConstructor(Constructor<T> constructor);
 
+    <T> ConstructorInjector<T> forGeneratedConstructor(Class<T> type);
+
+    <T> ConstructorInjector<T> forGeneratedConstructor(Constructor<T> constructor);
+
     /**
      * Create injector for fields (and constructor)
      *
@@ -59,6 +65,10 @@ public interface Injector {
      * @return fields injector
      */
     <T> FieldsInjector<T> forFields(Constructor<T> constructor);
+
+    <T> FieldsInjector<T> forGeneratedFields(Class<T> type);
+
+    <T> FieldsInjector<T> forGeneratedFields(Constructor<T> constructor);
 
     /**
      * Create a new instance of the specified type using Injector
@@ -118,7 +128,7 @@ public interface Injector {
      * @return injector for the given method
      * @throws Exception if anything happens during the generation of method wrapper
      */
-    MethodInjector forGeneratedMethod(Method method) throws Exception;
+    MethodInjector forGeneratedMethod(Method method);
 
     /**
      * Invoke the method using Injector
@@ -129,7 +139,7 @@ public interface Injector {
      * @return the return value
      * @throws DependencyInjectionException if anything happens during execution of the method
      */
-    @Nullable <T> T invokeMethod(Method method, @Nullable Object instance, Object... injectorArgs) throws DependencyInjectionException;
+    @UnknownNullability <T> T invokeMethod(Method method, @Nullable Object instance, Object... injectorArgs) throws DependencyInjectionException;
 
     /**
      * Invoke methods annotated with the given annotation
@@ -148,7 +158,8 @@ public interface Injector {
      * @return the associated binding value
      * @throws Exception if anything happens during invocation of the parameter
      */
-    @Nullable <T> T invokeParameter(Parameter parameter, Object... injectorArgs) throws Exception;
+    @ApiStatus.Internal
+    @UnknownNullability <T> T invokeParameter(Parameter parameter, Object... injectorArgs) throws Exception;
 
     /**
      * Create a fork of resources. The current resources will be used as a parent of a new instance.

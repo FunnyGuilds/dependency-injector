@@ -1,9 +1,11 @@
 package org.panda_lang.utilities.inject;
 
 import java.lang.reflect.Method;
+import org.jetbrains.annotations.ApiStatus;
 
-public interface MethodInjectorFactory {
+@ApiStatus.Internal
+interface MethodInjectorFactory {
 
-    MethodInjector createMethodInjector(InjectorProcessor processor, Method method) throws Exception;
+    MethodInjector createMethodInjector(InjectorProcessor processor, Method method);
 
 }

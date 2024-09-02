@@ -17,30 +17,28 @@
 package org.panda_lang.utilities.inject;
 
 import panda.utilities.ObjectUtils;
-import java.lang.reflect.Method;
+import java.lang.reflect.Constructor;
 
-final class DefaultMethodInjector implements MethodInjector {
+final class DefaultConstructorInjector<T> implements ConstructorInjector<T> {
 
     private static final Object[] EMPTY = new Object[0];
 
     private final InjectorProcessor processor;
-    private final Method method;
+    private final Constructor<T> constructor;
     private final boolean empty;
     private final InjectorCache cache;
 
-    DefaultMethodInjector(InjectorProcessor processor, Method method) {
+    DefaultConstructorInjector(InjectorProcessor processor, Constructor<T> constructor) {
         this.processor = processor;
-        this.method = method;
-        method.setAccessible(true);
-        this.empty = method.getParameterCount() == 0;
-        this.cache = InjectorCache.of(processor, method);
+        this.constructor = constructor;
+        constructor.setAccessible(true);
+        this.empty = constructor.getParameterCount() == 0;
+        this.cache = InjectorCache.of(processor, constructor);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public <T> T invoke(Object instance, Object... injectorArgs) throws Exception {
-        return (T) this.method.invoke(
-                instance,
+    public T newInstance(Object... injectorArgs) throws Exception {
+        return this.constructor.newInstance(
                 this.empty
                         ? EMPTY
                         : this.processor.fetchValues(this.cache, injectorArgs)
@@ -48,8 +46,8 @@ final class DefaultMethodInjector implements MethodInjector {
     }
 
     @Override
-    public Method getMethod() {
-        return this.method;
+    public Constructor<T> getConstructor() {
+        return this.constructor;
     }
 
 }
