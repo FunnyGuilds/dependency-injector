@@ -47,6 +47,13 @@ public interface Bind<A extends Annotation> extends Comparable<Bind<A>> {
     void assignThrowingInstance(ThrowingSupplier<?, ? extends Exception> valueSupplier);
 
     /**
+     * Assign lazy instance to the bind, that will be initialized on the first call and cached
+     *
+     * @param valueSupplier the supplier to assign
+     */
+    void assignLazyInstance(Supplier<?> valueSupplier);
+
+    /**
      * Assign custom handler to the bind
      *
      * @param handler the handler which accepts type of parameter and bind type as arguments
