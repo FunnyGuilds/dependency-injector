@@ -129,7 +129,7 @@ subprojects {
         // General
         api("org.panda-lang:panda-utilities:0.5.3-alpha")
         api("org.panda-lang:expressible:1.3.6")
-        compileOnly("org.jetbrains:annotations:24.1.0")
+        compileOnly("org.jetbrains:annotations:25.0.0")
 
         // Tests
         val junit = "5.11.0"
